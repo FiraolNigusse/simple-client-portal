@@ -29,33 +29,44 @@ export function AuthProvider({ children }) {
       });
   }, []);
 
+  const signIn = async ({ email, password }) => {
+    const response = await apiClient.post("/auth/token/", { email, password });
+    const { access, user: userPayload } = response.data;
+    if (access) {
+      setAccessToken(access);
+    }
+    setUser(userPayload ?? null);
+    return response.data;
+  };
+
+  const signUp = async (data) => {
+    await apiClient.post("/users/register/", data);
+    return signIn({ email: data.email, password: data.password });
+  };
+
+  const signOut = () => {
+    clearAccessToken();
+    setUser(null);
+  };
+
+  const setSession = ({ accessToken, user: userPayload }) => {
+    if (accessToken) {
+      setAccessToken(accessToken);
+    }
+    setUser(userPayload ?? null);
+  };
+
   const value = useMemo(
     () => ({
       user,
       isAuthenticated: Boolean(user),
       initializing,
-      signIn: async ({ email, password }) => {
-        const response = await apiClient.post("/auth/token/", { email, password });
-        const { access, refresh, user: userPayload } = response.data;
-        if (access) {
-          setAccessToken(access);
-        }
-        // In the future you can persist the refresh token as well.
-        setUser(userPayload ?? null);
-        return response.data;
-      },
-      signOut: () => {
-        clearAccessToken();
-        setUser(null);
-      },
-      setSession: ({ accessToken, user: userPayload }) => {
-        if (accessToken) {
-          setAccessToken(accessToken);
-        }
-        setUser(userPayload ?? null);
-      }
+      signIn,
+      signUp,
+      signOut,
+      setSession
     }),
-    [user]
+    [user, initializing]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

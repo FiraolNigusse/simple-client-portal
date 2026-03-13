@@ -30,66 +30,44 @@ function ProtectedRoute({ children }) {
 export function AppRoutes() {
   return (
     <Routes>
-      <Route element={<MainLayout />}>
+      <Route
+        element={
+          <ProtectedRoute>
+            <MainLayout />
+          </ProtectedRoute>
+        }
+      >
         <Route
           path="/"
           element={<Navigate to="/dashboard" replace />}
         />
         <Route
           path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardPage />
-            </ProtectedRoute>
-          }
+          element={<DashboardPage />}
         />
         <Route
           path="/clients"
-          element={
-            <ProtectedRoute>
-              <DashboardClientsPage />
-            </ProtectedRoute>
-          }
+          element={<DashboardClientsPage />}
         />
         <Route
           path="/clients/:id"
-          element={
-            <ProtectedRoute>
-              <ClientDetailsPage />
-            </ProtectedRoute>
-          }
+          element={<ClientDetailsPage />}
         />
         <Route
           path="/projects"
-          element={
-            <ProtectedRoute>
-              <ProjectsPage />
-            </ProtectedRoute>
-          }
+          element={<ProjectsPage />}
         />
         <Route
           path="/projects/:id"
-          element={
-            <ProtectedRoute>
-              <ProjectDetailsPage />
-            </ProtectedRoute>
-          }
+          element={<ProjectDetailsPage />}
         />
         <Route
           path="/invoices"
-          element={
-            <ProtectedRoute>
-              <InvoicesPage />
-            </ProtectedRoute>
-          }
+          element={<InvoicesPage />}
         />
         <Route
           path="/subscription"
-          element={
-            <ProtectedRoute>
-              <SubscriptionPage />
-            </ProtectedRoute>
-          }
+          element={<SubscriptionPage />}
         />
       </Route>
       <Route path="/login" element={<LoginPage />} />
