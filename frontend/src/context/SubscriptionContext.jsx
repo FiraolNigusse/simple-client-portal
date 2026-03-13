@@ -11,6 +11,13 @@ export function SubscriptionProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   const fetchSubscription = useCallback(async () => {
+    // Only fetch if we have an access token to avoid 401 noise in console
+    const token = localStorage.getItem("scp_access_token");
+    if (!token) {
+      setLoading(false);
+      return;
+    }
+
     try {
       const [subRes, plansRes] = await Promise.all([
         apiClient.get("/users/subscriptions/me/"),
@@ -19,7 +26,7 @@ export function SubscriptionProvider({ children }) {
       setSubscription(subRes.data);
       setPlans(plansRes.data);
     } catch {
-      // Not authenticated yet — silent
+      // Not authenticated or session expired — silent
     } finally {
       setLoading(false);
     }

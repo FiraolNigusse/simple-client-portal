@@ -20,7 +20,14 @@ export function RegisterPage() {
       await signUp(formData);
       navigate("/");
     } catch (err) {
-      setError(err.response?.data?.detail || "Registration failed. Please try again.");
+      const errorData = err.response?.data;
+      if (typeof errorData === "object") {
+        // Flatten backend validation errors (e.g. {email: ["..."]})
+        const firstError = Object.values(errorData)[0];
+        setError(Array.isArray(firstError) ? firstError[0] : firstError);
+      } else {
+        setError(errorData?.detail || "Registration failed. Please try again.");
+      }
     } finally {
       setLoading(false);
     }
