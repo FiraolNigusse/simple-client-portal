@@ -30,7 +30,8 @@ export function AuthProvider({ children }) {
   }, []);
 
   const signIn = async ({ email, password }) => {
-    const response = await apiClient.post("/auth/token/", { email, password });
+    const trimmedEmail = email.trim();
+    const response = await apiClient.post("/auth/token/", { email: trimmedEmail, password });
     const { access, user: userPayload } = response.data;
     if (access) {
       setAccessToken(access);
@@ -40,8 +41,9 @@ export function AuthProvider({ children }) {
   };
 
   const signUp = async (data) => {
-    await apiClient.post("/users/register/", data);
-    return signIn({ email: data.email, password: data.password });
+    const trimmedData = { ...data, email: data.email.trim() };
+    await apiClient.post("/users/register/", trimmedData);
+    return signIn({ email: trimmedData.email, password: trimmedData.password });
   };
 
   const signOut = () => {

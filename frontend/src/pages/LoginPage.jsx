@@ -22,6 +22,7 @@ export function LoginPage() {
       const redirectTo = location.state?.from ?? "/";
       navigate(redirectTo, { replace: true });
     } catch (err) {
+      console.error("Login Error:", err.response?.data || err.message);
       setError("Invalid email or password.");
     } finally {
       setLoading(false);
