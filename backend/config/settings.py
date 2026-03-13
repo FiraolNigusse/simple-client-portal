@@ -1,11 +1,12 @@
 import os
 from pathlib import Path
 from datetime import timedelta
+from dotenv import load_dotenv
 
 from django.core.management.utils import get_random_secret_key
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+load_dotenv(BASE_DIR.parent / ".env")
 
 def env(key: str, default: str | None = None) -> str:
     value = os.getenv(key, default)
@@ -79,10 +80,10 @@ ASGI_APPLICATION = "config.asgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": os.getenv("POSTGRES_DB", "client_portal"),
+        "NAME": os.getenv("POSTGRES_DB", "client_portal_db"),
         "USER": os.getenv("POSTGRES_USER", "client_portal"),
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "client_portal"),
-        "HOST": os.getenv("POSTGRES_HOST", "localhost"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD", "strongpassword"),
+        "HOST": os.getenv("POSTGRES_HOST", "127.0.0.1"),
         "PORT": os.getenv("POSTGRES_PORT", "5432"),
         "CONN_MAX_AGE": 600,
     }

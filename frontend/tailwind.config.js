@@ -3,8 +3,17 @@ export default {
   content: ["./index.html", "./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
+      colors: {
+        primary: "#4F46E5",
+        background: "#0B1220",
+        surface: "#111827",
+        accent: "#22C55E",
+        "portal-text": "#E5E7EB",
+        "portal-muted": "#9CA3AF",
+        "portal-error": "#EF4444",
+      },
       fontFamily: {
-        sans: ["system-ui", "ui-sans-serif", "system-ui", "sans-serif"]
+        sans: ["Inter", "system-ui", "ui-sans-serif", "sans-serif"],
       },
       keyframes: {
         shimmer: {
@@ -15,8 +24,8 @@ export default {
       animation: {
         shimmer: "shimmer 1.5s ease-in-out infinite",
       },
-    }
+    },
   },
-  plugins: []
+  plugins: [],
 };
 

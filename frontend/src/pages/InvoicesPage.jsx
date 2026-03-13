@@ -1,187 +1,160 @@
-import { useState, useEffect, useCallback } from "react";
-import { useApi } from "../hooks/useApi";
-import { InvoiceCard } from "../components/InvoiceCard";
-import { CreateInvoiceModal } from "../components/CreateInvoiceModal";
-
-const TABS = [
-  { key: "all", label: "All" },
-  { key: "pending", label: "Pending" },
-  { key: "paid", label: "Paid" },
-];
-
-const formatCurrency = (amount) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
-  }).format(amount);
+import { useEffect, useState } from "react";
+import * as api from "../services/api";
+import { Table } from "../components/ui/Table";
+import { Button } from "../components/ui/Button";
+import { Input, Select } from "../components/ui/Input";
+import { Modal } from "../components/ui/Modal";
+import { Badge } from "../components/ui/Badge";
+import { useToast } from "../context/ToastContext";
+import { UpgradeBanner } from "../components/UpgradeBanner";
 
 export function InvoicesPage() {
-  const api = useApi();
   const [invoices, setInvoices] = useState([]);
+  const [clients, setClients] = useState([]);
+  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState("all");
   const [modalOpen, setModalOpen] = useState(false);
-
-  const fetch = useCallback(() => {
-    setLoading(true);
-    api
-      .get("/invoices/")
-      .then((r) => {
-        const data = r.data;
-        setInvoices(Array.isArray(data) ? data : data.results ?? []);
-      })
-      .finally(() => setLoading(false));
-  }, [api]);
+  const [creating, setCreating] = useState(false);
+  const [formError, setFormError] = useState(null);
+  const [formData, setFormData] = useState({ 
+    client: "", 
+    project: "", 
+    amount: "", 
+    due_date: new Date().toISOString().split('T')[0] 
+  });
+  
+  const toast = useToast();
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
+    Promise.all([api.getInvoices(), api.getClients(), api.getProjects()])
+      .then(([invRes, clientRes, projRes]) => {
+        setInvoices(invRes.data);
+        setClients(clientRes.data);
+        setProjects(projRes.data);
+      })
+      .catch(() => toast("Failed to load data.", "error"))
+      .finally(() => setLoading(false));
+  }, []);
 
-  const handleCreate = (invoice) => {
-    setInvoices((prev) => [invoice, ...prev]);
-  };
-
-  const handleMarkPaid = async (invoice) => {
+  const handleCreate = async (e) => {
+    e.preventDefault();
+    if (!formData.client || !formData.amount) return toast("Missing required fields.", "warning");
+    
+    setCreating(true);
+    setFormError(null);
     try {
-      const response = await api.patch(`/invoices/${invoice.id}/`, { status: "paid" });
-      setInvoices((prev) =>
-        prev.map((inv) => (inv.id === invoice.id ? response.data : inv))
-      );
-    } catch {
-      // silent fail — could add a toast here later
+      const res = await api.createInvoice(formData);
+      setInvoices([res.data, ...invoices]);
+      setModalOpen(false);
+      setFormData({ client: "", project: "", amount: "", due_date: new Date().toISOString().split('T')[0] });
+      toast("Invoice sent!");
+    } catch (err) {
+      if (err.response?.data?.code === "plan_limit_reached") {
+        setFormError(err.response.data);
+      } else {
+        toast("Error creating invoice.", "error");
+      }
+    } finally {
+      setCreating(false);
     }
   };
 
-  const filtered =
-    tab === "all" ? invoices : invoices.filter((inv) => inv.status === tab);
-
-  // Stats
-  const total = invoices.reduce((s, inv) => s + parseFloat(inv.amount ?? 0), 0);
-  const pending = invoices
-    .filter((inv) => inv.status === "pending")
-    .reduce((s, inv) => s + parseFloat(inv.amount ?? 0), 0);
-  const paid = invoices
-    .filter((inv) => inv.status === "paid")
-    .reduce((s, inv) => s + parseFloat(inv.amount ?? 0), 0);
+  const filteredProjects = projects.filter(p => !formData.client || p.client === parseInt(formData.client));
 
   return (
-    <div className="space-y-6">
-      {/* Page header */}
+    <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight text-slate-50">
-            Invoices
-          </h1>
-          <p className="text-sm text-slate-400">
-            Manage and track payments from your clients.
-          </p>
+          <h2 className="text-2xl font-bold text-portal-text">Invoices</h2>
+          <p className="text-sm text-portal-muted">Manage your billing and payments.</p>
         </div>
-        <button
-          type="button"
-          onClick={() => setModalOpen(true)}
-          className="inline-flex items-center gap-2 rounded-lg bg-emerald-600/80 px-4 py-2 text-sm font-medium text-white shadow-sm shadow-emerald-500/20 hover:bg-emerald-500/80"
-        >
-          <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+        <Button onClick={() => setModalOpen(true)}>
+          <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
           </svg>
-          New invoice
-        </button>
+          Create Invoice
+        </Button>
       </div>
 
-      {/* Stats strip */}
-      <div className="grid grid-cols-3 gap-4">
-        {[
-          { label: "Total invoiced", value: formatCurrency(total), color: "text-slate-50" },
-          { label: "Pending", value: formatCurrency(pending), color: "text-amber-400" },
-          { label: "Collected", value: formatCurrency(paid), color: "text-emerald-400" },
-        ].map(({ label, value, color }) => (
-          <div
-            key={label}
-            className="rounded-xl border border-slate-800 bg-slate-950/50 px-5 py-4"
-          >
-            <p className="text-xs text-slate-500">{label}</p>
-            <p className={`mt-1 text-2xl font-bold tracking-tight ${color}`}>{value}</p>
-          </div>
+      <Table 
+        headers={["Invoice", "Client", "Project", "Amount", "Due Date", "Status"]} 
+        loading={loading}
+      >
+        {invoices.map(inv => (
+          <tr key={inv.id} className="hover:bg-slate-800/30 transition-colors cursor-pointer">
+            <td className="px-6 py-4 font-semibold text-portal-text">#{inv.id}</td>
+            <td className="px-6 py-4 text-portal-text">{inv.client_name}</td>
+            <td className="px-6 py-4 text-portal-muted">{inv.project_title || "General Billing"}</td>
+            <td className="px-6 py-4 font-bold text-portal-text">${inv.amount}</td>
+            <td className="px-6 py-4 text-portal-muted">{new Date(inv.due_date).toLocaleDateString()}</td>
+            <td className="px-6 py-4">
+              <Badge variant={inv.status === "paid" ? "success" : "warning"}>
+                {inv.status}
+              </Badge>
+            </td>
+          </tr>
         ))}
-      </div>
+      </Table>
 
-      {/* Tabs */}
-      <div className="flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-950/40 p-1 w-fit">
-        {TABS.map(({ key, label }) => (
-          <button
-            key={key}
-            type="button"
-            onClick={() => setTab(key)}
-            className={`rounded-md px-4 py-1.5 text-xs font-medium transition-all ${
-              tab === key
-                ? "bg-slate-800 text-slate-100 shadow-sm"
-                : "text-slate-500 hover:text-slate-300"
-            }`}
-          >
-            {label}
-            <span className={`ml-1.5 text-[10px] font-normal ${tab === key ? "text-slate-400" : "text-slate-600"}`}>
-              {key === "all"
-                ? invoices.length
-                : invoices.filter((inv) => inv.status === key).length}
-            </span>
-          </button>
-        ))}
-      </div>
-
-      {/* Invoice list */}
-      {loading ? (
-        <div className="space-y-3">
-          {[1, 2, 3].map((n) => (
-            <div
-              key={n}
-              className="h-28 animate-pulse rounded-xl border border-slate-800 bg-slate-950/40"
+      {/* Create Modal */}
+      <Modal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        title="Create New Invoice"
+        footer={(
+          <>
+            <Button variant="ghost" onClick={() => setModalOpen(false)}>Cancel</Button>
+            <Button onClick={handleCreate} loading={creating}>Generate & Send</Button>
+          </>
+        )}
+      >
+        <form onSubmit={handleCreate} className="space-y-4 py-2">
+          {formError && (
+            <UpgradeBanner 
+              resource={formError.resource} 
+              limit={formError.limit} 
+              plan={formError.plan} 
             />
-          ))}
-        </div>
-      ) : filtered.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-slate-800 py-16 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-800 text-slate-500">
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-sm font-medium text-slate-300">No invoices yet</p>
-            <p className="text-xs text-slate-600">
-              {tab === "all"
-                ? "Create your first invoice to get started."
-                : `No ${tab} invoices found.`}
-            </p>
-          </div>
-          {tab === "all" && (
-            <button
-              type="button"
-              onClick={() => setModalOpen(true)}
-              className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-xs font-medium text-emerald-400 hover:bg-emerald-500/20"
-            >
-              Create invoice
-            </button>
           )}
-        </div>
-      ) : (
-        <div className="space-y-3">
-          {filtered.map((invoice) => (
-            <InvoiceCard
-              key={invoice.id}
-              invoice={invoice}
-              onMarkPaid={handleMarkPaid}
-            />
-          ))}
-        </div>
-      )}
+          <Select 
+            label="Client" 
+            required 
+            value={formData.client}
+            onChange={e => setFormData({...formData, client: e.target.value, project: ""})}
+          >
+            <option value="">Select a client...</option>
+            {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </Select>
+          
+          <Select 
+            label="Project (Optional)" 
+            value={formData.project}
+            onChange={e => setFormData({...formData, project: e.target.value})}
+            disabled={!formData.client}
+          >
+            <option value="">Select a project...</option>
+            {filteredProjects.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
+          </Select>
 
-      <CreateInvoiceModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        onCreate={handleCreate}
-      />
+          <div className="grid grid-cols-2 gap-4">
+            <Input 
+              label="Amount ($)" 
+              type="number" 
+              placeholder="0.00" 
+              required 
+              value={formData.amount}
+              onChange={e => setFormData({...formData, amount: e.target.value})}
+            />
+            <Input 
+              label="Due Date" 
+              type="date" 
+              required 
+              value={formData.due_date}
+              onChange={e => setFormData({...formData, due_date: e.target.value})}
+            />
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }
