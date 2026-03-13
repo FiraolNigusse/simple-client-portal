@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useApi } from "../hooks/useApi";
 import { TaskBoard } from "../components/TaskBoard";
 import { CreateTaskModal } from "../components/CreateTaskModal";
+import { FileUploader } from "../components/FileUploader";
+import { FileList } from "../components/FileList";
 
 export function ProjectDetailsPage() {
   const { id } = useParams();
@@ -10,9 +12,11 @@ export function ProjectDetailsPage() {
   const api = useApi();
   const [project, setProject] = useState(null);
   const [tasks, setTasks] = useState([]);
+  const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [tasksLoading, setTasksLoading] = useState(true);
+  const [filesLoading, setFilesLoading] = useState(true);
   const [creatingTask, setCreatingTask] = useState(false);
   const [taskModalOpen, setTaskModalOpen] = useState(false);
 
@@ -40,6 +44,22 @@ export function ProjectDetailsPage() {
         setTasksLoading(false);
       });
   }, [api, id]);
+
+  useEffect(() => {
+    api
+      .get(`/files/project/${id}/`)
+      .then((response) => {
+        const data = response.data;
+        setFiles(Array.isArray(data) ? data : data.results ?? []);
+      })
+      .finally(() => {
+        setFilesLoading(false);
+      });
+  }, [api, id]);
+
+  const handleFileUploaded = useCallback((newFile) => {
+    setFiles((prev) => [newFile, ...prev]);
+  }, []);
 
   const handleStatusChange = async (event) => {
     const status = event.target.value;
@@ -148,6 +168,20 @@ export function ProjectDetailsPage() {
         </div>
       </div>
 
+      {/* ── Files ─────────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <div>
+          <p className="text-sm font-medium text-slate-100">Files</p>
+          <p className="text-xs text-slate-400">
+            Upload and share deliverables with your client.
+          </p>
+        </div>
+
+        <FileUploader projectId={id} onUploaded={handleFileUploaded} />
+        <FileList files={files} loading={filesLoading} />
+      </div>
+
+      {/* ── Tasks ─────────────────────────────────────────────── */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
           <div>
