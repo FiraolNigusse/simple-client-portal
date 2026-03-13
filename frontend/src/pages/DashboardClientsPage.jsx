@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import * as api from "../services/api";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
@@ -118,8 +119,8 @@ export function DashboardClientsPage() {
                 )}
               </div>
               
-              <a 
-                href={`/clients/${client.id}`} 
+              <Link 
+                to={`/clients/${client.id}`} 
                 className="absolute inset-0 z-0" 
                 aria-label="View Client" 
               />

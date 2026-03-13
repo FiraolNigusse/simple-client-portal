@@ -33,6 +33,10 @@ export function AppRoutes() {
       <Route element={<MainLayout />}>
         <Route
           path="/"
+          element={<Navigate to="/dashboard" replace />}
+        />
+        <Route
+          path="/dashboard"
           element={
             <ProtectedRoute>
               <DashboardPage />

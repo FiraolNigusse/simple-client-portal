@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as api from "../services/api";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
@@ -9,6 +10,7 @@ import { useToast } from "../context/ToastContext";
 import { UpgradeBanner } from "../components/UpgradeBanner";
 
 export function ProjectsPage() {
+  const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,7 +76,7 @@ export function ProjectsPage() {
       ) : projects.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {projects.map(project => (
-            <Card key={project.id} className="group hover:border-primary/40 transition-all cursor-pointer" onClick={() => (window.location.href=`/projects/${project.id}`)}>
+            <Card key={project.id} className="group hover:border-primary/40 transition-all cursor-pointer" onClick={() => navigate(`/projects/${project.id}`)}>
               <div className="mb-3 flex items-start justify-between">
                 <Badge variant={project.status === "active" ? "success" : "default"}>
                   {project.status}

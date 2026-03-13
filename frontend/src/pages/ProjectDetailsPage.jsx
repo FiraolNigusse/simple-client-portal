@@ -41,8 +41,8 @@ export function ProjectDetailsPage() {
   useEffect(() => {
     Promise.all([
       api.getProjectDetails(id),
-      api.apiClient.get(`/tasks/?project=${id}`),
-      api.apiClient.get(`/files/project/${id}/`)
+      api.getTasks(id),
+      api.getProjectFiles(id)
     ])
     .then(([projRes, taskRes, fileRes]) => {
       setProject(projRes.data);
@@ -55,7 +55,7 @@ export function ProjectDetailsPage() {
 
   const handleStatusChange = async (newStatus) => {
     try {
-      const res = await api.updateClient(id, { status: newStatus }); // Note: I should use a project update endpoint if separate
+      const res = await api.updateProject(id, { status: newStatus });
       setProject({ ...project, status: newStatus });
       toast(`Project set to ${newStatus}`);
     } catch {

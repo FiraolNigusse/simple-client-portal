@@ -1,6 +1,9 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { apiClient } from "../services/apiClient";
+import { Card } from "../components/ui/Card";
+import { Badge } from "../components/ui/Badge";
+import { Button } from "../components/ui/Button";
 
 // ---------------------------------------------------------------------------
 // Portal API helpers — no JWT, just ?token= query param
@@ -8,7 +11,6 @@ import { apiClient } from "../services/apiClient";
 const portalGet = (token, path, params = {}) =>
   apiClient.get(`/portal/${token}${path}`, {
     params: { token, ...params },
-    // Don't send Authorization header for portal requests
     headers: { Authorization: undefined },
   });
 
@@ -17,196 +19,6 @@ const portalPost = (token, path, data = {}) =>
     params: { token },
     headers: { Authorization: undefined },
   });
-
-// ---------------------------------------------------------------------------
-// Sub-components
-// ---------------------------------------------------------------------------
-function Section({ title, icon, children }) {
-  return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-950/50">
-      <div className="flex items-center gap-2 border-b border-slate-800 px-5 py-3">
-        <span className="text-slate-500">{icon}</span>
-        <h2 className="text-sm font-semibold text-slate-100">{title}</h2>
-      </div>
-      <div className="p-5">{children}</div>
-    </div>
-  );
-}
-
-function FileItem({ file }) {
-  const ext = file.file_name?.split(".").pop()?.toUpperCase() ?? "FILE";
-  return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-slate-800 px-4 py-3">
-      <div className="flex items-center gap-3 min-w-0">
-        <span className="rounded bg-slate-800 px-1.5 py-0.5 text-[10px] font-bold text-slate-400">
-          {ext}
-        </span>
-        <span className="truncate text-sm text-slate-200">{file.file_name}</span>
-      </div>
-      <a
-        href={file.file}
-        target="_blank"
-        rel="noreferrer"
-        className="shrink-0 rounded-lg border border-slate-700 px-3 py-1.5 text-xs text-slate-300 hover:border-emerald-500/50 hover:text-emerald-400"
-      >
-        Download
-      </a>
-    </div>
-  );
-}
-
-function InvoiceRow({ invoice }) {
-  const isPaid = invoice.status === "paid";
-  return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-slate-800 px-4 py-3">
-      <div>
-        <p className="text-sm font-medium text-slate-100">
-          ${parseFloat(invoice.amount).toFixed(2)}
-        </p>
-        {invoice.due_date && (
-          <p className="text-xs text-slate-500">
-            Due {new Date(invoice.due_date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
-          </p>
-        )}
-      </div>
-      <span
-        className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase ${
-          isPaid
-            ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-            : "border-amber-500/30 bg-amber-500/10 text-amber-400"
-        }`}
-      >
-        {invoice.status}
-      </span>
-    </div>
-  );
-}
-
-function TaskRow({ task }) {
-  const STATUS_STYLES = {
-    done: "bg-emerald-500/10 text-emerald-400",
-    in_progress: "bg-blue-500/10 text-blue-400",
-    todo: "bg-slate-700/60 text-slate-400",
-  };
-  return (
-    <div className="flex items-center justify-between gap-3 rounded-lg border border-slate-800 px-4 py-3">
-      <p className="text-sm text-slate-200">{task.title}</p>
-      <span className={`rounded-full px-2 py-0.5 text-[10px] font-medium capitalize ${STATUS_STYLES[task.status] ?? ""}`}>
-        {task.status.replace("_", " ")}
-      </span>
-    </div>
-  );
-}
-
-const timeAgo = (iso) => {
-  if (!iso) return "";
-  const diff = (Date.now() - new Date(iso).getTime()) / 1000;
-  if (diff < 60) return "just now";
-  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-  return new Date(iso).toLocaleDateString("en-US", { month: "short", day: "numeric" });
-};
-
-function Chat({ token, projectId }) {
-  const [messages, setMessages] = useState([]);
-  const [content, setContent] = useState("");
-  const [sending, setSending] = useState(false);
-  const bottomRef = useRef(null);
-
-  const fetchMessages = useCallback(() => {
-    if (!projectId) return;
-    portalGet(token, "/messages/", { project: projectId })
-      .then((r) => setMessages(r.data))
-      .catch(() => {});
-  }, [token, projectId]);
-
-  useEffect(() => {
-    fetchMessages();
-    const id = setInterval(fetchMessages, 5000);
-    return () => clearInterval(id);
-  }, [fetchMessages]);
-
-  useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
-
-  const handleSend = async () => {
-    if (!content.trim() || !projectId) return;
-    setSending(true);
-    const optimistic = {
-      id: `tmp-${Date.now()}`,
-      sender_type: "client",
-      content: content.trim(),
-      created_at: new Date().toISOString(),
-    };
-    setMessages((p) => [...p, optimistic]);
-    setContent("");
-    try {
-      await portalPost(token, "/messages/", { project: projectId, content: optimistic.content });
-      fetchMessages();
-    } catch {
-      setMessages((p) => p.filter((m) => m.id !== optimistic.id));
-    } finally {
-      setSending(false);
-    }
-  };
-
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="flex max-h-72 flex-col gap-2 overflow-y-auto pr-1">
-        {messages.length === 0 ? (
-          <p className="text-xs text-slate-600">No messages yet. Start the conversation below.</p>
-        ) : (
-          messages.map((msg) => {
-            const isClient = msg.sender_type === "client";
-            return (
-              <div
-                key={msg.id}
-                className={`flex ${isClient ? "justify-end" : "justify-start"}`}
-              >
-                <div
-                  className={`max-w-[75%] rounded-2xl px-3 py-2 text-sm ${
-                    isClient
-                      ? "rounded-br-sm bg-emerald-600/30 text-emerald-100"
-                      : "rounded-bl-sm bg-slate-800 text-slate-200"
-                  }`}
-                >
-                  <p>{msg.content}</p>
-                  <p className="mt-0.5 text-[10px] opacity-50">{timeAgo(msg.created_at)}</p>
-                </div>
-              </div>
-            );
-          })
-        )}
-        <div ref={bottomRef} />
-      </div>
-
-      <div className="flex gap-2">
-        <textarea
-          rows={2}
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              handleSend();
-            }
-          }}
-          placeholder="Type a message… (Enter to send)"
-          className="flex-1 resize-none rounded-xl border border-slate-700 bg-slate-900/60 px-3 py-2 text-sm text-slate-100 outline-none focus:ring-1 focus:ring-emerald-500/40"
-        />
-        <button
-          type="button"
-          onClick={handleSend}
-          disabled={sending || !content.trim()}
-          className="rounded-xl bg-emerald-600/80 px-4 text-sm text-white hover:bg-emerald-500/80 disabled:opacity-40"
-        >
-          Send
-        </button>
-      </div>
-    </div>
-  );
-}
 
 // ---------------------------------------------------------------------------
 // Main page
@@ -249,22 +61,26 @@ export function ClientPortalPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950">
-        <p className="text-sm text-slate-400 animate-pulse">Loading your portal…</p>
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          <div className="h-12 w-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm font-bold text-portal-muted uppercase tracking-widest">Loading Portal</p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-slate-950 gap-3">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full bg-red-500/10 text-red-400">
-          <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+      <div className="flex min-h-screen flex-col items-center justify-center bg-background p-6 text-center">
+        <div className="h-20 w-20 rounded-2xl bg-portal-error/10 flex items-center justify-center text-portal-error mb-6">
+          <svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
         </div>
-        <p className="text-sm font-medium text-red-400">{error}</p>
-        <p className="text-xs text-slate-500">Please contact your freelancer for a new link.</p>
+        <h2 className="text-2xl font-bold text-white mb-2">Access Denied</h2>
+        <p className="text-portal-muted mb-8 max-w-sm">{error}</p>
+        <Button onClick={() => window.location.reload()}>Try Again</Button>
       </div>
     );
   }
@@ -272,100 +88,148 @@ export function ClientPortalPage() {
   const { client, projects } = data ?? {};
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-8">
-      <div className="mx-auto max-w-3xl space-y-8">
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs font-medium uppercase tracking-widest text-slate-500">Client Portal</p>
-            <h1 className="mt-1 text-2xl font-bold text-slate-50">{client?.name}</h1>
-            {client?.company && <p className="text-sm text-slate-400">{client.company}</p>}
+    <div className="min-h-screen bg-background text-portal-text font-sans">
+      <div className="mx-auto max-w-6xl px-6 py-12 space-y-12">
+        {/* Portal Header */}
+        <header className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-800 pb-12">
+          <div className="space-y-2">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold uppercase tracking-widest">
+              Secure Client Portal
+            </div>
+            <h1 className="text-4xl font-black text-white">{client?.name} <span className="text-primary">.</span></h1>
+            <p className="text-lg text-portal-muted">{client?.company || "Project Dashboard"}</p>
           </div>
-          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-emerald-500/15 text-xl font-bold text-emerald-400">
-            {client?.name?.[0]?.toUpperCase() ?? "?"}
+          <div className="bg-surface border border-slate-800 rounded-2xl p-4 flex items-center gap-4 shadow-2xl">
+            <div className="text-right">
+              <p className="text-xs font-bold text-portal-muted uppercase tracking-tighter">Freelancer</p>
+              <p className="text-sm font-bold text-white">Your Dedicated Partner</p>
+            </div>
+            <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center text-white">
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
           </div>
-        </div>
+        </header>
 
-        {/* Project selector */}
-        {projects?.length > 1 && (
-          <div className="flex gap-2 overflow-x-auto pb-1">
-            {projects.map((p) => (
-              <button
-                key={p.id}
-                type="button"
-                onClick={() => setActiveProject(p)}
-                className={`shrink-0 rounded-full px-4 py-1.5 text-xs font-medium transition-all ${
-                  activeProject?.id === p.id
-                    ? "bg-emerald-600/80 text-white"
-                    : "border border-slate-700 text-slate-400 hover:border-slate-500"
-                }`}
-              >
-                {p.title}
-              </button>
-            ))}
-          </div>
-        )}
-
-        {activeProject ? (
-          <div className="space-y-5">
-            {/* Project info */}
-            <div className="rounded-xl border border-slate-800 bg-slate-900/40 px-5 py-4">
-              <div className="flex items-center justify-between">
-                <p className="text-base font-semibold text-slate-100">{activeProject.title}</p>
-                <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase ${
-                  activeProject.status === "active"
-                    ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-400"
-                    : "border-slate-600 bg-slate-800 text-slate-400"
-                }`}>
-                  {activeProject.status}
-                </span>
+        <div className="grid lg:grid-cols-4 gap-8">
+          {/* Sidebar / Project Nav */}
+          <div className="lg:col-span-1 space-y-6">
+            <div className="space-y-3">
+              <p className="text-[10px] font-bold text-portal-muted uppercase tracking-widest">Active Projects</p>
+              <div className="space-y-2">
+                {projects?.map((p) => (
+                  <button
+                    key={p.id}
+                    onClick={() => setActiveProject(p)}
+                    className={`w-full text-left px-4 py-3 rounded-xl transition-all font-semibold text-sm ${
+                      activeProject?.id === p.id 
+                        ? "bg-primary text-white shadow-lg shadow-primary/20" 
+                        : "bg-surface border border-slate-800 text-portal-muted hover:border-slate-700 hover:text-portal-text"
+                    }`}
+                  >
+                    {p.title}
+                  </button>
+                ))}
               </div>
-              {activeProject.description && (
-                <p className="mt-1 text-xs text-slate-500">{activeProject.description}</p>
-              )}
             </div>
 
-            {/* Files */}
-            <Section title="Files" icon="📎">
-              {files.length === 0 ? (
-                <p className="text-xs text-slate-500">No files shared yet.</p>
-              ) : (
-                <div className="space-y-2">
-                  {files.map((f) => <FileItem key={f.id} file={f} />)}
-                </div>
-              )}
-            </Section>
-
-            {/* Tasks */}
-            <Section title="Tasks" icon="✅">
-              {tasks.length === 0 ? (
-                <p className="text-xs text-slate-500">No tasks yet.</p>
-              ) : (
-                <div className="space-y-2">
-                  {tasks.map((t) => <TaskRow key={t.id} task={t} />)}
-                </div>
-              )}
-            </Section>
-
-            {/* Invoices */}
-            <Section title="Invoices" icon="🧾">
-              {invoices.length === 0 ? (
-                <p className="text-xs text-slate-500">No invoices yet.</p>
-              ) : (
-                <div className="space-y-2">
-                  {invoices.map((inv) => <InvoiceRow key={inv.id} invoice={inv} />)}
-                </div>
-              )}
-            </Section>
-
-            {/* Messages */}
-            <Section title="Messages" icon="💬">
-              <Chat token={token} projectId={activeProject.id} />
-            </Section>
+            <Card className="bg-primary/5 border-primary/20">
+              <h4 className="text-xs font-bold text-primary uppercase mb-2">Need Help?</h4>
+              <p className="text-xs text-portal-muted italic">Use the message board to reach out directly to your freelancer.</p>
+            </Card>
           </div>
-        ) : (
-          <p className="text-sm text-slate-500">No projects found in your portal yet.</p>
-        )}
+
+          {/* Main Content Area */}
+          <div className="lg:col-span-3 space-y-8 animate-in fade-in slide-in-from-right-4 duration-700">
+            {activeProject ? (
+              <>
+                <div className="grid md:grid-cols-3 gap-6">
+                  {/* Files Card */}
+                  <Card className="md:col-span-2 overflow-hidden">
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                        <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 19a2 2 0 01-2-2V7a2 2 0 012-2h4l2 2h4a2 2 0 012 2v1M5 19h14a2 2 0 002-2v-5M5 19v-4a2 2 0 00-2-2h4l2 2h4a2 2 0 012 2v1" />
+                        </svg>
+                        Shared Assets
+                      </h3>
+                      <Badge variant="indigo">{files.length}</Badge>
+                    </div>
+                    <div className="space-y-2">
+                      {files.map(file => (
+                        <div key={file.id} className="flex items-center justify-between p-3 rounded-lg bg-slate-800/30 border border-slate-800">
+                          <span className="text-sm font-medium text-portal-text truncate">{file.file_name}</span>
+                          <a href={file.file} download className="text-primary hover:text-indigo-400 text-xs font-bold uppercase tracking-wider">Download</a>
+                        </div>
+                      ))}
+                      {files.length === 0 && <p className="text-sm text-portal-muted italic py-4">No files shared yet.</p>}
+                    </div>
+                  </Card>
+
+                  {/* Status Card */}
+                  <Card className="md:col-span-1 bg-surface border-slate-800">
+                    <h3 className="text-xs font-bold text-portal-muted uppercase tracking-widest mb-4">Project Status</h3>
+                    <div className="space-y-4">
+                      <div className="flex items-end gap-2">
+                        <span className="text-3xl font-black text-white uppercase">{activeProject.status}</span>
+                        <div className="h-2 w-2 rounded-full bg-accent mb-2 animate-pulse" />
+                      </div>
+                      <p className="text-xs text-portal-muted">{activeProject.description || "Active collaboration workspace."}</p>
+                    </div>
+                  </Card>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-8">
+                  {/* Tasks */}
+                  <Card>
+                    <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                      <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                      </svg>
+                      Development Tasks
+                    </h3>
+                    <div className="space-y-3">
+                      {tasks.map(task => (
+                        <div key={task.id} className="flex items-center gap-3 p-3 rounded-xl border border-slate-800 bg-[#0B1220]">
+                          <div className={`h-2 w-2 rounded-full ${task.status === 'completed' ? 'bg-accent' : 'bg-slate-700'}`} />
+                          <span className={`text-sm ${task.status === 'completed' ? 'text-portal-muted line-through' : 'text-portal-text'}`}>{task.title}</span>
+                        </div>
+                      ))}
+                      {tasks.length === 0 && <p className="text-sm text-portal-muted italic">Queue is currently empty.</p>}
+                    </div>
+                  </Card>
+
+                  {/* Invoices */}
+                  <Card>
+                    <h3 className="text-lg font-bold text-white mb-6 flex items-center gap-2">
+                      <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Settlement
+                    </h3>
+                    <div className="space-y-3">
+                      {invoices.map(inv => (
+                        <div key={inv.id} className="flex items-center justify-between p-3 rounded-xl border border-slate-800 bg-[#0B1220]">
+                          <div>
+                            <p className="text-sm font-bold text-white">${inv.amount}</p>
+                            <p className="text-[10px] text-portal-muted uppercase">Due {new Date(inv.due_date).toLocaleDateString()}</p>
+                          </div>
+                          <Badge variant={inv.status === 'paid' ? 'success' : 'warning'}>{inv.status}</Badge>
+                        </div>
+                      ))}
+                      {invoices.length === 0 && <p className="text-sm text-portal-muted italic">No outstanding invoices.</p>}
+                    </div>
+                  </Card>
+                </div>
+              </>
+            ) : (
+              <div className="text-center py-20 border-2 border-dashed border-slate-800 rounded-3xl">
+                <p className="text-portal-muted">Waiting for project assignments...</p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

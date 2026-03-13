@@ -6,7 +6,7 @@ import { Button } from "../components/ui/Button";
 
 const NAV_ITEMS = [
   { 
-    to: "/", 
+    to: "/dashboard", 
     label: "Overview", 
     end: true, 
     icon: (props) => (

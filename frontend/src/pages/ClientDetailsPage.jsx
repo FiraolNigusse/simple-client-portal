@@ -17,7 +17,7 @@ export function ClientDetailsPage() {
 
   useEffect(() => {
     Promise.all([
-      api.apiClient.get(`/clients/${id}/`),
+      api.getClientDetails(id),
       api.getProjects() // We'll filter this manually for simplicity now
     ])
     .then(([clientRes, projectRes]) => {
@@ -31,7 +31,7 @@ export function ClientDetailsPage() {
   const handleGeneratePortal = async () => {
     setGenerating(true);
     try {
-      const r = await api.apiClient.post("/clients/portal/generate/", { client_id: id });
+      const r = await api.generatePortal(id);
       setClient({ ...client, portal_link: r.data.portal_link });
       toast("Portal link generated!");
     } catch {
