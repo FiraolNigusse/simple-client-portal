@@ -5,6 +5,7 @@ import { DashboardClientsPage } from "../pages/DashboardClientsPage";
 import { ClientDetailsPage } from "../pages/ClientDetailsPage";
 import { ProjectsPage } from "../pages/ProjectsPage";
 import { ProjectDetailsPage } from "../pages/ProjectDetailsPage";
+import { InvoicesPage } from "../pages/InvoicesPage";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
@@ -65,6 +66,14 @@ export function AppRoutes() {
           element={
             <ProtectedRoute>
               <ProjectDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/invoices"
+          element={
+            <ProtectedRoute>
+              <InvoicesPage />
             </ProtectedRoute>
           }
         />
