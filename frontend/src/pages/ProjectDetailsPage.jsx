@@ -5,6 +5,7 @@ import { TaskBoard } from "../components/TaskBoard";
 import { CreateTaskModal } from "../components/CreateTaskModal";
 import { FileUploader } from "../components/FileUploader";
 import { FileList } from "../components/FileList";
+import { ChatWindow } from "../components/ChatWindow";
 
 export function ProjectDetailsPage() {
   const { id } = useParams();
@@ -179,6 +180,17 @@ export function ProjectDetailsPage() {
 
         <FileUploader projectId={id} onUploaded={handleFileUploaded} />
         <FileList files={files} loading={filesLoading} />
+      </div>
+
+      {/* ── Messages ──────────────────────────────────────────── */}
+      <div className="space-y-3">
+        <div>
+          <p className="text-sm font-medium text-slate-100">Messages</p>
+          <p className="text-xs text-slate-400">
+            Chat with your client about this project.
+          </p>
+        </div>
+        <ChatWindow projectId={id} senderType="freelancer" />
       </div>
 
       {/* ── Tasks ─────────────────────────────────────────────── */}
