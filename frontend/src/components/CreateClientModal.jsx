@@ -1,11 +1,9 @@
 import { useState } from "react";
+import { UpgradeBanner } from "./UpgradeBanner";
 
 export function CreateClientModal({ open, onClose, onCreate, loading }) {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    company: ""
-  });
+  const [form, setForm] = useState({ name: "", email: "", company: "" });
+  const [planError, setPlanError] = useState(null);
 
   if (!open) {
     return null;
@@ -18,8 +16,15 @@ export function CreateClientModal({ open, onClose, onCreate, loading }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setPlanError(null);
     onCreate(form, () => {
       setForm({ name: "", email: "", company: "" });
+    }, (err) => {
+      // Detect plan limit 403
+      const code = err?.response?.data?.code;
+      if (code === "plan_limit_reached") {
+        setPlanError(err.response.data);
+      }
     });
   };
 
@@ -80,9 +85,12 @@ export function CreateClientModal({ open, onClose, onCreate, loading }) {
               onChange={handleChange}
             />
           </div>
+          {planError && (
+            <UpgradeBanner resource="clients" onDismiss={() => setPlanError(null)} />
+          )}
           <button
             type="submit"
-            disabled={loading}
+            disabled={loading || Boolean(planError)}
             className="inline-flex w-full items-center justify-center rounded-md bg-emerald-500/80 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm shadow-emerald-500/30 ring-emerald-500/40 transition hover:bg-emerald-400/80 focus-visible:outline-none focus-visible:ring disabled:cursor-not-allowed disabled:bg-emerald-500/40"
           >
             {loading ? "Creating..." : "Create client"}

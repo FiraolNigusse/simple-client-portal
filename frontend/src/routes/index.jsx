@@ -6,6 +6,7 @@ import { ClientDetailsPage } from "../pages/ClientDetailsPage";
 import { ProjectsPage } from "../pages/ProjectsPage";
 import { ProjectDetailsPage } from "../pages/ProjectDetailsPage";
 import { InvoicesPage } from "../pages/InvoicesPage";
+import { SubscriptionPage } from "../pages/SubscriptionPage";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
@@ -74,6 +75,14 @@ export function AppRoutes() {
           element={
             <ProtectedRoute>
               <InvoicesPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/subscription"
+          element={
+            <ProtectedRoute>
+              <SubscriptionPage />
             </ProtectedRoute>
           }
         />

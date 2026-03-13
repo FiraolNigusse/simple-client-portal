@@ -1,4 +1,5 @@
 import { Outlet, NavLink } from "react-router-dom";
+import { SubscriptionBadge } from "../components/SubscriptionBadge";
 
 export function MainLayout() {
   return (
@@ -9,6 +10,7 @@ export function MainLayout() {
             <span className="text-sm font-semibold tracking-wide text-slate-100">
               Simple Client Portal
             </span>
+            <SubscriptionBadge />
           </NavLink>
           <nav className="flex items-center gap-4 text-sm text-slate-300">
             <NavLink
@@ -42,6 +44,14 @@ export function MainLayout() {
               }
             >
               Invoices
+            </NavLink>
+            <NavLink
+              to="/subscription"
+              className={({ isActive }) =>
+                isActive ? "text-emerald-400" : "hover:text-emerald-300"
+              }
+            >
+              Plan
             </NavLink>
           </nav>
         </div>
