@@ -5,6 +5,7 @@ from django.urls import include, path
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from apps.users.api.views import CustomTokenObtainPairView
+from apps.users.api.dashboard import DashboardSummaryView
 
 api_urlpatterns = [
     path("auth/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
@@ -16,6 +17,7 @@ api_urlpatterns = [
     path("files/", include("apps.files.api.urls")),
     path("invoices/", include("apps.invoices.api.urls")),
     path("messaging/", include("apps.messaging.api.urls")),
+    path("dashboard/summary/", DashboardSummaryView.as_view(), name="dashboard-summary"),
 ]
 
 urlpatterns = [
