@@ -48,7 +48,7 @@ export function RegisterPage() {
             )}
             <Input 
               label="Full Name" 
-              placeholder="e.g. Firaol Nigusse" 
+              placeholder="e.g. John Doe" 
               required
               value={formData.name}
               onChange={e => setFormData({...formData, name: e.target.value})}
@@ -56,7 +56,7 @@ export function RegisterPage() {
             <Input 
               label="Email" 
               type="email" 
-              placeholder="name@company.com" 
+              placeholder="john@example.com" 
               required
               value={formData.email}
               onChange={e => setFormData({...formData, email: e.target.value})}

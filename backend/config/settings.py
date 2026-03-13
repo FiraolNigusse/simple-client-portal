@@ -22,7 +22,7 @@ DEBUG = os.getenv("DJANGO_DEBUG", "False").lower() == "true"
 ALLOWED_HOSTS: list[str] = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
 SITE_DOMAIN = os.getenv("SITE_DOMAIN", "localhost:8000")
-FRONTEND_ORIGIN = os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")
+FRONTEND_ORIGINS = os.getenv("FRONTEND_ORIGINS", "http://localhost:5173,http://localhost:5174").split(",")
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -142,10 +142,9 @@ SIMPLE_JWT = {
 
 AUTH_USER_MODEL = "users.User"
 
-CSRF_TRUSTED_ORIGINS = [FRONTEND_ORIGIN]
-
+CSRF_TRUSTED_ORIGINS = FRONTEND_ORIGINS
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = [FRONTEND_ORIGIN]
+CORS_ALLOWED_ORIGINS = FRONTEND_ORIGINS
 CORS_ALLOW_HEADERS = [
     "accept",
     "accept-encoding",

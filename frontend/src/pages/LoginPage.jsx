@@ -51,7 +51,7 @@ export function LoginPage() {
             <Input 
               label="Email" 
               type="email" 
-              placeholder="name@company.com" 
+              placeholder="john@example.com" 
               required
               value={formData.email}
               onChange={e => setFormData({...formData, email: e.target.value})}
