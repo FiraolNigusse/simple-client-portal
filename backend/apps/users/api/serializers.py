@@ -33,6 +33,10 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
+    default_error_messages = {
+        "no_active_account": _("Unable to log in with the provided credentials."),
+    }
+
     def validate(self, attrs):
         data = super().validate(attrs)
         # Attach minimal user payload so the frontend can bootstrap auth state.
