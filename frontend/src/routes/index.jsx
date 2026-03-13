@@ -3,6 +3,8 @@ import { MainLayout } from "../layouts/MainLayout";
 import { DashboardPage } from "../pages/DashboardPage";
 import { DashboardClientsPage } from "../pages/DashboardClientsPage";
 import { ClientDetailsPage } from "../pages/ClientDetailsPage";
+import { ProjectsPage } from "../pages/ProjectsPage";
+import { ProjectDetailsPage } from "../pages/ProjectDetailsPage";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
@@ -47,6 +49,22 @@ export function AppRoutes() {
           element={
             <ProtectedRoute>
               <ClientDetailsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects"
+          element={
+            <ProtectedRoute>
+              <ProjectsPage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/projects/:id"
+          element={
+            <ProtectedRoute>
+              <ProjectDetailsPage />
             </ProtectedRoute>
           }
         />

@@ -27,6 +27,14 @@ export function MainLayout() {
             >
               Clients
             </NavLink>
+            <NavLink
+              to="/projects"
+              className={({ isActive }) =>
+                isActive ? "text-emerald-400" : "hover:text-emerald-300"
+              }
+            >
+              Projects
+            </NavLink>
           </nav>
         </div>
       </header>
