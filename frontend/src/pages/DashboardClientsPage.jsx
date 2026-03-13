@@ -14,20 +14,23 @@ export function DashboardClientsPage() {
     api
       .get("/clients/")
       .then((response) => {
-        setClients(response.data);
+        const data = response.data;
+        setClients(Array.isArray(data) ? data : data.results ?? []);
       })
       .finally(() => {
         setLoading(false);
       });
   }, [api]);
 
-  const handleCreateClient = async (data, resetForm) => {
+  const handleCreateClient = async (data, resetForm, onError) => {
     setCreating(true);
     try {
       const response = await api.post("/clients/", data);
       setClients((prev) => [response.data, ...prev]);
       resetForm();
       setModalOpen(false);
+    } catch (err) {
+      if (onError) onError(err);
     } finally {
       setCreating(false);
     }

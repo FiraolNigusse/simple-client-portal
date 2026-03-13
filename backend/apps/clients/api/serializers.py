@@ -19,14 +19,10 @@ class ClientDetailSerializer(ClientSerializer):
         fields = ClientSerializer.Meta.fields + ("portal_link",)
 
     def get_portal_link(self, obj: Client) -> str | None:
-        request = self.context.get("request")
         if not hasattr(obj, "portal"):
             return None
-        base = getattr(settings, "SITE_DOMAIN", "localhost:8000")
-        scheme = "https"
-        if request is not None:
-            scheme = request.scheme
-        return f"{scheme}://{base}/portal/{obj.portal.access_token}"
+        frontend_origin = getattr(settings, "FRONTEND_ORIGIN", "http://localhost:5173")
+        return f"{frontend_origin}/portal/{obj.portal.access_token}"
 
 
 class ClientPortalGenerateSerializer(serializers.Serializer):

@@ -1,7 +1,15 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { SubscriptionBadge } from "../components/SubscriptionBadge";
+import { useAuth } from "../context/AuthContext";
 
 export function MainLayout() {
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    signOut();
+    navigate("/login");
+  };
   return (
     <div className="min-h-screen flex flex-col">
       <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur">
@@ -53,6 +61,13 @@ export function MainLayout() {
             >
               Plan
             </NavLink>
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="text-sm text-slate-500 hover:text-red-400 transition-colors"
+            >
+              Logout
+            </button>
           </nav>
         </div>
       </header>

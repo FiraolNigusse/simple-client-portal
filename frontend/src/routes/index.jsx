@@ -7,6 +7,7 @@ import { ProjectsPage } from "../pages/ProjectsPage";
 import { ProjectDetailsPage } from "../pages/ProjectDetailsPage";
 import { InvoicesPage } from "../pages/InvoicesPage";
 import { SubscriptionPage } from "../pages/SubscriptionPage";
+import { ClientPortalPage } from "../pages/ClientPortalPage";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
@@ -89,6 +90,8 @@ export function AppRoutes() {
       </Route>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
+      {/* Public — no auth needed */}
+      <Route path="/portal/:token" element={<ClientPortalPage />} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   );

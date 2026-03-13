@@ -6,6 +6,13 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 from apps.users.api.views import CustomTokenObtainPairView
 from apps.users.api.dashboard import DashboardSummaryView
+from apps.clients.portal_views import (
+    PortalInfoView,
+    PortalProjectFilesView,
+    PortalMessagesView,
+    PortalInvoicesView,
+    PortalTasksView,
+)
 
 api_urlpatterns = [
     path("auth/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
@@ -18,6 +25,12 @@ api_urlpatterns = [
     path("invoices/", include("apps.invoices.api.urls")),
     path("messaging/", include("apps.messaging.api.urls")),
     path("dashboard/summary/", DashboardSummaryView.as_view(), name="dashboard-summary"),
+    # Client portal (token-authenticated, no JWT needed)
+    path("portal/<str:token>/", PortalInfoView.as_view(), name="portal-info"),
+    path("portal/<str:token>/files/", PortalProjectFilesView.as_view(), name="portal-files"),
+    path("portal/<str:token>/messages/", PortalMessagesView.as_view(), name="portal-messages"),
+    path("portal/<str:token>/invoices/", PortalInvoicesView.as_view(), name="portal-invoices"),
+    path("portal/<str:token>/tasks/", PortalTasksView.as_view(), name="portal-tasks"),
 ]
 
 urlpatterns = [

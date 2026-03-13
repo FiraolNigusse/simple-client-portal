@@ -1,0 +1,14 @@
+"""
+Django signals — auto-create Subscription when a new User registers.
+"""
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.conf import settings
+
+from .models import Subscription
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_subscription_for_new_user(sender, instance, created, **kwargs):
+    if created:
+        Subscription.objects.get_or_create(user=instance)
