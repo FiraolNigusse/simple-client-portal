@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useApi } from "../hooks/useApi";
 import { ProjectCard } from "../components/ProjectCard";
 import { CreateProjectModal } from "../components/CreateProjectModal";
+import { useToast } from "../context/ToastContext";
 
 export function ProjectsPage() {
   const api = useApi();
   const navigate = useNavigate();
+  const toast = useToast();
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -26,15 +28,14 @@ export function ProjectsPage() {
   const handleCreateProject = async (data, resetForm) => {
     setCreating(true);
     try {
-      const payload = {
-        client: data.client,
-        title: data.title,
-        description: data.description
-      };
+      const payload = { client: data.client, title: data.title, description: data.description };
       const response = await api.post("/projects/", payload);
       setProjects((prev) => [response.data, ...prev]);
       resetForm();
       setModalOpen(false);
+      toast("Project created!");
+    } catch {
+      toast("Failed to create project.", "error");
     } finally {
       setCreating(false);
     }

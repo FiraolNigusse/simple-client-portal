@@ -2,9 +2,11 @@ import { useEffect, useState } from "react";
 import { useApi } from "../hooks/useApi";
 import { ClientList } from "../components/ClientList";
 import { CreateClientModal } from "../components/CreateClientModal";
+import { useToast } from "../context/ToastContext";
 
 export function DashboardClientsPage() {
   const api = useApi();
+  const toast = useToast();
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
@@ -29,8 +31,10 @@ export function DashboardClientsPage() {
       setClients((prev) => [response.data, ...prev]);
       resetForm();
       setModalOpen(false);
+      toast("Client created!");
     } catch (err) {
       if (onError) onError(err);
+      else toast("Failed to create client.", "error");
     } finally {
       setCreating(false);
     }
