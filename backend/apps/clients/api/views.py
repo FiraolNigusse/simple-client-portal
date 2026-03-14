@@ -1,4 +1,5 @@
-from rest_framework import generics, permissions, status
+from django.db import IntegrityError
+from rest_framework import generics, permissions, status, serializers
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -23,7 +24,10 @@ class ClientListCreateView(PlanLimitMixin, generics.ListCreateAPIView):
         return Client.objects.filter(freelancer=self.request.user)
 
     def perform_create(self, serializer):
-        serializer.save(freelancer=self.request.user)
+        try:
+            serializer.save(freelancer=self.request.user)
+        except IntegrityError:
+            raise serializers.ValidationError({"email": "A client with this email already exists for your account."})
 
 
 
