@@ -26,7 +26,7 @@ export function DashboardClientsPage() {
   const fetchClients = async () => {
     try {
       const res = await api.getClients();
-      setClients(res.data);
+      setClients(Array.isArray(res.data) ? res.data : res.data.results || []);
     } catch (err) {
       toast("Failed to load clients.", "error");
     } finally {

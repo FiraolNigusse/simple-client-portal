@@ -22,7 +22,8 @@ export function ClientDetailsPage() {
     ])
     .then(([clientRes, projectRes]) => {
       setClient(clientRes.data);
-      setProjects(projectRes.data.filter(p => p.client === parseInt(id)));
+      const projectList = Array.isArray(projectRes.data) ? projectRes.data : projectRes.data.results || [];
+      setProjects(projectList.filter(p => p.client === parseInt(id)));
     })
     .catch(() => navigate("/clients"))
     .finally(() => setLoading(false));

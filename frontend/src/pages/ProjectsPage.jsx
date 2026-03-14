@@ -24,8 +24,8 @@ export function ProjectsPage() {
   useEffect(() => {
     Promise.all([api.getProjects(), api.getClients()])
       .then(([projRes, clientRes]) => {
-        setProjects(projRes.data);
-        setClients(clientRes.data);
+        setProjects(Array.isArray(projRes.data) ? projRes.data : projRes.data.results || []);
+        setClients(Array.isArray(clientRes.data) ? clientRes.data : clientRes.data.results || []);
       })
       .catch(() => toast("Failed to load data.", "error"))
       .finally(() => setLoading(false));

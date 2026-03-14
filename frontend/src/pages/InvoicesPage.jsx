@@ -28,9 +28,9 @@ export function InvoicesPage() {
   useEffect(() => {
     Promise.all([api.getInvoices(), api.getClients(), api.getProjects()])
       .then(([invRes, clientRes, projRes]) => {
-        setInvoices(invRes.data);
-        setClients(clientRes.data);
-        setProjects(projRes.data);
+        setInvoices(Array.isArray(invRes.data) ? invRes.data : invRes.data.results || []);
+        setClients(Array.isArray(clientRes.data) ? clientRes.data : clientRes.data.results || []);
+        setProjects(Array.isArray(projRes.data) ? projRes.data : projRes.data.results || []);
       })
       .catch(() => toast("Failed to load data.", "error"))
       .finally(() => setLoading(false));
