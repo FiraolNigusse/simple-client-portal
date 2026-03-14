@@ -34,29 +34,31 @@ export function SubscriptionPage() {
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
       <div>
-        <h1 className="text-2xl font-bold text-portal-text">Subscription</h1>
-        <p className="text-sm text-portal-muted">Manage your plan and feature limits.</p>
+        <h1 className="text-3xl font-black tracking-tight text-portal-text uppercase tracking-[0.1em]">Subscription</h1>
+        <p className="text-sm text-portal-muted font-medium">Manage your plan and feature limits.</p>
       </div>
 
       {!loading && subscription && (
-        <Card className="flex items-center justify-between border-primary/20 bg-primary/5">
-          <div className="flex gap-4 items-center">
-            <div className="h-12 w-12 rounded-xl bg-primary flex items-center justify-center text-white shadow-lg shadow-primary/20">
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-              </svg>
+        <Card className="flex items-center justify-between border-primary/20 bg-primary/10 aurora-glow">
+          <div className="flex gap-6 items-center">
+            <div className="h-16 w-16 rounded-[20px] bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white shadow-2xl shadow-primary/30 p-1">
+              <div className="h-full w-full rounded-[19px] bg-sidebar flex items-center justify-center">
+                <svg className="h-8 w-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                </svg>
+              </div>
             </div>
             <div>
-              <p className="text-xs font-bold text-primary uppercase tracking-widest">Active Plan</p>
-              <h3 className="text-xl font-bold text-portal-text">{subscription.plan_label}</h3>
-              <p className="text-xs text-portal-muted">Status: <span className="text-accent font-semibold">{subscription.status_label}</span></p>
+              <p className="text-[10px] font-black text-accent uppercase tracking-[0.2em] mb-1">Active Membership</p>
+              <h3 className="text-2xl font-black text-portal-text tracking-tight">{subscription.plan_label}</h3>
+              <p className="text-xs text-portal-muted font-bold">Billing Status: <span className="text-portal-success uppercase tracking-widest">{subscription.status_label}</span></p>
             </div>
           </div>
-          <div className="hidden sm:flex gap-6 divide-x divide-gray-100">
+          <div className="hidden sm:flex gap-8 divide-x divide-white/10">
             {Object.entries(subscription.limits ?? {}).map(([k, v]) => (
-              <div key={k} className="pl-6 first:pl-0">
-                <p className="text-[10px] uppercase font-bold text-portal-muted tracking-tighter">{k}</p>
-                <p className="text-sm font-bold text-portal-text">{v === null ? "∞" : v}</p>
+              <div key={k} className="pl-8 first:pl-0">
+                <p className="text-[10px] uppercase font-bold text-portal-muted tracking-[0.1em] opacity-50 mb-1">{k}</p>
+                <p className="text-lg font-black text-portal-text tracking-tighter">{v === null ? "∞" : v}</p>
               </div>
             ))}
           </div>
@@ -85,11 +87,11 @@ export function SubscriptionPage() {
             return (
               <Card 
                 key={p.plan} 
-                className={`relative flex flex-col p-8 transition-all ${isCurrent ? 'ring-2 ring-primary border-transparent' : 'border-gray-100 hover:border-gray-200'}`}
+                className={`relative flex flex-col p-8 transition-all duration-500 overflow-hidden group ${isCurrent ? 'ring-2 ring-accent border-transparent' : 'border-white/5 hover:border-white/20'}`}
               >
                 {isCurrent && (
-                  <div className="absolute top-0 right-0 p-3">
-                    <Badge variant="indigo">Current</Badge>
+                  <div className="absolute top-0 right-0 p-4">
+                    <Badge variant="indigo" className="bg-accent/20 text-accent border-accent/20">Current</Badge>
                   </div>
                 )}
                 
@@ -126,14 +128,16 @@ export function SubscriptionPage() {
         )}
       </div>
 
-      <div className="rounded-2xl border border-gray-100 bg-gray-50/50 p-8">
-        <div className="flex items-center gap-3 mb-2 text-portal-text">
-          <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04M12 21.48V22M12 2.148V2a11.955 11.955 0 01-8.618 3.04A11.955 11.955 0 0112 21.48a11.955 11.955 0 018.618-3.04" />
-          </svg>
-          <p className="font-bold">Enterprise-Grade Security</p>
+      <div className="rounded-[24px] border border-white/5 bg-white/[0.02] p-8 aurora-glow">
+        <div className="flex items-center gap-4 mb-3 text-portal-text">
+          <div className="p-2 rounded-xl bg-accent/10">
+            <svg className="h-6 w-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04M12 21.48V22M12 2.148V2a11.955 11.955 0 01-8.618 3.04A11.955 11.955 0 0112 21.48a11.955 11.955 0 018.618-3.04" />
+            </svg>
+          </div>
+          <p className="font-black uppercase tracking-widest text-sm">Enterprise-Grade Security</p>
         </div>
-        <p className="text-sm text-portal-muted leading-relaxed">
+        <p className="text-sm text-portal-muted leading-relaxed font-medium opacity-80">
           All your data — including clients, projects, and internal files — is encrypted at rest and fully isolated.
           Our multi-tenant architecture ensures that no other freelancer can ever access your workspace.
         </p>

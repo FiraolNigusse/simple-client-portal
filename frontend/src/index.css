@@ -24,7 +24,15 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-gray-200 rounded-full hover:bg-gray-300 transition-colors;
+    @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+  }
+
+  .aurora-glow {
+    background: radial-gradient(circle at top, rgba(91,95,246,0.15), transparent 70%);
+  }
+
+  .aurora-border {
+    @apply border border-white/[0.05];
   }
 }
 

@@ -58,8 +58,8 @@ export function ProjectsPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-portal-text">Projects</h2>
-          <p className="text-sm text-portal-muted">Track your active work and deliverables.</p>
+          <h2 className="text-3xl font-black tracking-tight text-portal-text uppercase tracking-[0.1em]">Projects</h2>
+          <p className="text-sm text-portal-muted font-medium">Track your active work and deliverables.</p>
         </div>
         <Button onClick={() => setModalOpen(true)}>
           <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -86,20 +86,20 @@ export function ProjectsPage() {
                 </span>
               </div>
               
-              <h3 className="text-lg font-bold text-portal-text group-hover:text-primary transition-colors">{project.title}</h3>
-              <p className="text-xs text-portal-muted mb-4 font-medium uppercase tracking-wider">{project.client_name}</p>
+              <h3 className="text-lg font-black tracking-tight text-portal-text group-hover:text-accent transition-colors">{project.title}</h3>
+              <p className="text-[10px] text-portal-muted mb-4 font-black uppercase tracking-[0.2em] opacity-60">{project.client_name}</p>
               
-              <p className="line-clamp-2 text-sm text-gray-500 mb-6">
+              <p className="line-clamp-2 text-sm text-portal-muted mb-6 font-medium">
                 {project.description || "No description provided."}
               </p>
               
-              <div className="flex items-center justify-between border-t border-gray-50 pt-4">
+              <div className="flex items-center justify-between border-t border-white/5 pt-4">
                 <div className="flex -space-x-2">
-                  <div className="h-6 w-6 rounded-full bg-primary/10 border-2 border-white flex items-center justify-center text-[10px] font-bold text-primary">
+                  <div className="h-6 w-6 rounded-full bg-accent/20 border-2 border-surface flex items-center justify-center text-[10px] font-black text-accent">
                     {project.client_name?.[0]}
                   </div>
                 </div>
-                <div className="flex items-center gap-1 text-[10px] text-portal-muted font-bold uppercase">
+                <div className="flex items-center gap-2 text-[10px] text-portal-muted font-black uppercase tracking-widest group-hover:text-accent transition-colors">
                   Details
                   <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
@@ -110,15 +110,15 @@ export function ProjectsPage() {
           ))}
         </div>
       ) : (
-        <Card className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="mb-6 rounded-3xl bg-gray-50 p-8 text-gray-300">
-            <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+        <Card className="flex flex-col items-center justify-center py-24 text-center border-white/5 bg-surface/30 aurora-glow">
+          <div className="mb-8 rounded-[32px] bg-white/5 p-10 text-white/10 shadow-2xl shadow-black/20">
+            <svg className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
             </svg>
           </div>
-          <h3 className="text-xl font-bold text-portal-text">No projects found</h3>
-          <p className="max-w-xs text-sm text-portal-muted mb-6">Create a project for one of your clients to start sharing files and tasks.</p>
-          <Button onClick={() => setModalOpen(true)}>Create a project</Button>
+          <h3 className="text-2xl font-black text-portal-text uppercase tracking-widest">No Projects Found</h3>
+          <p className="max-w-xs text-sm text-portal-muted mb-10 font-medium">Create a project for one of your clients to start sharing files and tasks.</p>
+          <Button onClick={() => setModalOpen(true)} size="lg">Create Your First Project</Button>
         </Card>
       )}
 
@@ -159,9 +159,9 @@ export function ProjectsPage() {
             onChange={e => setFormData({...formData, title: e.target.value})}
           />
           <div className="space-y-2">
-            <label className="text-[10px] font-bold text-portal-muted uppercase tracking-widest ml-1">Description</label>
+            <label className="text-[10px] font-black text-portal-muted uppercase tracking-[0.2em] ml-2">Description</label>
             <textarea
-              className="w-full min-h-[120px] rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-portal-text transition-all focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/5"
+              className="w-full min-h-[140px] rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-portal-text transition-all focus:bg-white/10 focus:border-primary/50 focus:outline-none focus:ring-4 focus:ring-primary/20 placeholder:text-portal-muted/40"
               placeholder="What are the goals of this project?"
               value={formData.description}
               onChange={e => setFormData({...formData, description: e.target.value})}

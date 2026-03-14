@@ -7,22 +7,22 @@ export function Button({
   ...props 
 }) {
   const variants = {
-    primary: "bg-primary hover:bg-indigo-600 text-white shadow-lg shadow-primary/20",
-    secondary: "bg-white hover:bg-gray-50 text-portal-text border border-gray-200",
-    outline: "bg-transparent border border-gray-200 text-portal-text hover:bg-gray-50",
-    ghost: "bg-transparent text-portal-muted hover:text-portal-text hover:bg-gray-100",
-    danger: "bg-red-50 text-portal-error hover:bg-portal-error hover:text-white border border-red-100",
+    primary: "bg-primary hover:bg-[#6B6FF7] text-white shadow-xl shadow-primary/25 active:scale-[0.98]",
+    secondary: "bg-surface hover:bg-white/5 text-portal-text border border-white/10 active:scale-[0.98]",
+    outline: "bg-transparent border border-white/10 text-portal-text hover:bg-white/5",
+    ghost: "bg-transparent text-portal-muted hover:text-portal-text hover:bg-white/5",
+    danger: "bg-portal-error/10 text-portal-error hover:bg-portal-error hover:text-white border border-portal-error/10",
   };
 
   const sizes = {
-    sm: "px-3 py-1.5 text-xs",
-    md: "px-4 py-2 text-sm",
-    lg: "px-6 py-3 text-base",
+    sm: "px-3 py-1.5 text-xs font-bold uppercase tracking-wider",
+    md: "px-5 py-2.5 text-sm font-bold",
+    lg: "px-8 py-4 text-base font-bold",
   };
 
   return (
     <button
-      className={`inline-flex items-center justify-center rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-primary/50 disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-xl font-bold transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`}
       disabled={loading || props.disabled}
       {...props}
     >

@@ -70,8 +70,8 @@ export function DashboardClientsPage() {
     <div className="space-y-6 animate-in fade-in duration-500">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-portal-text">Clients</h2>
-          <p className="text-sm text-portal-muted">Manage your client relationships and portals.</p>
+          <h2 className="text-3xl font-black tracking-tight text-portal-text uppercase tracking-[0.1em]">Clients</h2>
+          <p className="text-sm text-portal-muted font-medium">Manage your client relationships and portals.</p>
         </div>
         <Button onClick={() => setModalOpen(true)}>
           <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -88,9 +88,9 @@ export function DashboardClientsPage() {
       ) : clients.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {clients.map(client => (
-            <Card key={client.id} className="group relative border-gray-100 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5">
-              <div className="mb-4 flex items-start justify-between">
-                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-lg font-bold text-primary group-hover:bg-primary group-hover:text-white transition-all">
+            <Card key={client.id} className="group relative border-white/5 hover:border-accent/40 hover:shadow-2xl hover:shadow-accent/5 overflow-hidden transition-all duration-300">
+              <div className="mb-6 flex items-start justify-between">
+                <div className="h-14 w-14 rounded-[18px] bg-white/5 flex items-center justify-center text-xl font-black text-accent group-hover:bg-accent group-hover:text-sidebar group-hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all duration-500">
                   {client.name[0]}
                 </div>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -102,19 +102,21 @@ export function DashboardClientsPage() {
                 </div>
               </div>
               
-              <h3 className="text-lg font-bold text-portal-text">{client.name}</h3>
-              <p className="text-sm text-portal-muted mb-4">{client.company || "Independent"}</p>
+              <h3 className="text-xl font-black tracking-tight text-portal-text group-hover:text-accent transition-colors">{client.name}</h3>
+              <p className="text-[10px] text-portal-muted mb-6 font-black uppercase tracking-[0.2em] opacity-60">{client.company || "Independent Business"}</p>
               
-              <div className="space-y-2 border-t border-gray-50 pt-4">
-                <div className="flex items-center gap-2 text-xs text-portal-muted">
-                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                  </svg>
-                  {client.email}
+              <div className="space-y-3 border-t border-white/5 pt-6">
+                <div className="flex items-center gap-3 text-xs text-portal-muted font-medium">
+                  <div className="p-1.5 rounded-lg bg-white/5">
+                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <span className="truncate">{client.email}</span>
                 </div>
                 {client.projects_count !== undefined && (
-                  <div className="mt-2">
-                    <Badge variant="indigo">{client.projects_count || 0} Projects</Badge>
+                  <div className="mt-3">
+                    <Badge variant="indigo" className="rounded-lg tracking-[0.1em]">{client.projects_count || 0} Managed Projects</Badge>
                   </div>
                 )}
               </div>
