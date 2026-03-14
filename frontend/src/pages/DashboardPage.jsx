@@ -87,14 +87,14 @@ export function DashboardPage() {
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
         {/* Recent Projects */}
         <Card noPadding className="lg:col-span-2">
-          <div className="flex items-center justify-between border-b border-slate-800 p-5">
+          <div className="flex items-center justify-between border-b border-gray-100 p-5">
             <h3 className="font-bold text-portal-text">Recent Projects</h3>
             <Button variant="ghost" size="sm" onClick={() => navigate('/projects')}>View all</Button>
           </div>
-          <div className="divide-y divide-slate-800">
+          <div className="divide-y divide-gray-50">
             {data?.recent_projects?.length > 0 ? (
               data.recent_projects.map(proj => (
-                <div key={proj.id} className="flex items-center justify-between p-4 hover:bg-slate-800/30 transition-colors cursor-pointer" onClick={() => navigate(`/projects/${proj.id}`)}>
+                <div key={proj.id} className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors cursor-pointer" onClick={() => navigate(`/projects/${proj.id}`)}>
                   <div>
                     <p className="text-sm font-semibold text-portal-text">{proj.title}</p>
                     <p className="text-[10px] text-portal-muted uppercase tracking-wider font-medium">
@@ -116,14 +116,14 @@ export function DashboardPage() {
 
         {/* Recent Invoices */}
         <Card noPadding>
-          <div className="flex items-center justify-between border-b border-slate-800 p-5">
+          <div className="flex items-center justify-between border-b border-gray-100 p-5">
             <h3 className="font-bold text-portal-text">Recent Invoices</h3>
             <Button variant="ghost" size="sm" onClick={() => navigate('/invoices')}>View all</Button>
           </div>
-          <div className="divide-y divide-slate-800">
+          <div className="divide-y divide-gray-50">
             {data?.recent_invoices?.length > 0 ? (
               data.recent_invoices.map(inv => (
-                <div key={inv.id} className="flex items-center justify-between p-4 hover:bg-slate-800/30 transition-colors">
+                <div key={inv.id} className="flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
                   <div>
                     <p className="text-sm font-semibold text-portal-text">${inv.amount}</p>
                     <p className="text-[10px] text-portal-muted uppercase tracking-wider font-medium">

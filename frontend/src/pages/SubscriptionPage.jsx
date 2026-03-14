@@ -52,7 +52,7 @@ export function SubscriptionPage() {
               <p className="text-xs text-portal-muted">Status: <span className="text-accent font-semibold">{subscription.status_label}</span></p>
             </div>
           </div>
-          <div className="hidden sm:flex gap-6 divide-x divide-slate-800">
+          <div className="hidden sm:flex gap-6 divide-x divide-gray-100">
             {Object.entries(subscription.limits ?? {}).map(([k, v]) => (
               <div key={k} className="pl-6 first:pl-0">
                 <p className="text-[10px] uppercase font-bold text-portal-muted tracking-tighter">{k}</p>
@@ -85,7 +85,7 @@ export function SubscriptionPage() {
             return (
               <Card 
                 key={p.plan} 
-                className={`relative flex flex-col p-8 transition-all ${isCurrent ? 'ring-2 ring-primary border-transparent' : 'border-slate-800 hover:border-slate-700'}`}
+                className={`relative flex flex-col p-8 transition-all ${isCurrent ? 'ring-2 ring-primary border-transparent' : 'border-gray-100 hover:border-gray-200'}`}
               >
                 {isCurrent && (
                   <div className="absolute top-0 right-0 p-3">
@@ -94,7 +94,7 @@ export function SubscriptionPage() {
                 )}
                 
                 <h3 className="text-xl font-bold text-portal-text mb-1">{p.label}</h3>
-                <p className="text-3xl font-bold text-white mb-6">
+                <p className="text-3xl font-extrabold text-portal-text mb-6">
                   ${p.plan === 'starter' ? '0' : p.plan === 'professional' ? '29' : '99'}
                   <span className="text-sm font-normal text-portal-muted">/mo</span>
                 </p>
@@ -126,7 +126,7 @@ export function SubscriptionPage() {
         )}
       </div>
 
-      <div className="rounded-xl border border-slate-800 bg-slate-900/30 p-6">
+      <div className="rounded-2xl border border-gray-100 bg-gray-50/50 p-8">
         <div className="flex items-center gap-3 mb-2 text-portal-text">
           <svg className="h-5 w-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04M12 21.48V22M12 2.148V2a11.955 11.955 0 01-8.618 3.04A11.955 11.955 0 0112 21.48a11.955 11.955 0 018.618-3.04" />

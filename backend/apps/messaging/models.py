@@ -29,3 +29,4 @@ class Message(models.Model):
     def __str__(self) -> str:
         return f"[{self.sender_type}] {self.project.title}: {self.content[:40]}"
 
+

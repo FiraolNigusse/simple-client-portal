@@ -29,58 +29,63 @@ export function CreateClientModal({ open, onClose, onCreate, loading }) {
   };
 
   return (
-    <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/60">
-      <div className="w-full max-w-md rounded-xl border border-slate-800 bg-slate-900/90 p-6 shadow-xl shadow-black/50">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-slate-100">
-            New client
+    <div className="fixed inset-0 z-30 flex items-center justify-center bg-sidebar/40 backdrop-blur-sm">
+      <div className="w-full max-w-md rounded-3xl border border-gray-100 bg-white p-8 shadow-2xl shadow-gray-200/50">
+        <div className="mb-6 flex items-center justify-between">
+          <h2 className="text-xl font-bold text-portal-text">
+            New Client
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="text-xs text-slate-400 hover:text-slate-200"
+            className="p-2 rounded-xl text-portal-muted hover:bg-gray-50 transition-colors"
           >
-            Close
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
           </button>
         </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
-            <label className="block text-xs font-medium text-slate-300" htmlFor="name">
-              Name
+            <label className="text-[10px] font-bold text-portal-muted uppercase tracking-widest ml-1" htmlFor="name">
+              Full Name
             </label>
             <input
               id="name"
               name="name"
               type="text"
-              className="w-full rounded-md border border-slate-800 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 outline-none ring-emerald-500/20 focus:ring"
+              className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-portal-text transition-all focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/5"
+              placeholder="e.g. John Doe"
               value={form.name}
               onChange={handleChange}
               required
             />
           </div>
           <div className="space-y-2">
-            <label className="block text-xs font-medium text-slate-300" htmlFor="email">
-              Email
+            <label className="text-[10px] font-bold text-portal-muted uppercase tracking-widest ml-1" htmlFor="email">
+              Email Address
             </label>
             <input
               id="email"
               name="email"
               type="email"
-              className="w-full rounded-md border border-slate-800 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 outline-none ring-emerald-500/20 focus:ring"
+              className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-portal-text transition-all focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/5"
+              placeholder="john@example.com"
               value={form.email}
               onChange={handleChange}
               required
             />
           </div>
           <div className="space-y-2">
-            <label className="block text-xs font-medium text-slate-300" htmlFor="company">
+            <label className="text-[10px] font-bold text-portal-muted uppercase tracking-widest ml-1" htmlFor="company">
               Company (optional)
             </label>
             <input
               id="company"
               name="company"
               type="text"
-              className="w-full rounded-md border border-slate-800 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 outline-none ring-emerald-500/20 focus:ring"
+              className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-portal-text transition-all focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/5"
+              placeholder="e.g. Acme Corp"
               value={form.company}
               onChange={handleChange}
             />
@@ -91,9 +96,9 @@ export function CreateClientModal({ open, onClose, onCreate, loading }) {
           <button
             type="submit"
             disabled={loading || Boolean(planError)}
-            className="inline-flex w-full items-center justify-center rounded-md bg-emerald-500/80 px-3 py-2 text-sm font-medium text-slate-900 shadow-sm shadow-emerald-500/30 ring-emerald-500/40 transition hover:bg-emerald-400/80 focus-visible:outline-none focus-visible:ring disabled:cursor-not-allowed disabled:bg-emerald-500/40"
+            className="w-full rounded-2xl bg-primary px-4 py-3 text-sm font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-indigo-600 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? "Creating..." : "Create client"}
+            {loading ? "Creating..." : "Create Client"}
           </button>
         </form>
       </div>

@@ -8,10 +8,10 @@ export function Button({
 }) {
   const variants = {
     primary: "bg-primary hover:bg-indigo-600 text-white shadow-lg shadow-primary/20",
-    secondary: "bg-surface hover:bg-slate-800 text-portal-text border border-slate-700",
-    outline: "bg-transparent border border-slate-700 text-portal-text hover:bg-slate-800",
-    ghost: "bg-transparent text-portal-muted hover:text-portal-text hover:bg-slate-800",
-    danger: "bg-portal-error/10 text-portal-error hover:bg-portal-error hover:text-white border border-portal-error/20",
+    secondary: "bg-white hover:bg-gray-50 text-portal-text border border-gray-200",
+    outline: "bg-transparent border border-gray-200 text-portal-text hover:bg-gray-50",
+    ghost: "bg-transparent text-portal-muted hover:text-portal-text hover:bg-gray-100",
+    danger: "bg-red-50 text-portal-error hover:bg-portal-error hover:text-white border border-red-100",
   };
 
   const sizes = {

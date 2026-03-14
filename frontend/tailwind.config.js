@@ -4,12 +4,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#4F46E5",
-        background: "#0B1220",
-        surface: "#111827",
+        primary: "#6366F1",
         accent: "#22C55E",
-        "portal-text": "#E5E7EB",
-        "portal-muted": "#9CA3AF",
+        background: "#F9FAFB",
+        surface: "#FFFFFF",
+        sidebar: "#111827",
+        "portal-text": "#111827",
+        "portal-muted": "#6B7280",
         "portal-error": "#EF4444",
       },
       fontFamily: {

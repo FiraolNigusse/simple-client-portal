@@ -1,6 +1,6 @@
 export function Card({ children, className = "", noPadding = false }) {
   return (
-    <div className={`rounded-xl border border-slate-800 bg-surface shadow-sm transition-all ${!noPadding ? "p-5" : ""} ${className}`}>
+    <div className={`rounded-2xl border border-gray-200 bg-surface shadow-sm transition-all hover:shadow-md ${!noPadding ? "p-6" : ""} ${className}`}>
       {children}
     </div>
   );
@@ -8,10 +8,10 @@ export function Card({ children, className = "", noPadding = false }) {
 
 export function StatsCard({ label, value, icon: Icon, trend, trendValue }) {
   return (
-    <Card className="flex items-center gap-4">
+    <Card className="flex items-center gap-5">
       {Icon && (
-        <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-indigo-500/10 text-primary">
-          <Icon className="h-6 w-6" />
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+          <Icon className="h-7 w-7" />
         </div>
       )}
       <div>

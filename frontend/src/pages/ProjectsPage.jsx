@@ -89,13 +89,13 @@ export function ProjectsPage() {
               <h3 className="text-lg font-bold text-portal-text group-hover:text-primary transition-colors">{project.title}</h3>
               <p className="text-xs text-portal-muted mb-4 font-medium uppercase tracking-wider">{project.client_name}</p>
               
-              <p className="line-clamp-2 text-sm text-slate-400 mb-6">
+              <p className="line-clamp-2 text-sm text-gray-500 mb-6">
                 {project.description || "No description provided."}
               </p>
               
-              <div className="flex items-center justify-between border-t border-slate-800 pt-4">
+              <div className="flex items-center justify-between border-t border-gray-50 pt-4">
                 <div className="flex -space-x-2">
-                  <div className="h-6 w-6 rounded-full bg-slate-800 border-2 border-surface flex items-center justify-center text-[10px] font-bold">
+                  <div className="h-6 w-6 rounded-full bg-primary/10 border-2 border-white flex items-center justify-center text-[10px] font-bold text-primary">
                     {project.client_name?.[0]}
                   </div>
                 </div>
@@ -110,8 +110,8 @@ export function ProjectsPage() {
           ))}
         </div>
       ) : (
-        <Card className="flex flex-col items-center justify-center p-20 text-center">
-          <div className="mb-4 rounded-full bg-slate-800/50 p-6 text-slate-600">
+        <Card className="flex flex-col items-center justify-center py-24 text-center">
+          <div className="mb-6 rounded-3xl bg-gray-50 p-8 text-gray-300">
             <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
             </svg>
@@ -158,10 +158,10 @@ export function ProjectsPage() {
             value={formData.title}
             onChange={e => setFormData({...formData, title: e.target.value})}
           />
-          <div className="space-y-1.5">
-            <label className="text-xs font-semibold text-portal-muted uppercase tracking-wider">Description</label>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-portal-muted uppercase tracking-widest ml-1">Description</label>
             <textarea
-              className="w-full min-h-[100px] rounded-lg border border-slate-800 bg-[#0B1220] px-4 py-2.5 text-sm text-portal-text transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+              className="w-full min-h-[120px] rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-portal-text transition-all focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/5"
               placeholder="What are the goals of this project?"
               value={formData.description}
               onChange={e => setFormData({...formData, description: e.target.value})}

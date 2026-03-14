@@ -73,30 +73,30 @@ export function CreateInvoiceModal({ open, onClose, onCreate }) {
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/60 backdrop-blur-sm">
-      <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/95 shadow-2xl shadow-black/60">
+    <div className="fixed inset-0 z-40 flex items-center justify-center bg-sidebar/40 backdrop-blur-sm">
+      <div className="w-full max-w-lg rounded-3xl border border-gray-100 bg-white shadow-2xl shadow-gray-200/50">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-800 px-6 py-4">
+        <div className="flex items-center justify-between border-b border-gray-50 px-8 py-6">
           <div>
-            <h2 className="text-sm font-semibold text-slate-100">New invoice</h2>
-            <p className="text-xs text-slate-500">Create and send to your client portal</p>
+            <h2 className="text-xl font-bold text-portal-text">New Invoice</h2>
+            <p className="text-xs text-portal-muted font-medium">Create and send to your client portal</p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-800 hover:text-slate-200"
+            className="p-2 rounded-xl text-portal-muted hover:bg-gray-50 transition-colors"
           >
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 px-6 py-5">
+        <form onSubmit={handleSubmit} className="space-y-6 px-8 py-8">
           {/* Client */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-slate-300" htmlFor="invoice-client">
-              Client <span className="text-red-400">*</span>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-portal-muted uppercase tracking-widest ml-1" htmlFor="invoice-client">
+              Client <span className="text-portal-error">*</span>
             </label>
             <select
               id="invoice-client"
@@ -104,7 +104,7 @@ export function CreateInvoiceModal({ open, onClose, onCreate }) {
               value={form.client}
               onChange={handleChange}
               required
-              className="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 outline-none ring-emerald-500/20 focus:ring"
+              className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-portal-text transition-all focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/5"
             >
               <option value="">Select a client…</option>
               {clients.map((c) => (
@@ -116,9 +116,9 @@ export function CreateInvoiceModal({ open, onClose, onCreate }) {
           </div>
 
           {/* Project (optional) */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-slate-300" htmlFor="invoice-project">
-              Project <span className="text-slate-600">(optional)</span>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-portal-muted uppercase tracking-widest ml-1" htmlFor="invoice-project">
+              Project <span className="lowercase font-normal opacity-60">(optional)</span>
             </label>
             <select
               id="invoice-project"
@@ -126,7 +126,7 @@ export function CreateInvoiceModal({ open, onClose, onCreate }) {
               value={form.project}
               onChange={handleChange}
               disabled={!form.client || projects.length === 0}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 outline-none ring-emerald-500/20 focus:ring disabled:opacity-40"
+              className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-portal-text transition-all focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/5 disabled:opacity-40"
             >
               <option value="">None</option>
               {projects.map((p) => (
@@ -138,12 +138,12 @@ export function CreateInvoiceModal({ open, onClose, onCreate }) {
           </div>
 
           {/* Amount */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-slate-300" htmlFor="invoice-amount">
-              Amount (USD) <span className="text-red-400">*</span>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-portal-muted uppercase tracking-widest ml-1" htmlFor="invoice-amount">
+              Amount (USD) <span className="text-portal-error">*</span>
             </label>
             <div className="relative">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-sm text-slate-500">
+              <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-sm font-bold text-portal-muted">
                 $
               </span>
               <input
@@ -156,15 +156,15 @@ export function CreateInvoiceModal({ open, onClose, onCreate }) {
                 value={form.amount}
                 onChange={handleChange}
                 required
-                className="w-full rounded-lg border border-slate-700 bg-slate-950/60 py-2 pl-7 pr-3 text-sm text-slate-100 outline-none ring-emerald-500/20 focus:ring"
+                className="w-full rounded-2xl border border-gray-200 bg-white py-3 pl-8 pr-4 text-sm font-bold text-portal-text outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all"
               />
             </div>
           </div>
 
           {/* Due date */}
-          <div className="space-y-1.5">
-            <label className="block text-xs font-medium text-slate-300" htmlFor="invoice-due-date">
-              Due date <span className="text-slate-600">(optional)</span>
+          <div className="space-y-2">
+            <label className="text-[10px] font-bold text-portal-muted uppercase tracking-widest ml-1" htmlFor="invoice-due-date">
+              Due date <span className="lowercase font-normal opacity-60">(optional)</span>
             </label>
             <input
               id="invoice-due-date"
@@ -172,7 +172,7 @@ export function CreateInvoiceModal({ open, onClose, onCreate }) {
               type="date"
               value={form.due_date}
               onChange={handleChange}
-              className="w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-100 outline-none ring-emerald-500/20 focus:ring"
+              className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3 text-sm text-portal-text focus:border-primary focus:outline-none focus:ring-4 focus:ring-primary/5 transition-all"
             />
           </div>
 
@@ -182,20 +182,20 @@ export function CreateInvoiceModal({ open, onClose, onCreate }) {
             </p>
           )}
 
-          <div className="flex gap-3 pt-1">
+          <div className="flex gap-4 pt-4">
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 hover:bg-slate-800"
+              className="flex-1 rounded-2xl border border-gray-200 px-4 py-3 text-sm font-bold text-portal-muted hover:bg-gray-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="flex-1 rounded-lg bg-emerald-600/80 px-4 py-2 text-sm font-medium text-white shadow-sm shadow-emerald-500/20 hover:bg-emerald-500/80 disabled:cursor-not-allowed disabled:opacity-50"
+              className="flex-1 rounded-2xl bg-primary px-4 py-3 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:bg-indigo-600 transition-all active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {submitting ? "Creating…" : "Create invoice"}
+              {submitting ? "Sending…" : "Send Invoice"}
             </button>
           </div>
         </form>
