@@ -46,8 +46,8 @@ export function ProjectDetailsPage() {
     ])
     .then(([projRes, taskRes, fileRes]) => {
       setProject(projRes.data);
-      setTasks(taskRes.data);
-      setFiles(fileRes.data);
+      setTasks(Array.isArray(taskRes.data) ? taskRes.data : taskRes.data.results || []);
+      setFiles(Array.isArray(fileRes.data) ? fileRes.data : fileRes.data.results || []);
     })
     .catch(() => navigate("/projects"))
     .finally(() => setLoading(false));

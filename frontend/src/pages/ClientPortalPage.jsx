@@ -53,9 +53,9 @@ export function ClientPortalPage() {
       portalGet(token, "/invoices/"),
       portalGet(token, "/tasks/", { project: pid }),
     ]).then(([f, inv, t]) => {
-      setFiles(f.data);
-      setInvoices(inv.data);
-      setTasks(t.data);
+      setFiles(Array.isArray(f.data) ? f.data : f.data.results || []);
+      setInvoices(Array.isArray(inv.data) ? inv.data : inv.data.results || []);
+      setTasks(Array.isArray(t.data) ? t.data : t.data.results || []);
     });
   }, [token, activeProject]);
 
@@ -166,7 +166,7 @@ export function ClientPortalPage() {
                     <div className="space-y-3">
                       {files.map(file => (
                         <div key={file.id} className="flex items-center justify-between p-5 rounded-[20px] bg-white/[0.02] border border-white/5 hover:border-white/10 hover:bg-white/5 transition-all duration-300 group">
-                          <span className="text-sm font-bold text-portal-text truncate">{file.file_name}</span>
+                          <span className="text-sm font-bold text-portal-text truncate">{file.filename}</span>
                           <a href={file.file} download className="text-accent hover:text-white text-xs font-black uppercase tracking-[0.1em] transition-colors">Download</a>
                         </div>
                       ))}

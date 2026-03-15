@@ -23,7 +23,7 @@ export function FileList({ files, loading }) {
 
   return (
     <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-      {files.map(file => (
+      {files?.map(file => (
         <Card key={file.id} className="group flex items-center gap-4 py-4 hover:border-primary transition-all">
           <div className="h-10 w-10 flex items-center justify-center rounded-lg bg-slate-800 text-slate-400 group-hover:bg-primary/20 group-hover:text-primary transition-colors">
             {getIcon(file.filename)}
@@ -31,7 +31,7 @@ export function FileList({ files, loading }) {
           <div className="flex-1 min-w-0">
             <p className="text-sm font-semibold text-portal-text truncate">{file.filename}</p>
             <p className="text-[10px] text-portal-muted uppercase font-bold tracking-wider">
-              {Math.round(file.size / 1024)} KB • {new Date(file.uploaded_at).toLocaleDateString()}
+              {Math.round(file.size / 1024)} KB • {new Date(file.uploaded_at || file.created_at).toLocaleDateString()}
             </p>
           </div>
           <a 
@@ -46,7 +46,7 @@ export function FileList({ files, loading }) {
           </a>
         </Card>
       ))}
-      {files.length === 0 && (
+      {(!files || files.length === 0) && (
         <div className="col-span-full py-12 text-center text-portal-muted text-sm italic">
           No files shared yet.
         </div>

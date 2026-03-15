@@ -4,8 +4,9 @@ from ..models import ProjectFile
 
 class ProjectFileSerializer(serializers.ModelSerializer):
     uploaded_by_name = serializers.ReadOnlyField(source='uploaded_by.get_full_name')
-    file_name = serializers.SerializerMethodField()
-    file_size = serializers.SerializerMethodField()
+    filename = serializers.SerializerMethodField()
+    size = serializers.SerializerMethodField()
+    uploaded_at = serializers.DateTimeField(source='created_at', read_only=True)
 
     class Meta:
         model = ProjectFile
@@ -13,18 +14,19 @@ class ProjectFileSerializer(serializers.ModelSerializer):
             'id', 
             'project', 
             'file', 
-            'file_name', 
-            'file_size', 
+            'filename', 
+            'size', 
             'uploaded_by', 
             'uploaded_by_name', 
+            'uploaded_at',
             'created_at'
         ]
-        read_only_fields = ['uploaded_by', 'created_at']
+        read_only_fields = ['uploaded_by', 'created_at', 'uploaded_at']
 
-    def get_file_name(self, obj):
+    def get_filename(self, obj):
         return obj.file.name.split('/')[-1]
 
-    def get_file_size(self, obj):
+    def get_size(self, obj):
         try:
             return obj.file.size
         except:

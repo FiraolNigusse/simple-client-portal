@@ -22,3 +22,19 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "created_at",
         ]
         read_only_fields = ["created_at"]
+
+    def validate_client(self, value):
+        request = self.context.get("request")
+        if request and request.user and not request.user.is_anonymous:
+            if value.freelancer_id != request.user.id:
+                raise serializers.ValidationError("You cannot create invoices for this client.")
+        return value
+
+    def validate_project(self, value):
+        if value is None:
+            return value
+        request = self.context.get("request")
+        if request and request.user and not request.user.is_anonymous:
+            if value.client.freelancer_id != request.user.id:
+                raise serializers.ValidationError("This project does not belong to you.")
+        return value

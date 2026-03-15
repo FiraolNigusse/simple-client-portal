@@ -25,7 +25,7 @@ export function ChatWindow({ projectId, senderType }) {
   const fetchMessages = async () => {
     try {
       const res = await api.get(`/messages/project/${projectId}/`);
-      setMessages(res.data);
+      setMessages(Array.isArray(res.data) ? res.data : res.data.results || []);
     } catch (err) {
       console.error("Fetch messages error:", err);
     }
