@@ -36,8 +36,11 @@ STORAGES = {
 # Cloudinary Storage
 INSTALLED_APPS += ["cloudinary_storage", "cloudinary"]
 
-CLOUDINARY_STORAGE = {
-    "CLOUD_NAME": config("CLOUDINARY_CLOUD_NAME"),
-    "API_KEY": config("CLOUDINARY_API_KEY"),
-    "API_SECRET": config("CLOUDINARY_API_SECRET"),
-}
+# If CLOUDINARY_URL is in env, django-cloudinary-storage will use it automatically.
+# Otherwise, we use individual keys.
+if not config("CLOUDINARY_URL", default=None):
+    CLOUDINARY_STORAGE = {
+        "CLOUD_NAME": config("CLOUDINARY_CLOUD_NAME", default=None),
+        "API_KEY": config("CLOUDINARY_API_KEY", default=None),
+        "API_SECRET": config("CLOUDINARY_API_SECRET", default=None),
+    }
