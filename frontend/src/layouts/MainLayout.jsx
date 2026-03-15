@@ -116,7 +116,14 @@ export function MainLayout() {
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top Navbar */}
         <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/5 bg-sidebar/80 px-8 backdrop-blur-xl aurora-glow">
-          <h1 className="text-lg font-black tracking-tight text-portal-text uppercase tracking-[0.05em]">{currentPage}</h1>
+          <div className="flex items-center gap-4">
+            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-primary to-accent shadow-lg shadow-primary/20">
+              <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            </div>
+            <h1 className="text-lg font-black tracking-tight text-portal-text uppercase tracking-[0.05em]">{currentPage}</h1>
+          </div>
           
           <div className="relative">
             <button 
