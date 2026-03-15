@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useSubscription } from "../context/SubscriptionContext";
+import { useAuth } from "../context/AuthContext";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import { Badge, Skeleton } from "../components/ui/Badge";
@@ -7,6 +8,7 @@ import { Badge, Skeleton } from "../components/ui/Badge";
 const PLAN_ORDER = ["starter", "professional", "agency"];
 
 export function SubscriptionPage() {
+  const { user } = useAuth();
   const { subscription, plans, loading, upgradePlan } = useSubscription();
   const [upgrading, setUpgrading] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -37,6 +39,18 @@ export function SubscriptionPage() {
         <h1 className="text-3xl font-black tracking-tight text-portal-text uppercase tracking-[0.1em]">Subscription</h1>
         <p className="text-sm text-portal-muted font-medium">Manage your plan and feature limits.</p>
       </div>
+
+      {user?.is_superuser && (
+        <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 px-6 py-4 animate-in slide-in-from-top duration-500">
+          <div className="flex gap-3 items-center text-amber-500 mb-1">
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span className="text-xs font-black uppercase tracking-widest">Developer Mode Active</span>
+          </div>
+          <p className="text-sm text-portal-muted">As a superuser, you can instantly switch between plans to test resource limits across the platform.</p>
+        </div>
+      )}
 
       {!loading && subscription && (
         <Card className="flex items-center justify-between border-primary/20 bg-primary/10 aurora-glow">

@@ -9,8 +9,8 @@ from ..models import User
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ("id", "email", "name", "is_active", "created_at")
-        read_only_fields = ("id", "is_active", "created_at")
+        fields = ("id", "email", "name", "is_active", "is_superuser", "created_at")
+        read_only_fields = ("id", "is_active", "is_superuser", "created_at")
 
 
 class RegisterSerializer(serializers.ModelSerializer):
