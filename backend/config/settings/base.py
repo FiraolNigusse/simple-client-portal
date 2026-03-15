@@ -111,10 +111,13 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
-# CORS
+# CORS & CSRF
 CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGINS = config("CORS_ALLOWED_ORIGINS", default="http://localhost:5173", cast=Csv())
-CSRF_TRUSTED_ORIGINS = config("CSRF_TRUSTED_ORIGINS", default="http://localhost:5173", cast=Csv())
+_cors_origins = config("CORS_ALLOWED_ORIGINS", default="http://localhost:5173", cast=Csv())
+CORS_ALLOWED_ORIGINS = [origin.rstrip("/") for origin in _cors_origins]
+
+_csrf_origins = config("CSRF_TRUSTED_ORIGINS", default="http://localhost:5173", cast=Csv())
+CSRF_TRUSTED_ORIGINS = [origin.rstrip("/") for origin in _csrf_origins]
 
 # Email configuration
 EMAIL_BACKEND = config("EMAIL_BACKEND", default="django.core.mail.backends.console.EmailBackend")
