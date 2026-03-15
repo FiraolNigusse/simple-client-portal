@@ -1,8 +1,8 @@
 import axios from "axios";
 import { getAccessToken, getRefreshToken, setAccessToken, clearTokens } from "../utils/authStorage";
 
-const baseURL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+const rawBaseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+const baseURL = rawBaseURL.endsWith("/") ? rawBaseURL : `${rawBaseURL}/`;
 
 export const apiClient = axios.create({
   baseURL,
@@ -11,6 +11,11 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
+    // If URL starts with /, strip it so it appends to baseURL instead of replacing its path
+    if (config.url && config.url.startsWith("/")) {
+      config.url = config.url.substring(1);
+    }
+    
     const token = getAccessToken();
     if (token) {
       config.headers = config.headers ?? {};

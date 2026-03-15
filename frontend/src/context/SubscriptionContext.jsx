@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { getAccessToken } from "../utils/authStorage";
 import { apiClient } from "../services/apiClient";
 
 const SubscriptionContext = createContext(null);
@@ -12,7 +13,7 @@ export function SubscriptionProvider({ children }) {
 
   const fetchSubscription = useCallback(async () => {
     // Only fetch if we have an access token to avoid 401 noise in console
-    const token = localStorage.getItem("scp_access_token");
+    const token = getAccessToken();
     if (!token) {
       setLoading(false);
       return;
