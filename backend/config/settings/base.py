@@ -11,7 +11,18 @@ SECRET_KEY = config("SECRET_KEY", default="django-insecure-key")
 
 DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="localhost,127.0.0.1", cast=Csv())
+# Allowed Hosts - Robust parsing to handle accidental protocols/paths from env
+_hosts = config("ALLOWED_HOSTS", default="localhost,127.0.0.1", cast=Csv())
+ALLOWED_HOSTS = []
+for host in _hosts:
+    # Strip https://, trailing slashes, and whitespace
+    h = host.replace("https://", "").replace("http://", "").split("/")[0].strip()
+    if h:
+        ALLOWED_HOSTS.append(h)
+
+# Always allow Render's internal host if it exists
+if config("RENDER_EXTERNAL_HOSTNAME", default=None):
+    ALLOWED_HOSTS.append(config("RENDER_EXTERNAL_HOSTNAME"))
 
 # Application definition
 INSTALLED_APPS = [
