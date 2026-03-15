@@ -50,11 +50,14 @@ export function MainLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const [profileOpen, setProfileOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogout = () => {
     signOut();
     navigate("/login");
   };
+
+  const closeSidebar = () => setSidebarOpen(false);
 
   const currentPage = NAV_ITEMS.find(item => 
     item.end ? location.pathname === item.to : location.pathname.startsWith(item.to)
@@ -62,10 +65,22 @@ export function MainLayout() {
 
   return (
     <div className="flex h-screen overflow-hidden bg-background text-portal-text font-sans">
-      {/* Sidebar */}
-      <aside className="hidden flex-col bg-sidebar md:flex md:w-64 lg:w-72 border-r border-white/5">
+      {/* Mobile Sidebar Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity md:hidden"
+          onClick={closeSidebar}
+        />
+      )}
+
+      {/* Sidebar (Desktop and Mobile) */}
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-sidebar border-r border-white/5 transition-transform duration-300 ease-in-out
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        md:relative md:flex md:translate-x-0 lg:w-72
+      `}>
         {/* Sidebar Header */}
-        <div className="flex h-16 items-center border-b border-white/5 px-6">
+        <div className="flex h-16 items-center justify-between border-b border-white/5 px-6">
           <div className="flex items-center gap-2">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-accent shadow-lg shadow-primary/25">
               <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -74,15 +89,25 @@ export function MainLayout() {
             </div>
             <span className="text-xl font-bold tracking-tight text-portal-text">Aurora</span>
           </div>
+          {/* Close button for mobile */}
+          <button 
+            className="rounded-lg p-1.5 text-portal-muted hover:bg-white/5 md:hidden"
+            onClick={closeSidebar}
+          >
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
 
         {/* Sidebar Navigation */}
-        <nav className="flex-1 space-y-1 px-4 py-6">
+        <nav className="flex-1 space-y-1 px-4 py-6 overflow-y-auto">
           {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
               end={item.end}
+              onClick={closeSidebar}
               className={({ isActive }) => `
                 group flex items-center gap-3 rounded-[12px] px-4 py-2.5 text-sm font-semibold transition-all duration-300
                 ${isActive 
@@ -115,14 +140,26 @@ export function MainLayout() {
       {/* Main Container */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top Navbar */}
-        <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/5 bg-sidebar/80 px-8 backdrop-blur-xl aurora-glow">
-          <div className="flex items-center gap-4">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-primary to-accent shadow-lg shadow-primary/20">
-              <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+        <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/5 bg-sidebar/80 px-4 md:px-8 backdrop-blur-xl aurora-glow">
+          <div className="flex items-center gap-3">
+            {/* Hamburger Button */}
+            <button 
+              className="rounded-lg p-1.5 text-portal-muted hover:bg-white/5 md:hidden"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
               </svg>
+            </button>
+
+            <div className="flex items-center gap-3">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-primary to-accent shadow-lg shadow-primary/20">
+                <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h1 className="text-sm md:text-lg font-black tracking-tight text-portal-text uppercase tracking-[0.05em]">{currentPage}</h1>
             </div>
-            <h1 className="text-lg font-black tracking-tight text-portal-text uppercase tracking-[0.05em]">{currentPage}</h1>
           </div>
           
           <div className="relative">
