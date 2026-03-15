@@ -6,3 +6,4 @@ pip install -r requirements.txt
 
 python manage.py collectstatic --no-input
 python manage.py migrate
+python manage.py setup_dev --email "admin@test.com" --password "TestPass123!" --name "Portal Admin"
