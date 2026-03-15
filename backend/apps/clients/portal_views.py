@@ -22,6 +22,7 @@ from apps.tasks.models import Task
 from apps.tasks.api.serializers import TaskSerializer
 from apps.projects.models import Project
 from apps.projects.api.serializers import ProjectSerializer
+from apps.analytics.utils import log_portal_event
 
 
 class PortalPermission:
@@ -71,6 +72,10 @@ class PortalProjectFilesView(PortalBaseView):
         qs = ProjectFile.objects.filter(project__client=client)
         if project_id:
             qs = qs.filter(project_id=project_id)
+        
+        # Log that client viewed their files
+        log_portal_event(request, client, "view", "file_list", project_id or 0)
+        
         return Response(ProjectFileSerializer(qs, many=True, context={"request": request}).data)
 
 
@@ -113,6 +118,10 @@ class PortalInvoicesView(PortalBaseView):
     def get(self, request, token):
         client = self.get_client()
         invoices = Invoice.objects.filter(client=client).select_related("project")
+        
+        # Log that client viewed their invoices
+        log_portal_event(request, client, "view", "invoice_list", 0)
+        
         return Response(InvoiceSerializer(invoices, many=True).data)
 
 

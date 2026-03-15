@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { clearAccessToken, getAccessToken, setAccessToken } from "../utils/authStorage";
+import { clearTokens, getAccessToken, setAccessToken, getRefreshToken, setRefreshToken } from "../utils/authStorage";
 import { apiClient } from "../services/apiClient";
 
 const AuthContext = createContext(null);
@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
         setUser(response.data);
       })
       .catch(() => {
-        clearAccessToken();
+        clearTokens();
         setUser(null);
       })
       .finally(() => {
@@ -32,9 +32,12 @@ export function AuthProvider({ children }) {
   const signIn = async ({ email, password }) => {
     const trimmedEmail = email.trim();
     const response = await apiClient.post("/auth/token/", { email: trimmedEmail, password });
-    const { access, user: userPayload } = response.data;
+    const { access, refresh, user: userPayload } = response.data;
     if (access) {
       setAccessToken(access);
+    }
+    if (refresh) {
+      setRefreshToken(refresh);
     }
     setUser(userPayload ?? null);
     return response.data;
@@ -47,13 +50,16 @@ export function AuthProvider({ children }) {
   };
 
   const signOut = () => {
-    clearAccessToken();
+    clearTokens();
     setUser(null);
   };
 
-  const setSession = ({ accessToken, user: userPayload }) => {
+  const setSession = ({ accessToken, refreshToken, user: userPayload }) => {
     if (accessToken) {
       setAccessToken(accessToken);
+    }
+    if (refreshToken) {
+      setRefreshToken(refreshToken);
     }
     setUser(userPayload ?? null);
   };

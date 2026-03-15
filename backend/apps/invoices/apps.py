@@ -6,3 +6,6 @@ class InvoicesConfig(AppConfig):
     name = "apps.invoices"
     verbose_name = "Invoices"
 
+    def ready(self):
+        import apps.invoices.signals
+

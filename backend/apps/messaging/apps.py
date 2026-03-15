@@ -6,3 +6,6 @@ class MessagingConfig(AppConfig):
     name = "apps.messaging"
     verbose_name = "Messaging"
 
+    def ready(self):
+        import apps.messaging.signals
+
