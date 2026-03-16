@@ -1,4 +1,6 @@
 from rest_framework import generics, permissions
+from apps.core.permissions import IsOwner
+
 
 from ..models import Task
 from .serializers import TaskSerializer
@@ -25,7 +27,8 @@ class TaskListCreateView(generics.ListCreateAPIView):
 
 class TaskDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = TaskSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
+
 
     http_method_names = ["get", "patch", "delete", "head", "options"]
 
