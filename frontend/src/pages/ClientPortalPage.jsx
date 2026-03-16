@@ -105,7 +105,7 @@ export function ClientPortalPage() {
           <div className="bg-surface/50 backdrop-blur-xl border border-white/10 rounded-[32px] p-8 flex items-center gap-8 shadow-3xl shadow-black/80 aurora-border">
             <div className="text-right">
               <p className="text-[10px] font-black text-portal-muted uppercase tracking-[0.2em] mb-2 opacity-60">Verified Consultant</p>
-              <p className="text-base font-black text-portal-text tracking-tight uppercase">Aurora Workspace</p>
+              <p className="text-base font-black text-portal-text tracking-tight uppercase">AuroraDesk Workspace</p>
             </div>
             <div className="h-16 w-16 rounded-[20px] bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white shadow-2xl shadow-primary/40 p-1">
               <div className="h-full w-full rounded-[19px] bg-sidebar flex items-center justify-center">

@@ -41,7 +41,7 @@ export function LoginPage() {
             </div>
           </div>
           <h1 className="text-4xl font-black tracking-tight text-portal-text uppercase tracking-[0.1em]">Welcome Back</h1>
-          <p className="mt-3 text-sm text-portal-muted font-medium">Elevate your freelance workflow with Aurora.</p>
+          <p className="mt-3 text-sm text-portal-muted font-medium">Elevate your freelance workflow with AuroraDesk.</p>
         </div>
 
         <Card className="p-10 border-white/10 shadow-3xl shadow-black/60 bg-surface/50 backdrop-blur-xl aurora-glow">

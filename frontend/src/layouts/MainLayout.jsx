@@ -87,7 +87,7 @@ export function MainLayout() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <span className="text-xl font-bold tracking-tight text-portal-text">Aurora</span>
+            <span className="text-xl font-bold tracking-tight text-portal-text">AuroraDesk</span>
           </div>
           {/* Close button for mobile */}
           <button 
