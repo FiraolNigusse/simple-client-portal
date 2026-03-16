@@ -2,7 +2,7 @@ import axios from "axios";
 import { getAccessToken, getRefreshToken, setAccessToken, clearTokens } from "../utils/authStorage";
 
 const rawBaseURL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
-const baseURL = rawBaseURL.endsWith("/") ? rawBaseURL : `${rawBaseURL}/`;
+const baseURL = rawBaseURL.endsWith("/") ? rawBaseURL.slice(0, -1) : rawBaseURL;
 
 export const apiClient = axios.create({
   baseURL,
@@ -11,9 +11,10 @@ export const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   (config) => {
-    // If URL starts with /, strip it so it appends to baseURL instead of replacing its path
-    if (config.url && config.url.startsWith("/")) {
-      config.url = config.url.substring(1);
+    // If URL does NOT start with / and it's not an absolute URL, add it
+    // Most standard is to use /path in axios calls with a baseURL that has no trailing slash
+    if (config.url && !config.url.startsWith("/") && !config.url.startsWith("http")) {
+      config.url = `/${config.url}`;
     }
     
     const token = getAccessToken();

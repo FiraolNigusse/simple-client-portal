@@ -26,8 +26,8 @@ export function SubscriptionProvider({ children }) {
       ]);
       setSubscription(subRes.data);
       setPlans(plansRes.data);
-    } catch {
-      // Not authenticated or session expired — silent
+    } catch (err) {
+      console.error("Failed to fetch subscription data:", err);
     } finally {
       setLoading(false);
     }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSubscription } from "../context/SubscriptionContext";
 import { useAuth } from "../context/AuthContext";
 import { Card } from "../components/ui/Card";
@@ -9,10 +9,17 @@ const PLAN_ORDER = ["starter", "professional", "agency"];
 
 export function SubscriptionPage() {
   const { user } = useAuth();
-  const { subscription, plans, loading, upgradePlan } = useSubscription();
+  const { subscription, plans, loading, upgradePlan, refresh } = useSubscription();
   const [upgrading, setUpgrading] = useState(null);
   const [success, setSuccess] = useState(null);
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    // If we're on this page and plans are missing, try one last time to fetch them
+    if (!loading && plans.length === 0) {
+      refresh();
+    }
+  }, [loading, plans.length, refresh]);
 
   const handleUpgrade = async (plan) => {
     if (plan === subscription?.plan) return;
