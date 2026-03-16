@@ -3,52 +3,38 @@ import { useNavigate } from "react-router-dom";
 import * as api from "../services/api";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
-import { Input, Select } from "../components/ui/Input";
-import { Modal } from "../components/ui/Modal";
 import { Badge, Skeleton } from "../components/ui/Badge";
 import { useToast } from "../context/ToastContext";
-import { UpgradeBanner } from "../components/UpgradeBanner";
+import { CreateProjectModal } from "../components/CreateProjectModal";
 
 export function ProjectsPage() {
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
-  const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
-  const [formError, setFormError] = useState(null);
-  const [formData, setFormData] = useState({ client: "", title: "", description: "" });
   
   const toast = useToast();
 
   useEffect(() => {
-    Promise.all([api.getProjects(), api.getClients()])
-      .then(([projRes, clientRes]) => {
+    api.getProjects()
+      .then((projRes) => {
         setProjects(Array.isArray(projRes.data) ? projRes.data : projRes.data.results || []);
-        setClients(Array.isArray(clientRes.data) ? clientRes.data : clientRes.data.results || []);
       })
-      .catch(() => toast("Failed to load data.", "error"))
+      .catch(() => toast("Failed to load projects.", "error"))
       .finally(() => setLoading(false));
   }, []);
 
-  const handleCreate = async (e) => {
-    e.preventDefault();
-    if (!formData.client) return toast("Please select a client.", "warning");
-    
+  const handleCreate = async (formData, onSuccess) => {
     setCreating(true);
-    setFormError(null);
     try {
       const res = await api.createProject(formData);
       setProjects([res.data, ...projects]);
       setModalOpen(false);
-      setFormData({ client: "", title: "", description: "" });
+      onSuccess();
       toast("Project created!");
     } catch (err) {
-      if (err.response?.data?.code === "plan_limit_reached") {
-        setFormError(err.response.data);
-      } else {
-        toast("Error creating project.", "error");
-      }
+      toast("Error creating project.", "error");
     } finally {
       setCreating(false);
     }
@@ -122,53 +108,13 @@ export function ProjectsPage() {
         </Card>
       )}
 
-      {/* Create Modal */}
-      <Modal 
-        isOpen={modalOpen} 
+      <CreateProjectModal 
+        open={modalOpen} 
         onClose={() => setModalOpen(false)} 
-        title="Start New Project"
-        footer={(
-          <>
-            <Button variant="ghost" onClick={() => setModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleCreate} loading={creating}>Launch Project</Button>
-          </>
-        )}
-      >
-        <form onSubmit={handleCreate} className="space-y-4 py-2">
-          {formError && (
-            <UpgradeBanner 
-              resource={formError.resource} 
-              limit={formError.limit} 
-              plan={formError.plan} 
-            />
-          )}
-          <Select 
-            label="Client" 
-            required 
-            value={formData.client}
-            onChange={e => setFormData({...formData, client: e.target.value})}
-          >
-            <option value="">Select a client...</option>
-            {clients.map(c => <option key={c.id} value={c.id}>{c.name} ({c.company})</option>)}
-          </Select>
-          <Input 
-            label="Project Title" 
-            placeholder="e.g. Website Redesign" 
-            required 
-            value={formData.title}
-            onChange={e => setFormData({...formData, title: e.target.value})}
-          />
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-portal-muted uppercase tracking-[0.2em] ml-2">Description</label>
-            <textarea
-              className="w-full min-h-[140px] rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-portal-text transition-all focus:bg-white/10 focus:border-primary/50 focus:outline-none focus:ring-4 focus:ring-primary/20 placeholder:text-portal-muted/40"
-              placeholder="What are the goals of this project?"
-              value={formData.description}
-              onChange={e => setFormData({...formData, description: e.target.value})}
-            />
-          </div>
-        </form>
-      </Modal>
+        onCreate={handleCreate} 
+        loading={creating} 
+      />
     </div>
   );
 }
+

@@ -115,8 +115,11 @@ class PasswordResetSerializer(serializers.Serializer):
             'from_email': settings.DEFAULT_FROM_EMAIL,
             'request': request,
             'token_generator': default_token_generator,
-            # We'll need a way for the frontend to handle the link
-            'email_template_name': 'registration/password_reset_email.html',
+            'email_template_name': 'registration/password_reset_email.txt',
+            'html_email_template_name': 'registration/password_reset_email.html',
+            'extra_email_context': {
+                'frontend_url': getattr(settings, 'FRONTEND_URL', 'http://localhost:5173'),
+            }
         }
         self.reset_form.save(**opts)
 
@@ -126,7 +129,7 @@ class PasswordResetConfirmSerializer(serializers.Serializer):
     uid = serializers.CharField()
     token = serializers.CharField()
 
-    def validate_password(self, value):
+    def validate_new_password(self, value):
         validate_password(value)
         return value
 

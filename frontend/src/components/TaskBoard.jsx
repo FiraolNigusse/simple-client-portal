@@ -52,39 +52,42 @@ export function TaskBoard({ tasks, setTasks, projectId }) {
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center bg-surface p-4 rounded-xl border border-slate-800">
-        <h4 className="font-bold text-portal-text">Tasks ({tasks.length})</h4>
-        <Button size="sm" onClick={() => setModalOpen(true)}>Add Task</Button>
+      <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/5 aurora-glow">
+        <div>
+          <h4 className="font-bold text-portal-text">Project Tasks</h4>
+          <p className="text-[10px] text-portal-muted uppercase font-black tracking-widest mt-0.5">{tasks.length} Action Items</p>
+        </div>
+        <Button size="sm" onClick={() => setModalOpen(true)} className="rounded-xl px-5">Add Task</Button>
       </div>
 
       <div className="grid gap-3">
         {tasks.map(task => (
-          <Card key={task.id} className="flex items-center gap-4 py-3 border-slate-800/60 hover:border-slate-700 transition-colors">
+          <Card key={task.id} className="flex items-center gap-4 py-3.5 border-white/5 hover:border-primary/50 transition-all group">
             <button 
               onClick={() => handleToggle(task)}
-              className={`h-5 w-5 rounded border-2 border-slate-700 flex items-center justify-center transition-all ${
-                task.status === "completed" ? "bg-accent border-accent text-white" : "hover:border-primary"
+              className={`h-6 w-6 rounded-lg border-2 border-white/10 flex items-center justify-center transition-all ${
+                task.status === "completed" ? "bg-accent border-accent text-sidebar" : "hover:border-primary bg-white/5"
               }`}
             >
               {task.status === "completed" && (
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
                 </svg>
               )}
             </button>
             <div className="flex-1 min-w-0">
-              <p className={`text-sm font-semibold transition-all ${task.status === "completed" ? "text-portal-muted line-through" : "text-portal-text"}`}>
+              <p className={`text-sm font-bold transition-all ${task.status === "completed" ? "text-portal-muted/40 line-through" : "text-portal-text"}`}>
                 {task.title}
               </p>
               {task.description && (
-                <p className="text-xs text-portal-muted line-clamp-1">{task.description}</p>
+                <p className={`text-xs mt-0.5 line-clamp-1 ${task.status === "completed" ? "text-portal-muted/20" : "text-portal-muted font-medium"}`}>{task.description}</p>
               )}
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <Badge variant={task.status === "completed" ? "success" : "default"}>{task.status}</Badge>
               <button 
                 onClick={() => handleDelete(task.id)}
-                className="text-portal-muted hover:text-portal-error transition-colors"
+                className="text-portal-muted/30 hover:text-portal-error transition-all p-1.5 hover:bg-portal-error/10 rounded-lg opacity-0 group-hover:opacity-100"
               >
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -94,11 +97,20 @@ export function TaskBoard({ tasks, setTasks, projectId }) {
           </Card>
         ))}
         {tasks.length === 0 && (
-          <div className="py-12 text-center text-portal-muted text-sm italic">
-            No tasks found. Get started by adding one!
+          <div className="py-16 text-center border-2 border-dashed border-white/5 rounded-[24px]">
+            <div className="flex justify-center mb-4">
+              <div className="h-12 w-12 rounded-2xl bg-white/5 flex items-center justify-center text-portal-muted">
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+              </div>
+            </div>
+            <p className="text-sm font-black text-portal-text uppercase tracking-widest">No tasks identified</p>
+            <p className="text-xs text-portal-muted mt-2">Initialize your workflow by adding the first action item.</p>
           </div>
         )}
       </div>
+
 
       <Modal 
         isOpen={modalOpen} 

@@ -7,6 +7,7 @@ import { ProjectsPage } from "../pages/ProjectsPage";
 import { ProjectDetailsPage } from "../pages/ProjectDetailsPage";
 import { InvoicesPage } from "../pages/InvoicesPage";
 import { SubscriptionPage } from "../pages/SubscriptionPage";
+import { SettingsPage } from "../pages/SettingsPage";
 import { ClientPortalPage } from "../pages/ClientPortalPage";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
@@ -70,6 +71,10 @@ export function AppRoutes() {
         <Route
           path="/subscription"
           element={<SubscriptionPage />}
+        />
+        <Route
+          path="/settings"
+          element={<SettingsPage />}
         />
       </Route>
       <Route path="/login" element={<LoginPage />} />

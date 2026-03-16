@@ -2,73 +2,30 @@ import { useEffect, useState } from "react";
 import * as api from "../services/api";
 import { Table } from "../components/ui/Table";
 import { Button } from "../components/ui/Button";
-import { Input, Select } from "../components/ui/Input";
-import { Modal } from "../components/ui/Modal";
 import { Badge } from "../components/ui/Badge";
 import { useToast } from "../context/ToastContext";
-import { UpgradeBanner } from "../components/UpgradeBanner";
+import { CreateInvoiceModal } from "../components/CreateInvoiceModal";
 
 export function InvoicesPage() {
   const [invoices, setInvoices] = useState([]);
-  const [clients, setClients] = useState([]);
-  const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
-  const [creating, setCreating] = useState(false);
-  const [formError, setFormError] = useState(null);
-  const [formData, setFormData] = useState({ 
-    client: "", 
-    project: "", 
-    amount: "", 
-    due_date: new Date().toISOString().split('T')[0] 
-  });
   
   const toast = useToast();
 
   useEffect(() => {
-    Promise.all([api.getInvoices(), api.getClients(), api.getProjects()])
-      .then(([invRes, clientRes, projRes]) => {
+    api.getInvoices()
+      .then((invRes) => {
         setInvoices(Array.isArray(invRes.data) ? invRes.data : invRes.data.results || []);
-        setClients(Array.isArray(clientRes.data) ? clientRes.data : clientRes.data.results || []);
-        setProjects(Array.isArray(projRes.data) ? projRes.data : projRes.data.results || []);
       })
-      .catch(() => toast("Failed to load data.", "error"))
+      .catch(() => toast("Failed to load invoices.", "error"))
       .finally(() => setLoading(false));
   }, []);
 
-  const handleCreate = async (e) => {
-    e.preventDefault();
-    if (!formData.client || !formData.amount) return toast("Missing required fields.", "warning");
-    
-    setCreating(true);
-    setFormError(null);
-    try {
-      // Clean up data
-      const payload = {
-        client: parseInt(formData.client),
-        amount: parseFloat(formData.amount),
-        due_date: formData.due_date,
-        project: formData.project ? parseInt(formData.project) : null
-      };
-      
-      const res = await api.createInvoice(payload);
-      setInvoices([res.data, ...invoices]);
-      setModalOpen(false);
-      setFormData({ client: "", project: "", amount: "", due_date: new Date().toISOString().split('T')[0] });
-      toast("Invoice sent!");
-    } catch (err) {
-      console.error("Invoice creation error:", err.response?.data || err.message);
-      if (err.response?.data?.code === "plan_limit_reached") {
-        setFormError(err.response.data);
-      } else {
-        toast("Error creating invoice.", "error");
-      }
-    } finally {
-      setCreating(false);
-    }
+  const handleCreate = (newInvoice) => {
+    setInvoices([newInvoice, ...invoices]);
+    toast("Invoice generated and sent!");
   };
-
-  const filteredProjects = projects.filter(p => !formData.client || p.client === parseInt(formData.client));
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -107,65 +64,12 @@ export function InvoicesPage() {
         ))}
       </Table>
 
-      {/* Create Modal */}
-      <Modal 
-        isOpen={modalOpen} 
+      <CreateInvoiceModal 
+        open={modalOpen} 
         onClose={() => setModalOpen(false)} 
-        title="Create New Invoice"
-        footer={(
-          <>
-            <Button variant="ghost" onClick={() => setModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleCreate} loading={creating}>Generate & Send</Button>
-          </>
-        )}
-      >
-        <form onSubmit={handleCreate} className="space-y-4 py-2">
-          {formError && (
-            <UpgradeBanner 
-              resource={formError.resource} 
-              limit={formError.limit} 
-              plan={formError.plan} 
-            />
-          )}
-          <Select 
-            label="Client" 
-            required 
-            value={formData.client}
-            onChange={e => setFormData({...formData, client: e.target.value, project: ""})}
-          >
-            <option value="">Select a client...</option>
-            {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </Select>
-          
-          <Select 
-            label="Project (Optional)" 
-            value={formData.project}
-            onChange={e => setFormData({...formData, project: e.target.value})}
-            disabled={!formData.client}
-          >
-            <option value="">Select a project...</option>
-            {filteredProjects.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
-          </Select>
-
-          <div className="grid grid-cols-2 gap-4">
-            <Input 
-              label="Amount ($)" 
-              type="number" 
-              placeholder="0.00" 
-              required 
-              value={formData.amount}
-              onChange={e => setFormData({...formData, amount: e.target.value})}
-            />
-            <Input 
-              label="Due Date" 
-              type="date" 
-              required 
-              value={formData.due_date}
-              onChange={e => setFormData({...formData, due_date: e.target.value})}
-            />
-          </div>
-        </form>
-      </Modal>
+        onCreate={handleCreate} 
+      />
     </div>
   );
 }
+
