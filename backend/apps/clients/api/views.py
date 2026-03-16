@@ -38,7 +38,7 @@ class ClientDetailView(generics.RetrieveDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get_queryset(self):
-        return Client.objects.filter(freelancer=self.request.user)
+        return Client.objects.select_related("portal").filter(freelancer=self.request.user)
 
 
 class ClientPortalGenerateView(APIView):

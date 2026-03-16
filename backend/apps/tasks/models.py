@@ -27,9 +27,10 @@ class Task(models.Model):
         max_length=20,
         choices=STATUS_CHOICES,
         default=STATUS_TODO,
+        db_index=True,
     )
-    due_date = models.DateField(null=True, blank=True)
-    created_at = models.DateTimeField(default=timezone.now)
+    due_date = models.DateField(null=True, blank=True, db_index=True)
+    created_at = models.DateTimeField(default=timezone.now, db_index=True)
 
     class Meta:
         ordering = ["-created_at"]

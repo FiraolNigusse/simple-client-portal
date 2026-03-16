@@ -31,7 +31,7 @@ class ProjectFileListView(generics.ListAPIView):
 
     def get_queryset(self):
         project_id = self.kwargs.get('project_id')
-        return ProjectFile.objects.filter(
+        return ProjectFile.objects.select_related("uploaded_by").filter(
             project_id=project_id,
             project__client__freelancer=self.request.user
         )

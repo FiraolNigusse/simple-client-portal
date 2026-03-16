@@ -69,7 +69,7 @@ class PortalProjectFilesView(PortalBaseView):
     def get(self, request, token):
         client = self.get_client()
         project_id = request.query_params.get("project")
-        qs = ProjectFile.objects.filter(project__client=client)
+        qs = ProjectFile.objects.filter(project__client=client).select_related("uploaded_by")
         if project_id:
             qs = qs.filter(project_id=project_id)
         
@@ -117,7 +117,7 @@ class PortalInvoicesView(PortalBaseView):
 
     def get(self, request, token):
         client = self.get_client()
-        invoices = Invoice.objects.filter(client=client).select_related("project")
+        invoices = Invoice.objects.filter(client=client).select_related("project", "client")
         
         # Log that client viewed their invoices
         log_portal_event(request, client, "view", "invoice_list", 0)

@@ -25,8 +25,9 @@ class Project(models.Model):
         max_length=20,
         choices=STATUS_CHOICES,
         default=STATUS_ACTIVE,
+        db_index=True,
     )
-    created_at = models.DateTimeField(default=timezone.now)
+    created_at = models.DateTimeField(default=timezone.now, db_index=True)
 
     class Meta:
         ordering = ["-created_at"]
