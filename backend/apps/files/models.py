@@ -11,6 +11,23 @@ def validate_file_size(value):
         raise ValidationError('File too large. Size should not exceed 10 MiB.')
 
 
+def validate_file_type(value):
+    """
+    Validate MIME type to prevent extension spoofing.
+    """
+    allowed_mimes = [
+        'application/pdf',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'image/png',
+        'image/jpeg',
+        'application/zip',
+        'application/x-zip-compressed',
+    ]
+    content_type = getattr(value, 'content_type', None)
+    if content_type and content_type not in allowed_mimes:
+        raise ValidationError(f'File type {content_type} is not allowed.')
+
+
 
 class ProjectFile(models.Model):
     project = models.ForeignKey(
@@ -22,7 +39,8 @@ class ProjectFile(models.Model):
         upload_to="project_files/%Y/%m/%d/",
         validators=[
             FileExtensionValidator(allowed_extensions=['pdf', 'docx', 'png', 'jpg', 'zip']),
-            validate_file_size
+            validate_file_size,
+            validate_file_type
         ]
     )
     uploaded_by = models.ForeignKey(
