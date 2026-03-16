@@ -3,6 +3,8 @@ from rest_framework import generics, permissions
 from ..models import Invoice
 from .serializers import InvoiceSerializer
 from apps.users.permissions import PlanLimitMixin
+from apps.core.permissions import IsOwner
+
 
 
 class InvoiceListCreateView(PlanLimitMixin, generics.ListCreateAPIView):
@@ -30,7 +32,7 @@ class InvoiceDetailView(generics.RetrieveUpdateAPIView):
     PATCH /invoices/{id}/  — update status (e.g. mark as paid)
     """
     serializer_class = InvoiceSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get_queryset(self):
         return Invoice.objects.filter(

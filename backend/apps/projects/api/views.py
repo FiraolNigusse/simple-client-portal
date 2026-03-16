@@ -3,6 +3,8 @@ from rest_framework import generics, permissions
 from ..models import Project
 from .serializers import ProjectSerializer
 from apps.users.permissions import PlanLimitMixin
+from apps.core.permissions import IsOwner
+
 
 
 class ProjectListCreateView(PlanLimitMixin, generics.ListCreateAPIView):
@@ -27,7 +29,7 @@ class ProjectListCreateView(PlanLimitMixin, generics.ListCreateAPIView):
 
 class ProjectDetailView(generics.RetrieveUpdateAPIView):
     serializer_class = ProjectSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     http_method_names = ["get", "patch", "head", "options"]
 

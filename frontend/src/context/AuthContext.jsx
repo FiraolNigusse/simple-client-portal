@@ -49,7 +49,15 @@ export function AuthProvider({ children }) {
     return signIn({ email: trimmedData.email, password: trimmedData.password });
   };
 
-  const signOut = () => {
+  const signOut = async () => {
+    const refreshToken = getRefreshToken();
+    if (refreshToken) {
+      try {
+        await apiClient.post("/users/logout/", { refresh: refreshToken });
+      } catch (error) {
+        console.error("Logout error:", error);
+      }
+    }
     clearTokens();
     setUser(null);
   };

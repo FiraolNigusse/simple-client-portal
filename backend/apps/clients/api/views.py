@@ -10,6 +10,8 @@ from .serializers import (
     ClientSerializer,
 )
 from apps.users.permissions import PlanLimitMixin
+from apps.core.permissions import IsOwner
+
 
 
 class ClientListCreateView(PlanLimitMixin, generics.ListCreateAPIView):
@@ -33,7 +35,7 @@ class ClientListCreateView(PlanLimitMixin, generics.ListCreateAPIView):
 
 class ClientDetailView(generics.RetrieveDestroyAPIView):
     serializer_class = ClientDetailSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get_queryset(self):
         return Client.objects.filter(freelancer=self.request.user)
