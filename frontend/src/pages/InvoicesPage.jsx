@@ -43,12 +43,21 @@ export function InvoicesPage() {
     setCreating(true);
     setFormError(null);
     try {
-      const res = await api.createInvoice(formData);
+      // Clean up data
+      const payload = {
+        client: parseInt(formData.client),
+        amount: parseFloat(formData.amount),
+        due_date: formData.due_date,
+        project: formData.project ? parseInt(formData.project) : null
+      };
+      
+      const res = await api.createInvoice(payload);
       setInvoices([res.data, ...invoices]);
       setModalOpen(false);
       setFormData({ client: "", project: "", amount: "", due_date: new Date().toISOString().split('T')[0] });
       toast("Invoice sent!");
     } catch (err) {
+      console.error("Invoice creation error:", err.response?.data || err.message);
       if (err.response?.data?.code === "plan_limit_reached") {
         setFormError(err.response.data);
       } else {
