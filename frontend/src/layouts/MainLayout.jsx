@@ -140,7 +140,7 @@ export function MainLayout() {
       {/* Main Container */}
       <div className="flex flex-1 flex-col overflow-hidden">
         {/* Top Navbar */}
-        <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/5 bg-sidebar/80 px-4 md:px-8 backdrop-blur-xl aurora-glow">
+        <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/5 bg-sidebar/80 px-4 md:px-8 backdrop-blur-xl aurora-glow z-50">
           <div className="flex items-center gap-3">
             {/* Hamburger Button */}
             <button 
@@ -180,10 +180,10 @@ export function MainLayout() {
             {profileOpen && (
               <>
                 <div 
-                  className="fixed inset-0 z-10" 
+                  className="fixed inset-0 z-[60]" 
                   onClick={() => setProfileOpen(false)} 
                 />
-                <div className="absolute right-0 mt-3 w-64 origin-top-right rounded-[20px] border border-white/10 bg-surface px-2 py-2 shadow-2xl shadow-black/50 backdrop-blur-xl z-20">
+                <div className="absolute right-0 mt-3 w-64 origin-top-right rounded-[20px] border border-white/10 bg-surface px-2 py-2 shadow-2xl shadow-black/50 backdrop-blur-xl z-[70]">
                   <div className="px-4 py-4 border-b border-white/5">
                     <p className="text-[10px] uppercase tracking-[0.1em] font-black text-portal-muted mb-1">Authenticated</p>
                     <p className="truncate text-sm font-bold text-portal-text">{user?.email}</p>
