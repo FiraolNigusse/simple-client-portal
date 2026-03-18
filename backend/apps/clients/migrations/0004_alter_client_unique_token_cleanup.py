@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('clients', '0002_client_portal_token'),
+        ('clients', '0003_populate_client_portal_token'),
     ]
 
     operations = [

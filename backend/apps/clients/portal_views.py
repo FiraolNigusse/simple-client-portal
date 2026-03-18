@@ -1,7 +1,7 @@
 """
 Portal-facing API views.
 
-All views use PortalTokenAuthentication. request.auth is the ClientPortal instance.
+All views use PortalTokenAuthentication. request.auth is the Client instance.
 No JWT required — clients authenticate with their portal token only.
 """
 from rest_framework import generics, status, permissions
@@ -107,7 +107,7 @@ class PortalMessagesView(PortalBaseView):
             "sender_type": Message.SENDER_CLIENT,
             "content": request.data.get("content", ""),
         }
-        serializer = MessageSerializer(data=data)
+        serializer = MessageSerializer(data=data, context={"request": request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)

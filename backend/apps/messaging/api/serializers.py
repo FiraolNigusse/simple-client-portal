@@ -29,10 +29,10 @@ class MessageSerializer(serializers.ModelSerializer):
             if value.client.freelancer_id != request.user.id:
                 raise serializers.ValidationError("This project does not belong to you.")
         
-        # If client is authenticated via portal token (request.auth is ClientPortal)
-        from apps.clients.models import ClientPortal
-        if isinstance(request.auth, ClientPortal):
-            if value.client_id != request.auth.client_id:
+        # If client is authenticated via portal token (request.auth is Client)
+        from apps.clients.models import Client
+        if isinstance(request.auth, Client):
+            if value.client_id != request.auth.id:
                 raise serializers.ValidationError("Access denied to this project.")
                 
         return value
