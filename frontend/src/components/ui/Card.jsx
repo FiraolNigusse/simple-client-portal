@@ -1,6 +1,9 @@
-export function Card({ children, className = "", noPadding = false }) {
+export function Card({ children, className = "", noPadding = false, ...props }) {
   return (
-    <div className={`rounded-xl border border-white/[0.05] bg-surface shadow-2xl shadow-black/20 transition-all duration-300 hover:border-white/10 hover:shadow-black/40 ${!noPadding ? "p-6" : ""} ${className}`}>
+    <div 
+      className={`rounded-xl border border-white/[0.05] bg-surface shadow-2xl shadow-black/20 transition-all duration-300 hover:border-white/10 hover:shadow-black/40 ${!noPadding ? "p-6" : ""} ${className}`}
+      {...props}
+    >
       {children}
     </div>
   );
