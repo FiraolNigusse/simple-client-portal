@@ -226,13 +226,16 @@ export function ClientPortalPage() {
                       {invoices.map(inv => (
                         <div key={inv.id} className="flex items-center justify-between p-5 rounded-[20px] bg-white/[0.02] border border-white/5 hover:border-white/10 hover:bg-white/5 transition-all duration-300 group">
                           <div>
-                            <p className="text-xl font-black text-portal-text tracking-tight group-hover:text-accent transition-colors">${inv.amount}</p>
+                            <p className="text-xl font-black text-portal-text tracking-tight group-hover:text-accent transition-colors">
+                              <span className="text-xs text-portal-muted mr-2 opacity-40">#{inv.id}</span>
+                              ${inv.amount}
+                            </p>
                             <p className="text-[10px] text-portal-muted font-black uppercase tracking-[0.2em] opacity-60">Maturing {new Date(inv.due_date).toLocaleDateString()}</p>
                           </div>
                           <Badge variant={inv.status === 'paid' ? 'success' : 'warning'} className="rounded-lg">{inv.status}</Badge>
                         </div>
                       ))}
-                      {invoices.length === 0 && <p className="text-sm text-portal-muted italic text-center py-10 border-2 border-dashed border-white/5 rounded-[32px] opacity-40">No billing events captured.</p>}
+                      {invoices.length === 0 && <p className="text-sm text-portal-muted italic text-center py-10 border-2 border-dashed border-white/5 rounded-[32px] opacity-40">No invoices yet.</p>}
                     </div>
                   </Card>
                 </div>
