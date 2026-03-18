@@ -29,21 +29,24 @@ export function ClientDetailsPage() {
     .finally(() => setLoading(false));
   }, [id, navigate]);
 
+  const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
+  const portalLink = client?.portal_token ? `${baseUrl}/portal/${client.portal_token}` : "";
+
   const handleGeneratePortal = async () => {
     setGenerating(true);
     try {
-      const r = await api.generatePortal(id);
-      setClient({ ...client, portal_link: r.data.portal_link });
-      toast("Portal link generated!");
+      const r = await api.regeneratePortal(id);
+      setClient(r.data);
+      toast("Portal link updated!");
     } catch {
-      toast("Failed to generate link.", "error");
+      toast("Failed to update link.", "error");
     } finally {
       setGenerating(false);
     }
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(client.portal_link);
+    navigator.clipboard.writeText(portalLink);
     toast("Link copied to clipboard!");
   };
 
@@ -86,15 +89,15 @@ export function ClientDetailsPage() {
             <p className="text-xs text-portal-muted mt-1">A secure workspace where this client can view files and invoices.</p>
           </div>
           <div className="p-6">
-            {client.portal_link ? (
+            {portalLink ? (
               <div className="space-y-4">
                 <div className="bg-background border border-slate-800 rounded-lg p-3 font-mono text-xs text-primary truncate">
-                  {client.portal_link}
+                  {portalLink}
                 </div>
                 <div className="flex gap-2">
                   <Button variant="outline" size="sm" onClick={handleCopyLink}>Copy Link</Button>
-                  <Button variant="ghost" size="sm" onClick={() => window.open(client.portal_link)}>View Portal</Button>
-                  <Button variant="ghost" size="sm" className="ml-auto text-portal-muted" onClick={handleGeneratePortal} loading={generating}>Regenerate</Button>
+                  <Button variant="ghost" size="sm" onClick={() => window.open(portalLink)}>View Portal</Button>
+                  <Button variant="ghost" size="sm" className="ml-auto text-portal-muted" onClick={handleGeneratePortal} loading={generating}>Regenerate Token</Button>
                 </div>
               </div>
             ) : (

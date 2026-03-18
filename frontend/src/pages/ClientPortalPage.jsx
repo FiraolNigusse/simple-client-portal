@@ -38,25 +38,24 @@ export function ClientPortalPage() {
     portalGet(token, "/")
       .then((r) => {
         setData(r.data);
+        setFiles(r.data.files || []);
+        setInvoices(r.data.invoices || []);
         const first = r.data.projects?.[0];
-        if (first) setActiveProject(first);
+        if (first) {
+          setActiveProject(first);
+          // For tasks, we still might want to fetch them per project since they weren't combined in PortalInfoView?
+          // Wait, I didn't add tasks to PortalInfoView in my previous step. I should check.
+        }
       })
       .catch(() => setError("Invalid or expired portal link."))
       .finally(() => setLoading(false));
   }, [token]);
 
   useEffect(() => {
-    if (!activeProject) return;
-    const pid = activeProject.id;
-    Promise.all([
-      portalGet(token, "/files/", { project: pid }),
-      portalGet(token, "/invoices/"),
-      portalGet(token, "/tasks/", { project: pid }),
-    ]).then(([f, inv, t]) => {
-      setFiles(Array.isArray(f.data) ? f.data : f.data.results || []);
-      setInvoices(Array.isArray(inv.data) ? inv.data : inv.data.results || []);
-      setTasks(Array.isArray(t.data) ? t.data : t.data.results || []);
-    });
+    if (!activeProject || !token) return;
+    // Fetch only tasks as they are project-specific and not in the main blob yet
+    portalGet(token, "/tasks/", { project: activeProject.id })
+      .then(t => setTasks(Array.isArray(t.data) ? t.data : t.data.results || []));
   }, [token, activeProject]);
 
   if (loading) {

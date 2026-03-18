@@ -9,7 +9,7 @@ They pass it as:
 from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
-from apps.clients.models import ClientPortal
+
 
 
 class PortalTokenAuthentication(BaseAuthentication):
@@ -19,19 +19,19 @@ class PortalTokenAuthentication(BaseAuthentication):
         token = (
             request.query_params.get("token")
             or request.headers.get("X-Portal-Token")
+            # Also allow obtaining from URL kwarg if needed, but usually handled by dispatch
         )
         if not token:
-            return None  # Let other authenticators try
+            return None
 
+        from apps.clients.models import Client
         try:
-            portal = ClientPortal.objects.select_related("client").get(
-                access_token=token
-            )
-        except ClientPortal.DoesNotExist:
+            client = Client.objects.get(portal_token=token)
+        except (Client.DoesNotExist, ValueError):
             raise AuthenticationFailed("Invalid or expired portal token.")
 
-        # Return (user=None, auth=portal) — views use request.auth
-        return (None, portal)
+        # Return (user=None, auth=client) — auth stores the authenticated client
+        return (None, client)
 
     def authenticate_header(self, request):
         return self.keyword

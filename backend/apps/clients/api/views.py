@@ -6,12 +6,11 @@ from rest_framework.views import APIView
 from ..models import Client
 from .serializers import (
     ClientDetailSerializer,
-    ClientPortalGenerateSerializer,
+    ClientPortalRegenerateSerializer,
     ClientSerializer,
 )
 from apps.users.permissions import PlanLimitMixin
 from apps.core.permissions import IsOwner
-
 
 
 class ClientListCreateView(PlanLimitMixin, generics.ListCreateAPIView):
@@ -32,29 +31,28 @@ class ClientListCreateView(PlanLimitMixin, generics.ListCreateAPIView):
             raise serializers.ValidationError({"email": "A client with this email already exists for your account."})
 
 
-
 class ClientDetailView(generics.RetrieveDestroyAPIView):
     serializer_class = ClientDetailSerializer
     permission_classes = [permissions.IsAuthenticated, IsOwner]
 
     def get_queryset(self):
-        return Client.objects.select_related("portal").filter(freelancer=self.request.user)
+        return Client.objects.filter(freelancer=self.request.user)
 
 
-class ClientPortalGenerateView(APIView):
+class ClientPortalRegenerateView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
-        serializer = ClientPortalGenerateSerializer(
+        serializer = ClientPortalRegenerateSerializer(
             data=request.data,
             context={"request": request},
         )
         serializer.is_valid(raise_exception=True)
-        portal = serializer.save()
+        client = serializer.save()
 
-        # Reuse detail serializer to provide portal_link.
+        # Provide updated client info with new portal_link.
         client_serializer = ClientDetailSerializer(
-            portal.client,
+            client,
             context={"request": request},
         )
         return Response(client_serializer.data, status=status.HTTP_200_OK)

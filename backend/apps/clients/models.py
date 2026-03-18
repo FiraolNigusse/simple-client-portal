@@ -1,4 +1,5 @@
 import secrets
+import uuid
 
 from django.conf import settings
 from django.db import models
@@ -15,6 +16,7 @@ class Client(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField()
     company = models.CharField(max_length=255, blank=True)
+    portal_token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
@@ -23,26 +25,4 @@ class Client(models.Model):
 
     def __str__(self) -> str:
         return f"{self.name} ({self.email})"
-
-
-class ClientPortal(models.Model):
-    id = models.BigAutoField(primary_key=True)
-    client = models.OneToOneField(
-        Client,
-        on_delete=models.CASCADE,
-        related_name="portal",
-    )
-    access_token = models.CharField(max_length=128, unique=True)
-    created_at = models.DateTimeField(default=timezone.now)
-
-    class Meta:
-        ordering = ["-created_at"]
-
-    def __str__(self) -> str:
-        return f"Portal for {self.client}"
-
-    @staticmethod
-    def generate_secure_token() -> str:
-        # URL-safe random token, long enough to be hard to guess.
-        return secrets.token_urlsafe(32)
 

@@ -6,7 +6,8 @@ export const createClient = (data) => apiClient.post("/clients/", data);
 export const deleteClient = (id) => apiClient.delete(`/clients/${id}/`);
 export const updateClient = (id, data) => apiClient.patch(`/clients/${id}/`, data);
 export const getClientDetails = (id) => apiClient.get(`/clients/${id}/`);
-export const generatePortal = (clientId) => apiClient.post("/clients/portal/generate/", { client_id: clientId });
+export const regeneratePortal = (clientId) => apiClient.post("/clients/portal/regenerate/", { client_id: clientId });
+export const getPortalData = (token) => apiClient.get(`/portal/${token}/`);
 
 export const getProjects = () => apiClient.get("/projects/");
 export const createProject = (data) => apiClient.post("/projects/", data);
@@ -35,7 +36,8 @@ export default {
   deleteClient,
   updateClient,
   getClientDetails,
-  generatePortal,
+  regeneratePortal,
+  getPortalData,
   getProjects,
   createProject,
   getProjectDetails,

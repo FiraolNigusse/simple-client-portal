@@ -4,14 +4,14 @@ Portal-facing API views.
 All views use PortalTokenAuthentication. request.auth is the ClientPortal instance.
 No JWT required — clients authenticate with their portal token only.
 """
-from rest_framework import generics, status
+from rest_framework import generics, status, permissions
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.clients.portal_auth import PortalTokenAuthentication
-from apps.clients.models import ClientPortal
+from apps.clients.models import Client
 from apps.files.models import ProjectFile
 from apps.files.api.serializers import ProjectFileSerializer
 from apps.messaging.models import Message
@@ -25,42 +25,43 @@ from apps.projects.api.serializers import ProjectSerializer
 from apps.analytics.utils import log_portal_event
 
 
-class PortalPermission:
-    """Shared permission: request must carry a valid portal token → request.auth is ClientPortal."""
+class PortalPermission(permissions.BasePermission):
+    """Shared permission: request must carry a valid portal token → request.auth is Client instance."""
     def has_permission(self, request, view):
-        return isinstance(request.auth, ClientPortal)
+        return isinstance(request.auth, Client)
 
 
 class PortalBaseView(APIView):
     authentication_classes = [PortalTokenAuthentication]
     permission_classes = [PortalPermission]
 
-    def get_portal(self):
-        return self.request.auth  # ClientPortal instance
-
     def get_client(self):
-        return self.get_portal().client
+        return self.request.auth  # Authenticated Client instance
 
 
 class PortalInfoView(PortalBaseView):
-    """GET /portal/{token}/ — return client info + linked projects."""
+    """GET /portal/{token}/ — return consolidated client record."""
 
     def get(self, request, token):
+        # The token in URL is just for routing, the 'auth' object already has the client
         client = self.get_client()
-        projects = Project.objects.filter(client=client).values(
-            "id", "title", "status", "description", "created_at"
-        )
-        return Response(
-            {
-                "client": {
-                    "id": client.id,
-                    "name": client.name,
-                    "email": client.email,
-                    "company": client.company,
-                },
-                "projects": list(projects),
-            }
-        )
+        
+        # Combined dataset as requested
+        projects = Project.objects.filter(client=client)
+        invoices = Invoice.objects.filter(client=client).select_related("project")
+        files = ProjectFile.objects.filter(project__client=client)
+
+        return Response({
+            "client": {
+                "id": client.id,
+                "name": client.name,
+                "email": client.email,
+                "company": client.company,
+            },
+            "projects": ProjectSerializer(projects, many=True).data,
+            "invoices": InvoiceSerializer(invoices, many=True).data,
+            "files": ProjectFileSerializer(files, many=True, context={"request": request}).data,
+        })
 
 
 class PortalProjectFilesView(PortalBaseView):
