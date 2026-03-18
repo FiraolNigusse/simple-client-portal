@@ -154,7 +154,12 @@ DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default="Client Portal <no-rep
 
 # Domain
 FRONTEND_URL = config("FRONTEND_URL", default="http://localhost:5173")
+FRONTEND_ORIGIN = FRONTEND_URL.rstrip("/")
 SITE_DOMAIN = config("SITE_DOMAIN", default="localhost:8000")
+
+# Resend Email Integration
+RESEND_API_KEY = config("RESEND_API_KEY", default="")
+RESEND_FROM_EMAIL = config("RESEND_FROM_EMAIL", default="AuroraDesk <portal@notifications.auroradesk.com>")
 
 # Logging
 LOGGING = {

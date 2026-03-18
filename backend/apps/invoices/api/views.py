@@ -16,6 +16,12 @@ class InvoiceListCreateView(PlanLimitMixin, generics.ListCreateAPIView):
     permission_classes = [permissions.IsAuthenticated]
     plan_resource = "invoices"
 
+    def perform_create(self, serializer):
+        invoice = serializer.save()
+        # Non-blocking notification
+        from apps.core.notifications import send_invoice_notification
+        send_invoice_notification(invoice)
+
     def get_plan_count(self) -> int:
         return Invoice.objects.filter(client__freelancer=self.request.user).count()
 

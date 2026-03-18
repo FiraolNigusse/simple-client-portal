@@ -29,8 +29,9 @@ export function ClientDetailsPage() {
     .finally(() => setLoading(false));
   }, [id, navigate]);
 
-  const baseUrl = import.meta.env.VITE_APP_URL || window.location.origin;
-  const portalLink = client?.portal_token ? `${baseUrl}/portal/${client.portal_token}` : "";
+  const portalLink = client?.portal_token 
+    ? `${import.meta.env.VITE_APP_URL || window.location.origin}/portal/${client.portal_token}` 
+    : "";
 
   const handleGeneratePortal = async () => {
     setGenerating(true);
