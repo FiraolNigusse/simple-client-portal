@@ -14,7 +14,7 @@ def notify_new_message(sender, instance, created, **kwargs):
                 f"Hello {instance.project.client.name},\n\n"
                 f"You have a new message from {instance.project.client.freelancer.name}:\n\n"
                 f"\"{instance.content[:100]}...\"\n\n"
-                f"View it in your portal: {settings.FRONTEND_URL}/portal/{instance.project.client.portal.access_token}/\n"
+                f"View it in your portal: {settings.FRONTEND_URL}/portal/{instance.project.client.portal_token}\n"
             )
             recipient = instance.project.client.email
         else:
