@@ -4,11 +4,14 @@
 
 @layer base {
   html, body, #root {
-    @apply h-full overflow-hidden;
+    height: 100%;
   }
 
   body {
     @apply bg-background text-portal-text antialiased selection:bg-primary/30;
+    overflow-x: hidden;
+    overflow-y: auto;
+    min-height: 100dvh;
   }
 }
 

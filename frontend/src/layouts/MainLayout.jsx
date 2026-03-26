@@ -84,7 +84,7 @@ export function MainLayout() {
   )?.label || "Dashboard";
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background text-portal-text font-sans">
+    <div className="flex min-h-screen bg-background text-portal-text font-sans">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div 
@@ -158,7 +158,7 @@ export function MainLayout() {
       </aside>
 
       {/* Main Container */}
-      <div className="flex flex-1 flex-col overflow-hidden">
+      <div className="flex flex-1 flex-col">
         {/* Top Navbar */}
         <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/5 bg-sidebar/80 px-4 md:px-8 backdrop-blur-xl aurora-glow z-50">
           <div className="flex items-center gap-3">
@@ -236,7 +236,7 @@ export function MainLayout() {
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto custom-scrollbar bg-background p-6">
+        <main className="flex-1 min-h-screen bg-background p-6">
           <div className="mx-auto max-w-6xl">
             <Outlet />
           </div>
