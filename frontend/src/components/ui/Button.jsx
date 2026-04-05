@@ -9,22 +9,22 @@ export const Button = memo(function Button({
   ...props 
 }) {
   const variants = {
-    primary: "bg-primary hover:bg-primary-hover text-white shadow-xl shadow-primary/25 active:scale-[0.98] shadow-[0_0_20px_var(--primary-glow)]",
-    secondary: "bg-surface hover:bg-white/5 text-portal-text border border-white/10 active:scale-[0.98]",
+    primary: "bg-primary hover:bg-primary-hover text-white shadow-sm active:scale-[0.98]",
+    secondary: "bg-card hover:bg-white/5 text-portal-text border border-white/5 active:scale-[0.98]",
     outline: "bg-transparent border border-white/10 text-portal-text hover:bg-white/5",
     ghost: "bg-transparent text-portal-muted hover:text-portal-text hover:bg-white/5",
-    danger: "bg-portal-error/10 text-portal-error hover:bg-portal-error hover:text-white border border-portal-error/10",
+    danger: "bg-portal-error hover:bg-primary-hover text-white shadow-sm",
   };
 
   const sizes = {
     sm: "px-3 py-1.5 text-xs font-bold uppercase tracking-wider",
     md: "px-5 py-2.5 text-sm font-bold",
-    lg: "px-8 py-4 text-base font-bold",
+    lg: "px-8 py-3 text-base font-bold",
   };
 
   return (
     <button
-      className={`inline-flex items-center justify-center rounded-xl font-bold transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center rounded-xl font-bold transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${sizes[size]} ${className}`}
       disabled={loading || props.disabled}
       {...props}
     >

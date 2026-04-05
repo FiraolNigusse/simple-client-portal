@@ -17,7 +17,7 @@ export function UpgradeBanner({ resource, onDismiss }) {
   const plan = subscription?.plan_label ?? "your current plan";
 
   return (
-    <div className="flex items-start gap-6 rounded-[20px] border border-primary/20 bg-primary/10 p-6 animate-in slide-in-from-top-2 duration-300 aurora-glow">
+    <div className="flex items-start gap-6 rounded-[20px] border border-primary/20 bg-primary/10 p-6 animate-in slide-in-from-top-2 duration-300">
       <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-accent text-white shadow-lg shadow-primary/20">
         <svg className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />

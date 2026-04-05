@@ -88,9 +88,9 @@ export function DashboardClientsPage() {
       ) : clients.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {clients.map(client => (
-            <Card key={client.id} className="group relative border-white/5 hover:border-accent/40 hover:shadow-2xl hover:shadow-accent/5 overflow-hidden transition-all duration-300">
+            <Card key={client.id} className="group relative border-white/5 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/5 overflow-hidden transition-all duration-300">
               <div className="mb-6 flex items-start justify-between">
-                <div className="h-14 w-14 rounded-[18px] bg-white/5 flex items-center justify-center text-xl font-black text-accent group-hover:bg-accent group-hover:text-sidebar group-hover:shadow-[0_0_20px_rgba(34,211,238,0.3)] transition-all duration-500">
+                <div className="h-14 w-14 rounded-[18px] bg-white/5 flex items-center justify-center text-xl font-black text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
                   {client.name[0]}
                 </div>
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity relative z-10">
@@ -111,7 +111,7 @@ export function DashboardClientsPage() {
                 </div>
               </div>
               
-              <h3 className="text-xl font-black tracking-tight text-portal-text group-hover:text-accent transition-colors">{client.name}</h3>
+              <h3 className="text-xl font-black tracking-tight text-portal-text group-hover:text-primary transition-colors">{client.name}</h3>
               <p className="text-[10px] text-portal-muted mb-6 font-black uppercase tracking-[0.2em] opacity-60">{client.company || "Independent Business"}</p>
               
               <div className="space-y-3 border-t border-white/5 pt-6">
@@ -125,7 +125,7 @@ export function DashboardClientsPage() {
                 </div>
                 {client.projects_count !== undefined && (
                   <div className="mt-3">
-                    <Badge variant="indigo" className="rounded-lg tracking-[0.1em]">{client.projects_count || 0} Managed Projects</Badge>
+                    <Badge variant="primary" className="rounded-lg tracking-[0.1em]">{client.projects_count || 0} Managed Projects</Badge>
                   </div>
                 )}
               </div>

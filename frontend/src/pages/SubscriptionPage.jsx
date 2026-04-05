@@ -48,23 +48,23 @@ export function SubscriptionPage() {
       </div>
 
       {user?.is_superuser && (
-        <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 px-6 py-4 animate-in slide-in-from-top duration-500">
-          <div className="flex gap-3 items-center text-amber-500 mb-1">
+        <div className="rounded-xl border border-warning/20 bg-warning/10 px-6 py-4 animate-in slide-in-from-top duration-500">
+          <div className="flex gap-3 items-center text-warning mb-1">
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <span className="text-xs font-black uppercase tracking-widest">Developer Mode Active</span>
           </div>
-          <p className="text-sm text-portal-muted">As a superuser, you can instantly switch between plans to test resource limits across the platform.</p>
+          <p className="text-sm text-portal-muted font-bold opacity-80">As a superuser, you can instantly switch between plans to test resource limits across the platform.</p>
         </div>
       )}
 
       {!loading && subscription && (
-        <Card className="flex items-center justify-between border-primary/20 bg-primary/10 aurora-glow">
+        <Card className="flex items-center justify-between border-primary/20 bg-primary/10">
           <div className="flex gap-6 items-center">
-            <div className="h-16 w-16 rounded-[20px] bg-indigo-gradient flex items-center justify-center text-white shadow-2xl shadow-primary/30 p-1">
+            <div className="h-16 w-16 rounded-[20px] bg-primary flex items-center justify-center text-white p-1">
               <div className="h-full w-full rounded-[19px] bg-bg-secondary flex items-center justify-center">
-                <svg className="h-8 w-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-8 w-8 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
               </div>
@@ -108,11 +108,11 @@ export function SubscriptionPage() {
             return (
               <Card 
                 key={p.plan} 
-                className={`relative flex flex-col p-8 transition-all duration-500 overflow-hidden group ${isCurrent ? 'ring-2 ring-accent border-transparent' : 'border-white/5 hover:border-white/20'}`}
+                className={`relative flex flex-col p-8 transition-all duration-500 overflow-hidden group ${isCurrent ? 'ring-2 ring-primary border-transparent' : 'border-white/5 hover:border-white/20'}`}
               >
                 {isCurrent && (
                   <div className="absolute top-0 right-0 p-4">
-                    <Badge variant="indigo" className="bg-accent/20 text-accent border-accent/20">Current</Badge>
+                    <Badge variant="primary" className="bg-primary/20 text-primary border-primary/20">Current</Badge>
                   </div>
                 )}
                 
@@ -149,7 +149,7 @@ export function SubscriptionPage() {
         )}
       </div>
 
-      <div className="rounded-[24px] border border-white/5 bg-white/[0.02] p-8 aurora-glow">
+      <div className="rounded-[24px] border border-white/5 bg-white/[0.02] p-8">
         <div className="flex items-center gap-4 mb-3 text-portal-text">
           <div className="p-2 rounded-xl bg-accent/10">
             <svg className="h-6 w-6 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">

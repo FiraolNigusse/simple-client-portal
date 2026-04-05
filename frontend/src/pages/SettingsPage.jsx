@@ -35,7 +35,7 @@ export function SettingsPage() {
 
       <div className="grid gap-8 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-6">
-          <Card className="aurora-glow">
+          <Card>
             <h3 className="text-lg font-bold text-portal-text mb-6">Profile Information</h3>
             <form onSubmit={handleUpdateProfile} className="space-y-6">
               <div className="grid gap-6 md:grid-cols-2">

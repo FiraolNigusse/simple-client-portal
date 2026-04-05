@@ -1,9 +1,9 @@
 import { useSubscription } from "../context/SubscriptionContext";
 
 const PLAN_STYLES = {
-  starter:      "border-slate-600/40 bg-slate-800/60 text-slate-400",
-  professional: "border-blue-500/30 bg-blue-500/10 text-blue-400",
-  agency:       "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+  starter:      "status-badge status-pending",
+  professional: "status-badge status-active",
+  agency:       "status-badge status-active border-accent/30 bg-accent/10 text-accent",
 };
 
 export function SubscriptionBadge() {

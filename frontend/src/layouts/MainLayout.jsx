@@ -95,19 +95,19 @@ export function MainLayout() {
 
       {/* Sidebar (Desktop and Mobile) */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-bg-secondary border-r border-white/5 transition-transform duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-sidebar-bg border-r border-white/5 transition-transform duration-300 ease-in-out
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         md:relative md:flex md:translate-x-0 lg:w-72
       `}>
         {/* Sidebar Header */}
         <div className="flex h-16 items-center justify-between border-b border-white/5 px-6">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-accent shadow-lg shadow-primary/25 shadow-[0_0_15px_var(--primary-glow)]">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary shadow-sm">
               <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
-            <span className="text-xl font-bold tracking-tight text-portal-text">AuroraDesk</span>
+            <span className="text-xl font-bold tracking-tight text-portal-text">FinDesk</span>
           </div>
           {/* Close button for mobile */}
           <button 
@@ -129,13 +129,13 @@ export function MainLayout() {
               end={item.end}
               onClick={closeSidebar}
               className={({ isActive }) => `
-                group flex items-center gap-3 rounded-[12px] px-4 py-2.5 text-sm font-semibold transition-all duration-300
+                group flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200
                 ${isActive 
-                  ? "bg-primary/10 text-primary border-l-2 border-primary shadow-[0_0_20px_var(--primary-glow)]" 
+                  ? "sidebar-item-active" 
                   : "text-portal-muted hover:bg-white/5 hover:text-portal-text"}
               `}
             >
-              <item.icon className={`h-5 w-5 shrink-0 transition-all duration-300 ${location.pathname === item.to || (item.to !== "/dashboard" && location.pathname.startsWith(item.to)) ? "text-primary drop-shadow-[0_0_8px_var(--primary-glow)]" : ""}`} />
+              <item.icon className="h-5 w-5 shrink-0 transition-all duration-200" />
               {item.label}
             </NavLink>
           ))}
@@ -143,8 +143,8 @@ export function MainLayout() {
 
         {/* Sidebar Footer */}
         <div className="border-t border-white/5 p-4">
-          <div className="flex items-center gap-3 rounded-2xl bg-white/5 p-3 border border-white/5 backdrop-blur-sm">
-            <div className="h-10 w-10 shrink-0 rounded-xl bg-gradient-to-tr from-primary/20 to-accent/20 flex items-center justify-center text-sm font-bold text-accent border border-accent/10">
+          <div className="flex items-center gap-3 rounded-2xl bg-white/5 p-3 border border-white/5">
+            <div className="h-10 w-10 shrink-0 rounded-xl bg-primary/10 flex items-center justify-center text-sm font-bold text-primary border border-primary/10">
               {user?.email?.[0].toUpperCase() || "U"}
             </div>
             <div className="min-w-0 flex-1">
@@ -160,7 +160,7 @@ export function MainLayout() {
       {/* Main Container */}
       <div className="flex flex-1 flex-col">
         {/* Top Navbar */}
-        <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/5 bg-bg-secondary/80 px-4 md:px-8 backdrop-blur-xl aurora-glow z-50">
+        <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/5 bg-bg-secondary px-4 md:px-8 backdrop-blur-xl z-50">
           <div className="flex items-center gap-3">
             {/* Hamburger Button */}
             <button 
@@ -173,7 +173,7 @@ export function MainLayout() {
             </button>
 
             <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-tr from-primary to-accent shadow-lg shadow-primary/20">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary shadow-sm">
                 <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
@@ -187,10 +187,8 @@ export function MainLayout() {
               onClick={() => setProfileOpen(!profileOpen)}
               className="flex items-center gap-3 rounded-2xl p-1.5 transition-all hover:bg-white/5"
             >
-              <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-primary to-accent p-[1px]">
-                <div className="h-full w-full rounded-[11px] bg-bg-secondary flex items-center justify-center text-xs font-bold text-portal-text">
-                  {user?.email?.[0].toUpperCase() || "U"}
-                </div>
+              <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center text-xs font-bold text-white">
+                {user?.email?.[0].toUpperCase() || "U"}
               </div>
               <svg className="h-4 w-4 text-portal-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
@@ -203,7 +201,7 @@ export function MainLayout() {
                   className="fixed inset-0 z-[60]" 
                   onClick={() => setProfileOpen(false)} 
                 />
-                <div className="absolute right-0 mt-3 w-64 origin-top-right rounded-[20px] border border-white/10 bg-bg-secondary px-2 py-2 shadow-2xl shadow-black/50 backdrop-blur-xl z-[70]">
+                <div className="absolute right-0 mt-3 w-64 origin-top-right rounded-2xl border border-white/10 bg-card-bg px-2 py-2 shadow-2xl shadow-black/50 backdrop-blur-xl z-[70]">
                   <div className="px-4 py-4 border-b border-white/5">
                     <p className="text-[10px] uppercase tracking-[0.1em] font-black text-portal-muted mb-1">Authenticated</p>
                     <p className="truncate text-sm font-bold text-portal-text">{user?.email}</p>
@@ -211,7 +209,7 @@ export function MainLayout() {
                   <div className="p-1 space-y-1">
                     <NavLink
                       to="/subscription"
-                      className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-portal-muted hover:bg-white/5 hover:text-portal-text rounded-[14px] transition-all"
+                      className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-portal-muted hover:bg-white/5 hover:text-portal-text rounded-xl transition-all"
                       onClick={() => setProfileOpen(false)}
                     >
                       <svg className="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -221,7 +219,7 @@ export function MainLayout() {
                     </NavLink>
                     <button
                       onClick={handleLogout}
-                      className="flex w-full items-center gap-3 px-4 py-3 text-sm font-semibold text-portal-error hover:bg-portal-error/5 rounded-[14px] transition-all"
+                      className="flex w-full items-center gap-3 px-4 py-3 text-sm font-semibold text-portal-error hover:bg-portal-error/5 rounded-xl transition-all"
                     >
                       <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -237,7 +235,7 @@ export function MainLayout() {
 
         {/* Page Content */}
         <main className="flex-1 min-h-screen bg-background p-6">
-          <div className="mx-auto max-w-6xl">
+          <div className="mx-auto max-w-7xl">
             <Outlet />
           </div>
         </main>

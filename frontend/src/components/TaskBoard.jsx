@@ -51,22 +51,22 @@ export function TaskBoard({ tasks, setTasks, projectId }) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center bg-white/5 p-4 rounded-2xl border border-white/5 aurora-glow">
+    <div className="space-y-6 animate-in fade-in duration-500">
+      <div className="flex justify-between items-center bg-white/5 p-6 rounded-3xl border border-white/5">
         <div>
-          <h4 className="font-bold text-portal-text">Project Tasks</h4>
-          <p className="text-[10px] text-portal-muted uppercase font-black tracking-widest mt-0.5">{tasks.length} Action Items</p>
+          <h4 className="font-black text-portal-text uppercase tracking-widest text-xs">Project Workflow</h4>
+          <p className="text-[10px] text-portal-muted uppercase font-black tracking-[0.2em] mt-2 opacity-50">{tasks.length} Operational Tasks</p>
         </div>
-        <Button size="sm" onClick={() => setModalOpen(true)} className="rounded-xl px-5">Add Task</Button>
+        <Button size="sm" onClick={() => setModalOpen(true)} className="rounded-xl px-6 font-bold uppercase tracking-widest text-[10px]">Add Entry</Button>
       </div>
 
       <div className="grid gap-3">
         {tasks.map(task => (
-          <Card key={task.id} className="flex items-center gap-4 py-3.5 border-white/5 hover:border-primary/50 transition-all group hover:shadow-[0_0_20px_var(--primary-glow)]">
+          <Card key={task.id} className="flex items-center gap-5 py-4 border-white/5 hover:border-primary/40 transition-all group overflow-hidden">
             <button 
               onClick={() => handleToggle(task)}
-              className={`h-6 w-6 rounded-lg border-2 border-white/10 flex items-center justify-center transition-all ${
-                task.status === "completed" ? "bg-primary border-primary text-white shadow-[0_0_10px_var(--primary-glow)]" : "hover:border-primary bg-white/5"
+              className={`h-7 w-7 rounded-xl border-2 border-white/10 flex items-center justify-center transition-all ${
+                task.status === "completed" ? "bg-primary border-primary text-white" : "hover:border-primary bg-white/5"
               }`}
             >
               {task.status === "completed" && (
@@ -76,20 +76,20 @@ export function TaskBoard({ tasks, setTasks, projectId }) {
               )}
             </button>
             <div className="flex-1 min-w-0">
-              <p className={`text-sm font-bold transition-all ${task.status === "completed" ? "text-portal-muted/40 line-through" : "text-portal-text group-hover:text-primary transition-colors"}`}>
+              <p className={`text-sm font-black transition-all tracking-tight ${task.status === "completed" ? "text-portal-muted/40 line-through" : "text-portal-text group-hover:text-primary transition-colors"}`}>
                 {task.title}
               </p>
               {task.description && (
-                <p className={`text-xs mt-0.5 line-clamp-1 ${task.status === "completed" ? "text-portal-muted/20" : "text-portal-muted font-medium"}`}>{task.description}</p>
+                <p className={`text-xs mt-1 line-clamp-1 font-medium ${task.status === "completed" ? "text-portal-muted/20" : "text-portal-muted opacity-80"}`}>{task.description}</p>
               )}
             </div>
-            <div className="flex items-center gap-4">
-              <Badge variant={task.status === "completed" ? "success" : "default"}>{task.status === "completed" ? "Done" : "To Do"}</Badge>
+            <div className="flex items-center gap-6">
+              <Badge variant={task.status === "completed" ? "success" : "default"} className="rounded-lg text-[9px] font-black uppercase tracking-widest px-3 py-1.5">{task.status === "completed" ? "Verified" : "Pending"}</Badge>
               <button 
                 onClick={() => handleDelete(task.id)}
-                className="text-portal-muted/30 hover:text-portal-error transition-all p-1.5 hover:bg-portal-error/10 rounded-lg opacity-0 group-hover:opacity-100"
+                className="text-portal-muted/30 hover:text-portal-error transition-all p-2 hover:bg-portal-error/10 rounded-xl opacity-0 group-hover:opacity-100"
               >
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               </button>
@@ -97,43 +97,42 @@ export function TaskBoard({ tasks, setTasks, projectId }) {
           </Card>
         ))}
         {tasks.length === 0 && (
-          <div className="py-16 text-center border-2 border-dashed border-white/5 rounded-[24px]">
-            <div className="flex justify-center mb-4">
-              <div className="h-12 w-12 rounded-2xl bg-white/5 flex items-center justify-center text-portal-muted">
-                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="py-20 text-center border-2 border-dashed border-white/5 rounded-[32px] bg-white/[0.01]">
+            <div className="flex justify-center mb-6">
+              <div className="h-16 w-16 rounded-3xl bg-white/5 flex items-center justify-center text-white/10">
+                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                 </svg>
               </div>
             </div>
-            <p className="text-sm font-black text-portal-text uppercase tracking-widest">No tasks identified</p>
-            <p className="text-xs text-portal-muted mt-2">Initialize your workflow by adding the first action item.</p>
+            <p className="text-sm font-black text-portal-text uppercase tracking-widest mb-2">Workspace initialized</p>
+            <p className="text-xs text-portal-muted font-medium opacity-60">Add the first task to begin project orchestration.</p>
           </div>
         )}
       </div>
 
-
       <Modal 
         isOpen={modalOpen} 
         onClose={() => setModalOpen(false)} 
-        title="Add Project Task"
+        title="New Action Item"
         footer={(
           <>
             <Button variant="ghost" onClick={() => setModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleCreateTask} loading={loading}>Add Task</Button>
+            <Button onClick={handleCreateTask} loading={loading}>Deploy Task</Button>
           </>
         )}
       >
-        <form onSubmit={handleCreateTask} className="space-y-4 py-2">
+        <form onSubmit={handleCreateTask} className="space-y-6 py-4">
           <Input 
-            label="Task Title" 
-            placeholder="e.g. Design homepage" 
+            label="Designation" 
+            placeholder="e.g. Protocol Implementation" 
             required 
             value={formData.title}
             onChange={e => setFormData({...formData, title: e.target.value})}
           />
           <Input 
-            label="Description (Optional)" 
-            placeholder="What needs to be done?" 
+            label="Contextual Description" 
+            placeholder="Provide operational details..." 
             value={formData.description}
             onChange={e => setFormData({...formData, description: e.target.value})}
           />

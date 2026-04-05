@@ -48,7 +48,7 @@ export function InvoicesPage() {
       >
         {invoices.map(inv => (
           <tr key={inv.id} className="hover:bg-white/5 transition-all duration-300 cursor-pointer border-b border-white/5 last:border-0 group">
-            <td className="px-6 py-5 font-black text-portal-text tracking-tighter group-hover:text-accent">#{inv.id}</td>
+            <td className="px-6 py-5 font-black text-portal-text tracking-tighter group-hover:text-primary">#{inv.id}</td>
             <td className="px-6 py-5 text-portal-text font-bold">{inv.client_name}</td>
             <td className="px-6 py-5 text-portal-muted font-medium opacity-80">{inv.project_title || "General Billing"}</td>
             <td className="px-6 py-5 font-black text-portal-text">${inv.amount}</td>

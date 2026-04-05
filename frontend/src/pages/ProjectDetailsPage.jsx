@@ -55,7 +55,7 @@ export function ProjectDetailsPage() {
 
   const handleStatusChange = async (newStatus) => {
     try {
-      const res = await api.updateProject(id, { status: newStatus });
+      await api.updateProject(id, { status: newStatus });
       setProject({ ...project, status: newStatus });
       toast(`Project set to ${newStatus}`);
     } catch {
@@ -68,43 +68,48 @@ export function ProjectDetailsPage() {
     toast("File uploaded!");
   };
 
-  if (loading) return <Skeleton height="400px" />;
+  if (loading) return <div className="p-8 space-y-6"><Skeleton height="200px" /><Skeleton height="400px" /></div>;
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-800 pb-6">
-        <div className="space-y-1">
-          <div className="flex items-center gap-2">
-            <Button variant="ghost" size="sm" onClick={() => navigate("/projects")} className="-ml-3">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-white/5 pb-8">
+        <div className="space-y-3">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/projects")} className="-ml-3 rounded-xl hover:bg-white/5">
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
               </svg>
             </Button>
-            <Badge variant="indigo">{project.client_name}</Badge>
+            <Badge variant="primary" className="rounded-lg tracking-[0.1em] font-black uppercase text-[10px]">{project.client_name}</Badge>
           </div>
-          <h2 className="text-3xl font-bold text-portal-text">{project.title}</h2>
-          <p className="text-sm text-portal-muted max-w-2xl">{project.description || "No project description."}</p>
+          <h2 className="text-4xl font-black text-portal-text tracking-tighter uppercase">{project.title}</h2>
+          <p className="text-sm text-portal-muted max-w-2xl font-medium opacity-80">{project.description || "No project description provided."}</p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <Badge variant={project.status === 'active' ? 'success' : 'default'} className="px-3 py-1 text-xs">
+        <div className="flex items-center gap-4 bg-white/5 p-3 rounded-2xl border border-white/5">
+          <Badge variant={project.status === 'active' ? 'success' : 'default'} className="px-4 py-2 text-[10px] font-black tracking-widest rounded-xl">
             {project.status.toUpperCase()}
           </Badge>
-          <div className="h-4 w-[1px] bg-slate-800" />
-          <Button variant="ghost" size="sm" onClick={() => handleStatusChange(project.status === 'active' ? 'completed' : 'active')}>
+          <div className="h-4 w-[1px] bg-white/10" />
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={() => handleStatusChange(project.status === 'active' ? 'completed' : 'active')}
+            className="text-primary hover:bg-primary/10 rounded-xl font-bold"
+          >
             Mark as {project.status === 'active' ? 'Completed' : 'Active'}
           </Button>
         </div>
       </div>
 
-      <div className="flex border-b border-white/5">
+      <div className="flex border-b border-white/5 overflow-x-auto no-scrollbar scroll-smooth">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all border-b-2 ${
+            className={`flex items-center gap-3 px-8 py-5 text-[10px] uppercase tracking-[0.2em] font-black transition-all border-b-2 whitespace-nowrap ${
               activeTab === tab.id 
-                ? "border-primary text-primary bg-primary/5 shadow-[inset_0_-10px_20px_var(--primary-glow)]" 
+                ? "border-primary text-primary bg-primary/5" 
                 : "border-transparent text-portal-muted hover:text-portal-text hover:bg-white/5"
             }`}
           >
@@ -114,20 +119,24 @@ export function ProjectDetailsPage() {
         ))}
       </div>
 
-      <div className="py-2">
+      <div className="py-4">
         {activeTab === "files" && (
-          <div className="space-y-6">
-            <Card className="bg-surface/50 border-dashed border-2 border-white/10">
+          <div className="space-y-8 animate-in fade-in duration-500">
+            <Card className="bg-white/[0.02] border-dashed border-2 border-white/10 p-10 flex flex-col items-center justify-center">
               <FileUploader projectId={id} onUploaded={handleFileUploaded} />
             </Card>
             <FileList files={files} />
           </div>
         )}
         {activeTab === "messages" && (
-          <ChatWindow projectId={id} senderType="freelancer" />
+          <div className="animate-in fade-in duration-500">
+            <ChatWindow projectId={id} senderType="freelancer" />
+          </div>
         )}
         {activeTab === "tasks" && (
-          <TaskBoard tasks={tasks} setTasks={setTasks} projectId={id} />
+          <div className="animate-in fade-in duration-500">
+            <TaskBoard tasks={tasks} setTasks={setTasks} projectId={id} />
+          </div>
         )}
       </div>
     </div>

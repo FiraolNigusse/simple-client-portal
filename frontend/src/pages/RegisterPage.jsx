@@ -37,13 +37,13 @@ export function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-6">
       <div className="w-full max-w-md space-y-8 animate-in fade-in duration-700">
         <div className="text-center">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary shadow-2xl shadow-primary/40 mb-4">
+          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary mb-6">
             <svg className="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold tracking-tight text-white">Get started</h1>
-          <p className="mt-2 text-sm text-portal-muted">Join 2,000+ freelancers managing their business on Portal.</p>
+          <h1 className="text-3xl font-black tracking-tight text-portal-text uppercase tracking-[0.1em]">Get started</h1>
+          <p className="mt-2 text-sm text-portal-muted font-medium">Join 2,000+ freelancers managing their business on Portal.</p>
         </div>
 
         <Card className="p-8 border-slate-800/60 shadow-2xl shadow-black/50">
@@ -85,9 +85,9 @@ export function RegisterPage() {
           </form>
         </Card>
 
-        <p className="text-center text-sm text-portal-muted">
+        <p className="text-center text-sm text-portal-muted font-bold">
           Already have an account?{" "}
-          <Link to="/login" className="font-bold text-primary hover:text-indigo-400 underline underline-offset-4 decoration-primary/30">
+          <Link to="/login" className="text-primary hover:text-primary-hover underline underline-offset-4 decoration-primary/30">
             Sign in
           </Link>
         </p>

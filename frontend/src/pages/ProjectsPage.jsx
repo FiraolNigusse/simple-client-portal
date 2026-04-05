@@ -72,7 +72,7 @@ export function ProjectsPage() {
                 </span>
               </div>
               
-              <h3 className="text-lg font-black tracking-tight text-portal-text group-hover:text-accent transition-colors">{project.title}</h3>
+              <h3 className="text-lg font-black tracking-tight text-portal-text group-hover:text-primary transition-colors">{project.title}</h3>
               <p className="text-[10px] text-portal-muted mb-4 font-black uppercase tracking-[0.2em] opacity-60">{project.client_name}</p>
               
               <p className="line-clamp-2 text-sm text-portal-muted mb-6 font-medium">
@@ -81,11 +81,11 @@ export function ProjectsPage() {
               
               <div className="flex items-center justify-between border-t border-white/5 pt-4">
                 <div className="flex -space-x-2">
-                  <div className="h-6 w-6 rounded-full bg-accent/20 border-2 border-surface flex items-center justify-center text-[10px] font-black text-accent">
+                  <div className="h-6 w-6 rounded-full bg-primary/20 border-2 border-card-bg flex items-center justify-center text-[10px] font-black text-primary">
                     {project.client_name?.[0]}
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] text-portal-muted font-black uppercase tracking-widest group-hover:text-accent transition-colors">
+                <div className="flex items-center gap-2 text-[10px] text-portal-muted font-black uppercase tracking-widest group-hover:text-primary transition-colors">
                   Details
                   <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
@@ -96,7 +96,7 @@ export function ProjectsPage() {
           ))}
         </div>
       ) : (
-        <Card className="flex flex-col items-center justify-center py-24 text-center border-white/5 bg-surface/30 aurora-glow">
+        <Card className="flex flex-col items-center justify-center py-24 text-center border-white/5 bg-white/[0.02]">
           <div className="mb-8 rounded-[32px] bg-white/5 p-10 text-white/10 shadow-2xl shadow-black/20">
             <svg className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />

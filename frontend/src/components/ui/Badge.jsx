@@ -1,10 +1,11 @@
 export function Badge({ children, variant = "default", className = "" }) {
   const variants = {
     default: "bg-white/5 text-portal-muted border border-white/10",
-    success: "bg-portal-success/10 text-portal-success border border-portal-success/10",
-    warning: "bg-secondary/10 text-secondary border border-secondary/10",
-    error: "bg-portal-error/10 text-portal-error border border-portal-error/10",
-    indigo: "bg-primary/10 text-primary border border-primary/10",
+    success: "bg-success/10 text-success border border-success/10",
+    warning: "bg-warning/10 text-warning border border-warning/10",
+    error: "bg-danger/10 text-danger border border-danger/10",
+    accent: "bg-accent/10 text-accent border border-accent/10",
+    primary: "bg-primary/10 text-primary border border-primary/10",
   };
 
   return (

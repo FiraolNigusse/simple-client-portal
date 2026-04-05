@@ -19,24 +19,24 @@ const timeAgo = (iso) => {
 };
 
 const PROJECT_STATUS_STYLE = {
-  active: "bg-emerald-500/15 text-emerald-400",
-  completed: "bg-slate-700/60 text-slate-400",
+  active: "bg-portal-success/10 text-portal-success border border-portal-success/10",
+  completed: "bg-white/5 text-portal-muted border border-white/5",
 };
 
 const INVOICE_STATUS_STYLE = {
-  pending: "bg-amber-500/15 text-amber-400",
-  paid: "bg-emerald-500/15 text-emerald-400",
+  pending: "bg-portal-warning/10 text-portal-warning border border-portal-warning/10",
+  paid: "bg-portal-success/10 text-portal-success border border-portal-success/10",
 };
 
 function SkeletonRow() {
   return (
     <div className="flex animate-pulse items-center gap-3 px-4 py-3">
-      <div className="h-8 w-8 rounded-lg bg-slate-800" />
+      <div className="h-8 w-8 rounded-lg bg-white/5" />
       <div className="flex-1 space-y-1.5">
-        <div className="h-3 w-32 rounded bg-slate-800" />
-        <div className="h-2.5 w-20 rounded bg-slate-800" />
+        <div className="h-3 w-32 rounded bg-white/5" />
+        <div className="h-2.5 w-20 rounded bg-white/5" />
       </div>
-      <div className="h-2.5 w-10 rounded bg-slate-800" />
+      <div className="h-2.5 w-10 rounded bg-white/5" />
     </div>
   );
 }
@@ -72,27 +72,27 @@ export function RecentActivity({ summary, loading }) {
     .slice(0, 8);
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-950/50">
+    <div className="rounded-2xl border border-white/5 bg-card overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-800 px-5 py-4">
-        <p className="text-sm font-semibold text-slate-100">Recent Activity</p>
-        <span className="text-[10px] text-slate-600 uppercase tracking-wider">
-          Last 5 projects &amp; invoices
+      <div className="flex items-center justify-between border-b border-white/5 px-5 py-4">
+        <p className="text-sm font-black text-portal-text uppercase tracking-wider">Recent Activity</p>
+        <span className="text-[10px] text-portal-muted uppercase tracking-tight font-bold">
+          Analytics
         </span>
       </div>
 
       {/* List */}
-      <div className="divide-y divide-slate-800/60">
+      <div className="divide-y divide-white/5">
         {loading ? (
           [1, 2, 3, 4].map((n) => <SkeletonRow key={n} />)
         ) : items.length === 0 ? (
           <div className="flex flex-col items-center gap-2 py-10 text-center">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-800 text-slate-500">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white/5 text-portal-muted">
               <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 12h16.5m-16.5 3.75h16.5M3.75 19.5h16.5M5.625 4.5h12.75a1.875 1.875 0 010 3.75H5.625a1.875 1.875 0 010-3.75z" />
               </svg>
             </div>
-            <p className="text-xs text-slate-500">No recent activity yet</p>
+            <p className="text-xs font-bold text-portal-muted uppercase tracking-widest">No recent activity</p>
           </div>
         ) : (
           items.map((item) => (
@@ -100,12 +100,12 @@ export function RecentActivity({ summary, loading }) {
               key={`${item.type}-${item.id}`}
               type="button"
               onClick={item.onClick}
-              className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors hover:bg-slate-900/60"
+              className="flex w-full items-center gap-3 px-5 py-3.5 text-left transition-colors hover:bg-white/[0.02]"
             >
               {/* Type icon */}
               <div
-                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg
-                  ${item.type === "project" ? "bg-emerald-500/10 text-emerald-400" : "bg-amber-500/10 text-amber-400"}`}
+                className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border
+                  ${item.type === "project" ? "bg-primary/10 text-primary border-primary/5" : "bg-accent/10 text-accent border-accent/5"}`}
               >
                 {item.type === "project" ? (
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
@@ -119,17 +119,17 @@ export function RecentActivity({ summary, loading }) {
               </div>
 
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-slate-100">
+                <p className="truncate text-sm font-bold text-portal-text">
                   {item.primary}
                 </p>
-                <p className="text-xs text-slate-500">{item.secondary}</p>
+                <p className="text-xs font-medium text-portal-muted uppercase tracking-tight">{item.secondary}</p>
               </div>
 
               <div className="flex shrink-0 flex-col items-end gap-1.5">
-                <span className={`rounded-full px-2 py-0.5 text-[10px] font-semibold capitalize ${item.badgeStyle}`}>
+                <span className={`rounded px-2.5 py-0.5 text-[9px] font-black uppercase tracking-widest ${item.badgeStyle}`}>
                   {item.badge}
                 </span>
-                <span className="text-[10px] text-slate-600">{timeAgo(item.time)}</span>
+                <span className="text-[10px] font-bold text-portal-muted/60 uppercase">{timeAgo(item.time)}</span>
               </div>
             </button>
           ))
