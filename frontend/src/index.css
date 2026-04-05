@@ -30,10 +30,15 @@
   body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
-    @apply antialiased selection:bg-primary/30;
+    @apply antialiased;
     overflow-x: hidden;
     overflow-y: auto;
     min-height: 100dvh;
+  }
+
+  ::selection {
+    background-color: var(--primary-glow);
+    color: white;
   }
 }
 
