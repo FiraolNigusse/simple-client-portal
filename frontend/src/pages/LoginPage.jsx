@@ -33,14 +33,14 @@ export function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-background p-6">
       <div className="w-full max-w-md space-y-8 animate-in fade-in duration-700">
         <div className="text-center">
-          <div className="inline-flex h-20 w-20 items-center justify-center rounded-[24px] bg-gradient-to-tr from-primary to-accent shadow-2xl shadow-primary/40 mb-8 p-1">
-            <div className="h-full w-full rounded-[23px] bg-sidebar flex items-center justify-center">
-              <svg className="h-10 w-10 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="inline-flex h-20 w-20 items-center justify-center rounded-[24px] bg-gradient-to-tr from-primary to-accent shadow-2xl shadow-primary/40 mb-8 p-1 shadow-[0_0_30px_var(--primary-glow)]">
+            <div className="h-full w-full rounded-[23px] bg-bg-secondary flex items-center justify-center">
+              <svg className="h-10 w-10 text-accent drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
             </div>
           </div>
-          <h1 className="text-4xl font-black tracking-tight text-portal-text uppercase tracking-[0.1em]">Welcome Back</h1>
+          <h1 className="text-4xl font-black tracking-tight text-portal-text uppercase tracking-[0.1em] drop-shadow-[0_0_15px_var(--primary-glow)]">Welcome Back</h1>
           <p className="mt-3 text-sm text-portal-muted font-medium">Elevate your freelance workflow with AuroraDesk.</p>
         </div>
 

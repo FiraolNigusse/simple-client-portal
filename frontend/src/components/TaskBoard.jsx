@@ -62,11 +62,11 @@ export function TaskBoard({ tasks, setTasks, projectId }) {
 
       <div className="grid gap-3">
         {tasks.map(task => (
-          <Card key={task.id} className="flex items-center gap-4 py-3.5 border-white/5 hover:border-primary/50 transition-all group">
+          <Card key={task.id} className="flex items-center gap-4 py-3.5 border-white/5 hover:border-primary/50 transition-all group hover:shadow-[0_0_20px_var(--primary-glow)]">
             <button 
               onClick={() => handleToggle(task)}
               className={`h-6 w-6 rounded-lg border-2 border-white/10 flex items-center justify-center transition-all ${
-                task.status === "completed" ? "bg-accent border-accent text-sidebar" : "hover:border-primary bg-white/5"
+                task.status === "completed" ? "bg-primary border-primary text-white shadow-[0_0_10px_var(--primary-glow)]" : "hover:border-primary bg-white/5"
               }`}
             >
               {task.status === "completed" && (
@@ -76,7 +76,7 @@ export function TaskBoard({ tasks, setTasks, projectId }) {
               )}
             </button>
             <div className="flex-1 min-w-0">
-              <p className={`text-sm font-bold transition-all ${task.status === "completed" ? "text-portal-muted/40 line-through" : "text-portal-text"}`}>
+              <p className={`text-sm font-bold transition-all ${task.status === "completed" ? "text-portal-muted/40 line-through" : "text-portal-text group-hover:text-primary transition-colors"}`}>
                 {task.title}
               </p>
               {task.description && (
@@ -84,7 +84,7 @@ export function TaskBoard({ tasks, setTasks, projectId }) {
               )}
             </div>
             <div className="flex items-center gap-4">
-              <Badge variant={task.status === "completed" ? "success" : "default"}>{task.status}</Badge>
+              <Badge variant={task.status === "completed" ? "success" : "default"}>{task.status === "completed" ? "Done" : "To Do"}</Badge>
               <button 
                 onClick={() => handleDelete(task.id)}
                 className="text-portal-muted/30 hover:text-portal-error transition-all p-1.5 hover:bg-portal-error/10 rounded-lg opacity-0 group-hover:opacity-100"

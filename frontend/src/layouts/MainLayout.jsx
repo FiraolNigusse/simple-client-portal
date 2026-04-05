@@ -95,14 +95,14 @@ export function MainLayout() {
 
       {/* Sidebar (Desktop and Mobile) */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-sidebar border-r border-white/5 transition-transform duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-bg-secondary border-r border-white/5 transition-transform duration-300 ease-in-out
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         md:relative md:flex md:translate-x-0 lg:w-72
       `}>
         {/* Sidebar Header */}
         <div className="flex h-16 items-center justify-between border-b border-white/5 px-6">
           <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-accent shadow-lg shadow-primary/25">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-primary to-accent shadow-lg shadow-primary/25 shadow-[0_0_15px_var(--primary-glow)]">
               <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
               </svg>
@@ -131,11 +131,11 @@ export function MainLayout() {
               className={({ isActive }) => `
                 group flex items-center gap-3 rounded-[12px] px-4 py-2.5 text-sm font-semibold transition-all duration-300
                 ${isActive 
-                  ? "bg-gradient-to-r from-primary/20 to-accent/10 text-accent border border-accent/20 shadow-[0_0_20px_rgba(34,211,238,0.1)]" 
+                  ? "bg-primary/10 text-primary border-l-2 border-primary shadow-[0_0_20px_var(--primary-glow)]" 
                   : "text-portal-muted hover:bg-white/5 hover:text-portal-text"}
               `}
             >
-              <item.icon className="h-5 w-5 shrink-0" />
+              <item.icon className={`h-5 w-5 shrink-0 transition-all duration-300 ${location.pathname === item.to || (item.to !== "/dashboard" && location.pathname.startsWith(item.to)) ? "text-primary drop-shadow-[0_0_8px_var(--primary-glow)]" : ""}`} />
               {item.label}
             </NavLink>
           ))}
@@ -160,7 +160,7 @@ export function MainLayout() {
       {/* Main Container */}
       <div className="flex flex-1 flex-col">
         {/* Top Navbar */}
-        <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/5 bg-sidebar/80 px-4 md:px-8 backdrop-blur-xl aurora-glow z-50">
+        <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/5 bg-bg-secondary/80 px-4 md:px-8 backdrop-blur-xl aurora-glow z-50">
           <div className="flex items-center gap-3">
             {/* Hamburger Button */}
             <button 
@@ -188,7 +188,7 @@ export function MainLayout() {
               className="flex items-center gap-3 rounded-2xl p-1.5 transition-all hover:bg-white/5"
             >
               <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-primary to-accent p-[1px]">
-                <div className="h-full w-full rounded-[11px] bg-sidebar flex items-center justify-center text-xs font-bold text-portal-text">
+                <div className="h-full w-full rounded-[11px] bg-bg-secondary flex items-center justify-center text-xs font-bold text-portal-text">
                   {user?.email?.[0].toUpperCase() || "U"}
                 </div>
               </div>
@@ -203,7 +203,7 @@ export function MainLayout() {
                   className="fixed inset-0 z-[60]" 
                   onClick={() => setProfileOpen(false)} 
                 />
-                <div className="absolute right-0 mt-3 w-64 origin-top-right rounded-[20px] border border-white/10 bg-surface px-2 py-2 shadow-2xl shadow-black/50 backdrop-blur-xl z-[70]">
+                <div className="absolute right-0 mt-3 w-64 origin-top-right rounded-[20px] border border-white/10 bg-bg-secondary px-2 py-2 shadow-2xl shadow-black/50 backdrop-blur-xl z-[70]">
                   <div className="px-4 py-4 border-b border-white/5">
                     <p className="text-[10px] uppercase tracking-[0.1em] font-black text-portal-muted mb-1">Authenticated</p>
                     <p className="truncate text-sm font-bold text-portal-text">{user?.email}</p>

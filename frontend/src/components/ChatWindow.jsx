@@ -50,7 +50,7 @@ export function ChatWindow({ projectId, senderType }) {
   };
 
   return (
-    <Card className="flex flex-col h-[600px] p-0 overflow-hidden border-white/5 bg-sidebar shadow-2xl shadow-black/40 aurora-glow">
+    <Card className="flex flex-col h-[600px] p-0 overflow-hidden border-white/5 bg-bg-secondary shadow-2xl shadow-black/40 aurora-glow">
       <div className="p-4 border-b border-white/5 bg-white/5 flex items-center justify-between">
         <h4 className="font-bold text-portal-text">Project Workspace</h4>
         <div className="flex items-center gap-2">

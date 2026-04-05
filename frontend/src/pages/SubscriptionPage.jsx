@@ -62,8 +62,8 @@ export function SubscriptionPage() {
       {!loading && subscription && (
         <Card className="flex items-center justify-between border-primary/20 bg-primary/10 aurora-glow">
           <div className="flex gap-6 items-center">
-            <div className="h-16 w-16 rounded-[20px] bg-gradient-to-tr from-primary to-accent flex items-center justify-center text-white shadow-2xl shadow-primary/30 p-1">
-              <div className="h-full w-full rounded-[19px] bg-sidebar flex items-center justify-center">
+            <div className="h-16 w-16 rounded-[20px] bg-indigo-gradient flex items-center justify-center text-white shadow-2xl shadow-primary/30 p-1">
+              <div className="h-full w-full rounded-[19px] bg-bg-secondary flex items-center justify-center">
                 <svg className="h-8 w-8 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>

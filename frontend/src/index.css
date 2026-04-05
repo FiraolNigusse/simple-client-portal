@@ -2,13 +2,35 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg-primary: #0B0F1A;
+  --bg-secondary: #121826;
+  --card-bg: #161C2D;
+
+  --primary: #6366F1;
+  --primary-hover: #4F46E5;
+  --primary-glow: rgba(99, 102, 241, 0.35);
+
+  --accent: #22D3EE;
+  --accent-soft: rgba(34, 211, 238, 0.2);
+
+  --success: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+
+  --text-primary: #E5E7EB;
+  --text-secondary: #9CA3AF;
+}
+
 @layer base {
   html, body, #root {
     height: 100%;
   }
 
   body {
-    @apply bg-background text-portal-text antialiased selection:bg-primary/30;
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    @apply antialiased selection:bg-primary/30;
     overflow-x: hidden;
     overflow-y: auto;
     min-height: 100dvh;
@@ -36,6 +58,10 @@
 
   .aurora-border {
     @apply border border-white/[0.05];
+  }
+
+  .bg-indigo-gradient {
+    background: linear-gradient(135deg, #6366F1, #22D3EE);
   }
 }
 

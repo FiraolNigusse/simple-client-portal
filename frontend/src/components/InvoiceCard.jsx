@@ -1,12 +1,12 @@
 const STATUS_STYLES = {
   pending: {
-    dot: "bg-amber-400",
-    badge: "border-amber-500/30 bg-amber-500/10 text-amber-400",
+    dot: "bg-portal-warning shadow-[0_0_8px_var(--warning)]",
+    badge: "border-portal-warning/20 bg-portal-warning/10 text-portal-warning",
     label: "Pending",
   },
   paid: {
-    dot: "bg-emerald-400",
-    badge: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
+    dot: "bg-portal-success shadow-[0_0_8px_var(--success)]",
+    badge: "border-portal-success/20 bg-portal-success/10 text-portal-success",
     label: "Paid",
   },
 };
@@ -38,13 +38,13 @@ export function InvoiceCard({ invoice, onMarkPaid }) {
 
   return (
     <div
-      className={`group relative rounded-xl border bg-slate-950/50 p-5 transition-all hover:border-slate-600
-        ${overdue ? "border-red-500/40" : "border-slate-800"}
+      className={`group relative rounded-xl border bg-surface p-5 transition-all hover:bg-white/[0.03]
+        ${overdue ? "border-portal-error/40 shadow-[0_0_15px_rgba(239,68,68,0.1)]" : "border-white/[0.05]"}
       `}
     >
       {/* Overdue ribbon */}
       {overdue && (
-        <span className="absolute right-4 top-4 rounded-full border border-red-500/30 bg-red-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-red-400">
+        <span className="absolute right-4 top-4 rounded-full border border-portal-error/30 bg-portal-error/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-portal-error">
           Overdue
         </span>
       )}
@@ -54,7 +54,7 @@ export function InvoiceCard({ invoice, onMarkPaid }) {
         <div className="min-w-0 space-y-2">
           {/* Invoice number + status */}
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-medium text-slate-500">
+            <span className="text-[11px] font-medium text-portal-muted">
               #{String(invoice.id).padStart(4, "0")}
             </span>
             <span
@@ -66,25 +66,25 @@ export function InvoiceCard({ invoice, onMarkPaid }) {
           </div>
 
           {/* Client name */}
-          <p className="truncate text-base font-semibold text-slate-100">
+          <p className="truncate text-base font-semibold text-portal-text">
             {invoice.client_name || `Client #${invoice.client}`}
           </p>
 
           {/* Project */}
           {invoice.project_title && (
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-portal-muted">
               Project:{" "}
-              <span className="text-slate-400">{invoice.project_title}</span>
+              <span className="text-portal-text/80">{invoice.project_title}</span>
             </p>
           )}
 
           {/* Dates */}
-          <p className="text-xs text-slate-600">
+          <p className="text-xs text-portal-muted">
             Issued {formatDate(invoice.created_at)}
             {invoice.due_date && (
               <>
                 {" · "}
-                <span className={overdue ? "text-red-400" : ""}>
+                <span className={overdue ? "text-portal-error font-bold" : ""}>
                   Due {formatDate(invoice.due_date)}
                 </span>
               </>
@@ -94,7 +94,7 @@ export function InvoiceCard({ invoice, onMarkPaid }) {
 
         {/* Right — Amount + action */}
         <div className="flex shrink-0 flex-col items-end gap-3">
-          <p className="text-xl font-bold tracking-tight text-slate-50">
+          <p className="text-xl font-bold tracking-tight text-portal-text shadow-primary/20">
             {formatCurrency(invoice.amount)}
           </p>
 
@@ -102,7 +102,7 @@ export function InvoiceCard({ invoice, onMarkPaid }) {
             <button
               type="button"
               onClick={() => onMarkPaid(invoice)}
-              className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-medium text-emerald-400 transition-all hover:bg-emerald-500/20 hover:border-emerald-400/50"
+              className="rounded-lg border border-portal-success/30 bg-portal-success/10 px-3 py-1.5 text-xs font-medium text-portal-success transition-all hover:bg-portal-success hover:text-white"
             >
               Mark as paid
             </button>

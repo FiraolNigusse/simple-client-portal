@@ -9,7 +9,7 @@ export const Button = memo(function Button({
   ...props 
 }) {
   const variants = {
-    primary: "bg-primary hover:bg-[#6B6FF7] text-white shadow-xl shadow-primary/25 active:scale-[0.98]",
+    primary: "bg-primary hover:bg-primary-hover text-white shadow-xl shadow-primary/25 active:scale-[0.98] shadow-[0_0_20px_var(--primary-glow)]",
     secondary: "bg-surface hover:bg-white/5 text-portal-text border border-white/10 active:scale-[0.98]",
     outline: "bg-transparent border border-white/10 text-portal-text hover:bg-white/5",
     ghost: "bg-transparent text-portal-muted hover:text-portal-text hover:bg-white/5",

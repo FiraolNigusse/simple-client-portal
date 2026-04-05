@@ -97,15 +97,15 @@ export function ProjectDetailsPage() {
         </div>
       </div>
 
-      <div className="flex border-b border-slate-800">
+      <div className="flex border-b border-white/5">
         {TABS.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-6 py-4 text-sm font-bold transition-all border-b-2 ${
               activeTab === tab.id 
-                ? "border-primary text-primary bg-primary/5" 
-                : "border-transparent text-portal-muted hover:text-portal-text hover:bg-slate-800/30"
+                ? "border-primary text-primary bg-primary/5 shadow-[inset_0_-10px_20px_var(--primary-glow)]" 
+                : "border-transparent text-portal-muted hover:text-portal-text hover:bg-white/5"
             }`}
           >
             <tab.icon className="h-4 w-4" />
@@ -117,7 +117,7 @@ export function ProjectDetailsPage() {
       <div className="py-2">
         {activeTab === "files" && (
           <div className="space-y-6">
-            <Card className="bg-[#0B1220]/50 border-dashed border-2">
+            <Card className="bg-surface/50 border-dashed border-2 border-white/10">
               <FileUploader projectId={id} onUploaded={handleFileUploaded} />
             </Card>
             <FileList files={files} />
