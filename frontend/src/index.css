@@ -3,20 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --bg-primary: #1F242A;
-  --bg-secondary: #262C33;
-  --sidebar-bg: #1B2026;
-  --card-bg: #2A313A;
+  --bg-primary: #0F1115;
+  --bg-secondary: #0F1115;
+  --sidebar-bg: #0F1115;
+  --card-bg: #151821;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-lighter: rgba(255, 255, 255, 0.04);
 
-  --primary: #FF4D4F;
-  --primary-hover: #E04344;
-  --primary-soft: rgba(255, 77, 79, 0.15);
+  --primary: #FFFFFF;
+  --primary-muted: #8B93A1;
+  --primary-soft: rgba(255, 255, 255, 0.05);
 
-  --accent: #F5A524;
-  --accent-soft: rgba(245, 165, 36, 0.2);
-
-  --text-primary: #E6EAF0;
-  --text-secondary: #9AA4AF;
+  --text-primary: #FFFFFF;
+  --text-secondary: #8B93A1;
 
   --success: #22C55E;
   --warning: #F59E0B;
@@ -35,6 +34,11 @@
     overflow-x: hidden;
     overflow-y: auto;
     min-height: 100dvh;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight;
   }
 
   ::selection {
@@ -58,80 +62,81 @@
     @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
   }
 
-  /* Finance Dashboard Components */
+  /* Minimal Card */
   .fin-card {
-    background: linear-gradient(145deg, #2A313A, #262C33);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-    @apply rounded-[24px] transition-all duration-300;
+    background: var(--card-bg);
+    border: 1px solid var(--border-subtle);
+    box-shadow: none;
+    @apply rounded-[10px] transition-all duration-200;
   }
 
   .fin-card:hover {
-    transform: translateY(-3px);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Sidebar Item States */
+  .sidebar-item {
+    @apply flex items-center gap-3 px-3 py-2 text-sm font-medium transition-colors duration-200 relative;
+    color: var(--text-secondary);
+  }
+
+  .sidebar-item:hover {
+    color: var(--text-primary);
+    background-color: rgba(255, 255, 255, 0.03);
   }
 
   .sidebar-item-active {
-    background-color: var(--primary-soft);
-    color: var(--primary);
-    border-left: 3px solid var(--primary);
-    @apply rounded-none rounded-r-lg;
+    color: var(--text-primary) !important;
+    background-color: transparent !important;
+  }
+
+  .sidebar-active-indicator {
+    @apply absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 bg-white rounded-r-full;
   }
 
   .btn-primary {
-    background-color: var(--primary);
-    box-shadow: 0 4px 14px rgba(255, 77, 79, 0.3);
-    @apply text-white font-black transition-all active:scale-[0.96] uppercase tracking-widest text-[10px] px-6 py-3;
+    @apply bg-white text-black font-semibold transition-all active:scale-[0.98] text-sm px-4 py-2 rounded-md hover:bg-neutral-200;
+    box-shadow: none;
   }
 
-  .btn-primary:hover {
-    background-color: var(--primary-hover);
-    transform: scale(1.03);
-    box-shadow: 0 6px 20px rgba(255, 77, 79, 0.4);
+  .btn-secondary {
+    @apply bg-transparent border border-white/10 text-white font-medium transition-all active:scale-[0.98] text-sm px-4 py-2 rounded-md hover:bg-white/5;
   }
 
-  /* Status Badges - Pill Style */
+  /* Status Badges - Minimal Pill */
   .status-badge {
-    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[9px] font-black uppercase tracking-[0.1em] border transition-all;
+    @apply inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[12px] font-medium transition-all;
+    background: rgba(255, 255, 255, 0.05);
   }
 
   .status-active {
-    border: 1px solid rgba(34, 197, 94, 0.3); 
-    background-color: rgba(34, 197, 94, 0.1); 
-    color: #22C55E;
+    color: var(--success);
   }
 
   .status-pending {
-    border: 1px solid rgba(245, 158, 11, 0.3); 
-    background-color: rgba(245, 158, 11, 0.1); 
-    color: #F59E0B;
+    color: var(--warning);
   }
 
   .status-completed {
-    @apply border-white/10 bg-white/5 text-white/40;
+    color: var(--text-secondary);
   }
 
   /* List Items */
   .list-row-hover {
-    @apply transition-all duration-200 border-b border-white/[0.03] last:border-0;
+    @apply transition-all duration-200 border-b border-white/[0.04] last:border-0;
   }
   
   .list-row-hover:hover {
-    background-color: rgba(255, 255, 255, 0.03);
+    background-color: rgba(255, 255, 255, 0.02);
   }
-}
-
-/* Animations */
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-4px); }
-  75% { transform: translateX(4px); }
-}
-
-.animate-shake {
-  animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
 }
 
 /* Header Border */
 .header-border {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-subtle);
 }
+
+.section-divider {
+  border-bottom: 1px solid var(--border-lighter);
+}
+

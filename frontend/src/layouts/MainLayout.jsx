@@ -84,44 +84,33 @@ export function MainLayout() {
   )?.label || "Dashboard";
 
   return (
-    <div className="flex min-h-screen bg-background text-portal-text font-sans">
+    <div className="flex min-h-screen bg-[#0F1115] text-[#FFFFFF] font-sans selection:bg-white/10">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm transition-opacity md:hidden"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
           onClick={closeSidebar}
         />
       )}
 
-      {/* Sidebar (Desktop and Mobile) */}
+      {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 flex w-72 flex-col bg-sidebar-bg border-r border-white/5 transition-transform duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-[#0F1115] border-r border-white/[0.04] transition-transform duration-300
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
-        md:relative md:flex md:translate-x-0 lg:w-72
+        md:relative md:flex md:translate-x-0
       `}>
         {/* Sidebar Header */}
-        <div className="flex h-16 items-center justify-between border-b border-white/5 px-6">
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary shadow-sm">
-              <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <span className="text-xl font-bold tracking-tight text-portal-text">FinDesk</span>
-          </div>
-          {/* Close button for mobile */}
-          <button 
-            className="rounded-lg p-1.5 text-portal-muted hover:bg-white/5 md:hidden"
-            onClick={closeSidebar}
-          >
-            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        <div className="flex h-14 items-center gap-3 px-6">
+          <div className="h-6 w-6 rounded bg-white flex items-center justify-center text-black">
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
-          </button>
+          </div>
+          <span className="text-sm font-semibold tracking-tight">Portal</span>
         </div>
 
-        {/* Sidebar Navigation */}
-        <nav className="flex-1 space-y-1 px-4 py-6 overflow-y-auto">
+        {/* Sidebar Nav */}
+        <nav className="flex-1 space-y-1 px-3 py-6 overflow-y-auto">
           {NAV_ITEMS.map((item) => (
             <NavLink
               key={item.to}
@@ -129,29 +118,30 @@ export function MainLayout() {
               end={item.end}
               onClick={closeSidebar}
               className={({ isActive }) => `
-                group flex items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-semibold transition-all duration-200
-                ${isActive 
-                  ? "sidebar-item-active" 
-                  : "text-portal-muted hover:bg-white/5 hover:text-portal-text"}
+                flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors relative group
+                ${isActive ? "text-white bg-white/[0.03]" : "text-[#8B93A1] hover:text-white hover:bg-white/[0.02]"}
               `}
             >
-              <item.icon className="h-5 w-5 shrink-0 transition-all duration-200" />
-              {item.label}
+              {({ isActive }) => (
+                <>
+                  {isActive && <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-4 bg-white rounded-r-full" />}
+                  <item.icon className={`h-4 w-4 shrink-0 ${isActive ? "text-white" : "text-[#8B93A1] group-hover:text-white"}`} />
+                  <span className="flex-1">{item.label}</span>
+                </>
+              )}
             </NavLink>
           ))}
         </nav>
 
-        {/* Sidebar Footer */}
-        <div className="border-t border-white/5 p-4">
-          <div className="flex items-center gap-3 rounded-2xl bg-white/5 p-3 border border-white/5">
-            <div className="h-10 w-10 shrink-0 rounded-xl bg-primary/10 flex items-center justify-center text-sm font-bold text-primary border border-primary/10">
-              {user?.email?.[0].toUpperCase() || "U"}
+        {/* Sidebar User */}
+        <div className="border-t border-white/[0.04] p-4">
+          <div className="flex items-center gap-3 px-2 py-2">
+            <div className="h-8 w-8 rounded bg-white/[0.05] flex items-center justify-center text-xs font-semibold text-[#8B93A1]">
+              {user?.email?.[0].toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-bold text-portal-text">{user?.email}</p>
-              <p className="truncate text-[10px] uppercase tracking-[0.1em] font-black text-portal-muted/60">
-                {subscription?.plan_label || "Free"} Workspace
-              </p>
+              <p className="truncate text-xs font-semibold text-white">{user?.email?.split('@')[0]}</p>
+              <p className="truncate text-[10px] text-[#8B93A1] font-medium">Free Workspace</p>
             </div>
           </div>
         </div>
@@ -159,70 +149,44 @@ export function MainLayout() {
 
       {/* Main Container */}
       <div className="flex flex-1 flex-col">
-        {/* Top Navbar */}
-        <header className="flex h-16 shrink-0 items-center justify-between border-b border-white/5 bg-bg-secondary px-4 md:px-8 backdrop-blur-xl z-50">
-          <div className="flex items-center gap-3">
-            {/* Hamburger Button */}
+        <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/[0.04] px-8 z-50">
+          <div className="flex items-center gap-4">
             <button 
-              className="rounded-lg p-1.5 text-portal-muted hover:bg-white/5 md:hidden"
+              className="p-1.5 text-[#8B93A1] md:hidden"
               onClick={() => setSidebarOpen(true)}
             >
-              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+              <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16m-7 6h7" />
               </svg>
             </button>
-
-            <div className="flex items-center gap-3">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary shadow-sm">
-                <svg className="h-4 w-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h1 className="text-sm md:text-lg font-black tracking-tight text-portal-text uppercase tracking-[0.05em]">{currentPage}</h1>
-            </div>
+            <h1 className="text-sm font-semibold tracking-tight">{currentPage}</h1>
           </div>
           
           <div className="relative">
             <button 
               onClick={() => setProfileOpen(!profileOpen)}
-              className="flex items-center gap-3 rounded-2xl p-1.5 transition-all hover:bg-white/5"
+              className="flex items-center gap-2 group"
             >
-              <div className="h-9 w-9 rounded-xl bg-primary flex items-center justify-center text-xs font-bold text-white">
-                {user?.email?.[0].toUpperCase() || "U"}
+              <div className="h-8 w-8 rounded bg-white/[0.02] border border-white/[0.04] flex items-center justify-center text-xs font-semibold text-[#8B93A1] group-hover:bg-white/[0.05] transition-colors">
+                {user?.email?.[0].toUpperCase()}
               </div>
-              <svg className="h-4 w-4 text-portal-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M19 9l-7 7-7-7" />
-              </svg>
             </button>
 
             {profileOpen && (
               <>
-                <div 
-                  className="fixed inset-0 z-[60]" 
-                  onClick={() => setProfileOpen(false)} 
-                />
-                <div className="absolute right-0 mt-3 w-64 origin-top-right rounded-2xl border border-white/10 bg-card-bg px-2 py-2 shadow-2xl shadow-black/50 backdrop-blur-xl z-[70]">
-                  <div className="px-4 py-4 border-b border-white/5">
-                    <p className="text-[10px] uppercase tracking-[0.1em] font-black text-portal-muted mb-1">Authenticated</p>
-                    <p className="truncate text-sm font-bold text-portal-text">{user?.email}</p>
+                <div className="fixed inset-0 z-[60]" onClick={() => setProfileOpen(false)} />
+                <div className="absolute right-0 mt-2 w-56 origin-top-right rounded-md border border-white/[0.06] bg-[#151821] py-1.5 shadow-2xl z-[70]">
+                  <div className="px-4 py-2 border-b border-white/[0.04] mb-1">
+                    <p className="truncate text-xs font-semibold text-white">{user?.email}</p>
+                    <p className="text-[10px] text-[#8B93A1]">Personal Account</p>
                   </div>
-                  <div className="p-1 space-y-1">
-                    <NavLink
-                      to="/subscription"
-                      className="flex items-center gap-3 px-4 py-3 text-sm font-semibold text-portal-muted hover:bg-white/5 hover:text-portal-text rounded-xl transition-all"
-                      onClick={() => setProfileOpen(false)}
-                    >
-                      <svg className="h-4 w-4 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      Subscription
-                    </NavLink>
+                  <div className="p-1">
                     <button
                       onClick={handleLogout}
-                      className="flex w-full items-center gap-3 px-4 py-3 text-sm font-semibold text-portal-error hover:bg-portal-error/5 rounded-xl transition-all"
+                      className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-red-400 hover:bg-red-400/5 rounded transition-colors"
                     >
-                      <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                      <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                       </svg>
                       Logout
                     </button>
@@ -233,13 +197,13 @@ export function MainLayout() {
           </div>
         </header>
 
-        {/* Page Content */}
-        <main className="flex-1 min-h-screen bg-background p-6">
-          <div className="mx-auto max-w-7xl">
+        <main className="flex-1 overflow-y-auto p-8 md:p-12">
+          <div className="mx-auto max-w-6xl">
             <Outlet />
           </div>
         </main>
       </div>
     </div>
+
   );
 }

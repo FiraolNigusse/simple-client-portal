@@ -51,62 +51,55 @@ export function TaskBoard({ tasks, setTasks, projectId }) {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
-      <div className="flex justify-between items-center bg-white/5 p-6 rounded-3xl border border-white/5">
+    <div className="space-y-8">
+      <div className="flex justify-between items-center bg-white/[0.02] p-6 rounded-[10px] border border-white/5">
         <div>
-          <h4 className="font-black text-portal-text uppercase tracking-widest text-xs">Project Workflow</h4>
-          <p className="text-[10px] text-portal-muted uppercase font-black tracking-[0.2em] mt-2 opacity-50">{tasks.length} Operational Tasks</p>
+          <h4 className="text-sm font-semibold text-white">Project Tasks</h4>
+          <p className="text-xs text-[#8B93A1] mt-1">{tasks.length} items total</p>
         </div>
-        <Button size="sm" onClick={() => setModalOpen(true)} className="rounded-xl px-6 font-bold uppercase tracking-widest text-[10px]">Add Entry</Button>
+        <Button size="sm" onClick={() => setModalOpen(true)}>Add Task</Button>
       </div>
 
       <div className="grid gap-3">
         {tasks.map(task => (
-          <Card key={task.id} className="flex items-center gap-5 py-4 border-white/5 hover:border-primary/40 transition-all group overflow-hidden">
+          <div key={task.id} className="fin-card flex items-center gap-4 p-4 group transition-all">
             <button 
               onClick={() => handleToggle(task)}
-              className={`h-7 w-7 rounded-xl border-2 border-white/10 flex items-center justify-center transition-all ${
-                task.status === "completed" ? "bg-primary border-primary text-white" : "hover:border-primary bg-white/5"
+              className={`h-5 w-5 rounded border transition-all flex items-center justify-center ${
+                task.status === "completed" ? "bg-white border-white text-black" : "border-white/20 hover:border-white/40 bg-transparent"
               }`}
             >
               {task.status === "completed" && (
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
+                <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               )}
             </button>
             <div className="flex-1 min-w-0">
-              <p className={`text-sm font-black transition-all tracking-tight ${task.status === "completed" ? "text-portal-muted/40 line-through" : "text-portal-text group-hover:text-primary transition-colors"}`}>
+              <p className={`text-sm font-semibold transition-all ${task.status === "completed" ? "text-[#8B93A1] line-through opacity-50" : "text-white"}`}>
                 {task.title}
               </p>
               {task.description && (
-                <p className={`text-xs mt-1 line-clamp-1 font-medium ${task.status === "completed" ? "text-portal-muted/20" : "text-portal-muted opacity-80"}`}>{task.description}</p>
+                <p className={`text-xs mt-0.5 line-clamp-1 ${task.status === "completed" ? "text-[#8B93A1]/40" : "text-[#8B93A1]"}`}>{task.description}</p>
               )}
             </div>
-            <div className="flex items-center gap-6">
-              <Badge variant={task.status === "completed" ? "success" : "default"} className="rounded-lg text-[9px] font-black uppercase tracking-widest px-3 py-1.5">{task.status === "completed" ? "Verified" : "Pending"}</Badge>
+            <div className="flex items-center gap-4">
+              <Badge variant={task.status === "completed" ? "success" : "default"}>{task.status === "completed" ? "Done" : "Todo"}</Badge>
               <button 
                 onClick={() => handleDelete(task.id)}
-                className="text-portal-muted/30 hover:text-portal-error transition-all p-2 hover:bg-portal-error/10 rounded-xl opacity-0 group-hover:opacity-100"
+                className="text-[#8B93A1] hover:text-red-400 transition-all p-1.5 rounded opacity-0 group-hover:opacity-100"
               >
-                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               </button>
             </div>
-          </Card>
+          </div>
         ))}
         {tasks.length === 0 && (
-          <div className="py-20 text-center border-2 border-dashed border-white/5 rounded-[32px] bg-white/[0.01]">
-            <div className="flex justify-center mb-6">
-              <div className="h-16 w-16 rounded-3xl bg-white/5 flex items-center justify-center text-white/10">
-                <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-              </div>
-            </div>
-            <p className="text-sm font-black text-portal-text uppercase tracking-widest mb-2">Workspace initialized</p>
-            <p className="text-xs text-portal-muted font-medium opacity-60">Add the first task to begin project orchestration.</p>
+          <div className="py-20 text-center border border-dashed border-white/10 rounded-[10px]">
+            <p className="text-sm font-semibold text-white">No tasks yet</p>
+            <p className="text-xs text-[#8B93A1] mt-1">Add your first task to get started.</p>
           </div>
         )}
       </div>
@@ -114,25 +107,25 @@ export function TaskBoard({ tasks, setTasks, projectId }) {
       <Modal 
         isOpen={modalOpen} 
         onClose={() => setModalOpen(false)} 
-        title="New Action Item"
+        title="New Task"
         footer={(
-          <>
+          <div className="flex justify-end gap-3">
             <Button variant="ghost" onClick={() => setModalOpen(false)}>Cancel</Button>
-            <Button onClick={handleCreateTask} loading={loading}>Deploy Task</Button>
-          </>
+            <Button onClick={handleCreateTask} loading={loading}>Add Task</Button>
+          </div>
         )}
       >
         <form onSubmit={handleCreateTask} className="space-y-6 py-4">
           <Input 
-            label="Designation" 
-            placeholder="e.g. Protocol Implementation" 
+            label="Title" 
+            placeholder="e.g. Design review" 
             required 
             value={formData.title}
             onChange={e => setFormData({...formData, title: e.target.value})}
           />
           <Input 
-            label="Contextual Description" 
-            placeholder="Provide operational details..." 
+            label="Description" 
+            placeholder="Optional details..." 
             value={formData.description}
             onChange={e => setFormData({...formData, description: e.target.value})}
           />

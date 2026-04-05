@@ -41,15 +41,15 @@ export function ProjectsPage() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-10">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-black tracking-tight text-portal-text uppercase tracking-[0.1em]">Projects</h2>
-          <p className="text-sm text-portal-muted font-medium">Track your active work and deliverables.</p>
+          <h2 className="text-2xl font-semibold tracking-tight text-white">Projects</h2>
+          <p className="text-sm text-[#8B93A1]">Track your active work and deliverables.</p>
         </div>
         <Button onClick={() => setModalOpen(true)}>
-          <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+          <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
           </svg>
           New Project
         </Button>
@@ -62,50 +62,48 @@ export function ProjectsPage() {
       ) : projects.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {projects.map(project => (
-            <Card key={project.id} className="group hover:border-primary/40 transition-all cursor-pointer" onClick={() => navigate(`/projects/${project.id}`)}>
-              <div className="mb-3 flex items-start justify-between">
+            <div key={project.id} className="fin-card p-6 flex flex-col cursor-pointer transition-all" onClick={() => navigate(`/projects/${project.id}`)}>
+              <div className="mb-4 flex items-center justify-between">
                 <Badge variant={project.status === "active" ? "success" : "default"}>
-                  {project.status}
+                  {project.status.toUpperCase()}
                 </Badge>
-                <span className="text-[10px] text-portal-muted uppercase tracking-widest font-semibold">
+                <span className="text-[11px] text-[#8B93A1]">
                   {new Date(project.created_at).toLocaleDateString()}
                 </span>
               </div>
               
-              <h3 className="text-lg font-black tracking-tight text-portal-text group-hover:text-primary transition-colors">{project.title}</h3>
-              <p className="text-[10px] text-portal-muted mb-4 font-black uppercase tracking-[0.2em] opacity-60">{project.client_name}</p>
+              <h3 className="text-lg font-semibold tracking-tight text-white mb-1">{project.title}</h3>
+              <p className="text-xs text-[#8B93A1] mb-4">{project.client_name}</p>
               
-              <p className="line-clamp-2 text-sm text-portal-muted mb-6 font-medium">
+              <p className="line-clamp-2 text-sm text-[#8B93A1] mb-6 min-h-[40px]">
                 {project.description || "No description provided."}
               </p>
               
-              <div className="flex items-center justify-between border-t border-white/5 pt-4">
-                <div className="flex -space-x-2">
-                  <div className="h-6 w-6 rounded-full bg-primary/20 border-2 border-card-bg flex items-center justify-center text-[10px] font-black text-primary">
-                    {project.client_name?.[0]}
+              <div className="flex items-center justify-between border-t border-white/[0.04] pt-4 mt-auto">
+                <div className="flex items-center gap-2">
+                  <div className="h-5 w-5 rounded bg-white/5 flex items-center justify-center text-[10px] font-medium text-[#8B93A1]">
+                    {project.client_name?.[0]?.toUpperCase()}
                   </div>
+                  <span className="text-[11px] text-[#8B93A1] font-medium">Details</span>
                 </div>
-                <div className="flex items-center gap-2 text-[10px] text-portal-muted font-black uppercase tracking-widest group-hover:text-primary transition-colors">
-                  Details
-                  <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
+                <svg className="h-3.5 w-3.5 text-[#8B93A1]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
               </div>
-            </Card>
+            </div>
           ))}
         </div>
       ) : (
-        <Card className="flex flex-col items-center justify-center py-24 text-center border-white/5 bg-white/[0.02]">
-          <div className="mb-8 rounded-[32px] bg-white/5 p-10 text-white/10 shadow-2xl shadow-black/20">
-            <svg className="h-16 w-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+        <div className="fin-card flex flex-col items-center justify-center py-24 text-center">
+          <div className="mb-6 rounded-full bg-white/[0.02] p-6 text-[#8B93A1]">
+            <svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
             </svg>
           </div>
-          <h3 className="text-2xl font-black text-portal-text uppercase tracking-widest">No Projects Found</h3>
-          <p className="max-w-xs text-sm text-portal-muted mb-10 font-medium">Create a project for one of your clients to start sharing files and tasks.</p>
-          <Button onClick={() => setModalOpen(true)} size="lg">Create Your First Project</Button>
-        </Card>
+          <h3 className="text-xl font-semibold text-white">No projects found</h3>
+          <p className="max-w-xs text-sm text-[#8B93A1] mt-2 mb-8">Create a project for one of your clients to start sharing files and tasks.</p>
+          <Button onClick={() => setModalOpen(true)}>Create Your First Project</Button>
+        </div>
       )}
 
       <CreateProjectModal 

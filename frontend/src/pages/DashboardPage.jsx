@@ -55,15 +55,13 @@ export function DashboardPage() {
   }
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    <div className="space-y-10">
       {/* Stats Grid */}
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <StatsCard 
           label="Total Clients" 
           value={data?.total_clients || 0} 
           icon={icons.clients} 
-          trend="up" 
-          trendValue={12} 
         />
         <StatsCard 
           label="Active Projects" 
@@ -74,8 +72,6 @@ export function DashboardPage() {
           label="Pending Invoices" 
           value={data?.pending_invoices || 0} 
           icon={icons.invoices} 
-          trend="down" 
-          trendValue={5} 
         />
         <StatsCard 
           label="Tasks Completed" 
@@ -84,64 +80,64 @@ export function DashboardPage() {
         />
       </div>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
         {/* Recent Projects */}
-        <Card noPadding className="lg:col-span-2 shadow-2xl shadow-black/40">
-          <div className="flex items-center justify-between border-b border-white/5 p-5">
-            <h3 className="font-black text-portal-text uppercase tracking-widest text-xs">Recent Projects</h3>
+        <div className="fin-card lg:col-span-2 overflow-hidden flex flex-col">
+          <div className="flex items-center justify-between border-b border-white/[0.04] px-6 py-4">
+            <h3 className="text-sm font-semibold text-white">Recent Projects</h3>
             <Button variant="ghost" size="sm" onClick={() => navigate('/projects')}>View all</Button>
           </div>
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-white/[0.04]">
             {data?.recent_projects?.length > 0 ? (
               data.recent_projects.map(proj => (
-                <div key={proj.id} className="flex items-center justify-between p-4 hover:bg-white/5 transition-all duration-300 cursor-pointer group" onClick={() => navigate(`/projects/${proj.id}`)}>
+                <div key={proj.id} className="flex items-center justify-between px-6 py-4 list-row-hover cursor-pointer group" onClick={() => navigate(`/projects/${proj.id}`)}>
                   <div>
-                    <p className="text-sm font-bold text-portal-text group-hover:text-primary transition-colors">{proj.title}</p>
-                    <p className="text-[10px] text-portal-muted uppercase tracking-widest font-black opacity-60">
+                    <p className="text-sm font-semibold text-white group-hover:text-white transition-colors">{proj.title}</p>
+                    <p className="text-xs text-[#8B93A1] mt-0.5">
                       {new Date(proj.created_at).toLocaleDateString()}
                     </p>
                   </div>
                   <Badge variant={proj.status === "active" ? "success" : "default"}>
-                    {proj.status}
+                    {proj.status.toUpperCase()}
                   </Badge>
                 </div>
               ))
             ) : (
-              <div className="p-20 text-center text-portal-muted text-sm">
-                No recent projects found.
+              <div className="px-6 py-12 text-center text-[#8B93A1] text-sm">
+                No recent projects.
               </div>
             )}
           </div>
-        </Card>
+        </div>
 
         {/* Recent Invoices */}
-        <Card noPadding className="shadow-2xl shadow-black/40">
-          <div className="flex items-center justify-between border-b border-white/5 p-5">
-            <h3 className="font-black text-portal-text uppercase tracking-widest text-xs">Recent Invoices</h3>
+        <div className="fin-card overflow-hidden flex flex-col">
+          <div className="flex items-center justify-between border-b border-white/[0.04] px-6 py-4">
+            <h3 className="text-sm font-semibold text-white">Recent Invoices</h3>
             <Button variant="ghost" size="sm" onClick={() => navigate('/invoices')}>View all</Button>
           </div>
-          <div className="divide-y divide-white/5">
+          <div className="divide-y divide-white/[0.04]">
             {data?.recent_invoices?.length > 0 ? (
               data.recent_invoices.map(inv => (
-                <div key={inv.id} className="flex items-center justify-between p-4 hover:bg-white/5 transition-all duration-300 group">
+                <div key={inv.id} className="flex items-center justify-between px-6 py-4 list-row-hover group">
                   <div>
-                    <p className="text-sm font-bold text-portal-text tracking-tight group-hover:text-primary transition-colors">${inv.amount}</p>
-                    <p className="text-[10px] text-portal-muted uppercase tracking-widest font-black opacity-60">
+                    <p className="text-sm font-semibold text-white tracking-tight">${inv.amount}</p>
+                    <p className="text-xs text-[#8B93A1] mt-0.5">
                       {inv.client__name}
                     </p>
                   </div>
                   <Badge variant={inv.status === "paid" ? "success" : "warning"}>
-                    {inv.status}
+                    {inv.status.toUpperCase()}
                   </Badge>
                 </div>
               ))
             ) : (
-              <div className="p-20 text-center text-portal-muted text-sm">
-                No recent invoices found.
+              <div className="px-6 py-12 text-center text-[#8B93A1] text-sm">
+                No recent invoices.
               </div>
             )}
           </div>
-        </Card>
+        </div>
       </div>
     </div>
   );

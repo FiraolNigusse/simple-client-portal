@@ -30,24 +30,17 @@ export function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6">
-      <div className="w-full max-w-md space-y-8 animate-in fade-in duration-700">
+    <div className="min-h-screen flex items-center justify-center bg-[#0F1115] px-6">
+      <div className="w-full max-w-md space-y-10">
         <div className="text-center">
-          <div className="inline-flex h-20 w-20 items-center justify-center rounded-[24px] bg-primary mb-8 p-0.5">
-            <div className="h-full w-full rounded-[23px] bg-bg-secondary flex items-center justify-center">
-              <svg className="h-10 w-10 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-          </div>
-          <h1 className="text-4xl font-black tracking-tight text-portal-text uppercase tracking-[0.1em]">Welcome Back</h1>
-          <p className="mt-3 text-sm text-portal-muted font-medium">Elevate your freelance workflow with AuroraDesk.</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-white mb-2">Welcome back</h1>
+          <p className="text-sm text-[#8B93A1]">Sign in to manage your clients and projects.</p>
         </div>
 
-        <Card className="p-10 border-white/10 shadow-3xl shadow-black/60 bg-card-bg">
-          <form onSubmit={handleSubmit} className="space-y-8">
+        <div className="fin-card p-8">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="rounded-xl border border-portal-error/20 bg-portal-error/10 px-4 py-3 text-xs text-portal-error font-black uppercase tracking-widest animate-in shake duration-300">
+              <div className="rounded border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-500 font-medium">
                 {error}
               </div>
             )}
@@ -59,27 +52,27 @@ export function LoginPage() {
               value={formData.email}
               onChange={e => setFormData({...formData, email: e.target.value})}
             />
-            <div className="space-y-3">
+            <div className="space-y-1.5">
               <div className="flex justify-between items-center px-1">
-                <label className="text-[10px] font-black text-portal-muted uppercase tracking-[0.2em] ml-2">Password</label>
-                <Link to="/forgot-password" name="forgot-password" id="forgot-password" className="text-[10px] uppercase font-black tracking-widest text-accent hover:text-white transition-colors">Forgot?</Link>
+                <label className="text-xs font-medium text-[#8B93A1]">Password</label>
+                <Link to="/forgot-password" name="forgot-password" id="forgot-password" className="text-xs font-medium text-white hover:underline">Forgot?</Link>
               </div>
               <input 
                 type="password"
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-portal-text transition-all focus:bg-white/10 focus:border-primary/50 focus:outline-none focus:ring-4 focus:ring-primary/20"
+                className="w-full rounded-md border border-white/[0.06] bg-white/[0.02] px-4 py-2.5 text-sm text-white transition-all focus:bg-white/[0.04] focus:border-white/20 focus:outline-none"
                 placeholder="••••••••"
                 required
                 value={formData.password}
                 onChange={e => setFormData({...formData, password: e.target.value})}
               />
             </div>
-            <Button className="w-full mt-4 h-12" loading={loading} size="lg">Sign In</Button>
+            <Button className="w-full mt-2" loading={loading} size="lg">Sign In</Button>
           </form>
-        </Card>
+        </div>
 
-        <p className="text-center text-sm text-portal-muted font-bold">
-          New to Portal?{" "}
-          <Link to="/register" className="text-primary hover:text-primary-hover underline underline-offset-4 decoration-primary/30">
+        <p className="text-center text-sm text-[#8B93A1]">
+          New here?{" "}
+          <Link to="/register" className="text-white font-medium hover:underline">
             Create an account
           </Link>
         </p>

@@ -67,15 +67,15 @@ export function DashboardClientsPage() {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in duration-500">
+    <div className="space-y-10">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-black tracking-tight text-portal-text uppercase tracking-[0.1em]">Clients</h2>
-          <p className="text-sm text-portal-muted font-medium">Manage your client relationships and portals.</p>
+          <h2 className="text-2xl font-semibold tracking-tight text-white">Clients</h2>
+          <p className="text-sm text-[#8B93A1]">Manage your client relationships and portals.</p>
         </div>
         <Button onClick={() => setModalOpen(true)}>
-          <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+          <svg className="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
           </svg>
           Add Client
         </Button>
@@ -88,44 +88,42 @@ export function DashboardClientsPage() {
       ) : clients.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {clients.map(client => (
-            <Card key={client.id} className="group relative border-white/5 hover:border-primary/40 hover:shadow-2xl hover:shadow-primary/5 overflow-hidden transition-all duration-300">
+            <div key={client.id} className="fin-card p-6 flex flex-col group relative transition-all">
               <div className="mb-6 flex items-start justify-between">
-                <div className="h-14 w-14 rounded-[18px] bg-white/5 flex items-center justify-center text-xl font-black text-primary group-hover:bg-primary group-hover:text-white transition-all duration-500">
-                  {client.name[0]}
+                <div className="h-10 w-10 rounded bg-white/5 flex items-center justify-center text-sm font-semibold text-white">
+                  {client.name[0].toUpperCase()}
                 </div>
-                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity relative z-10">
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
+                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button 
                     onClick={(e) => {
                       e.stopPropagation();
                       e.preventDefault();
                       handleDelete(client.id);
                     }} 
-                    className="text-portal-error hover:bg-portal-error/10"
+                    className="p-1.5 text-[#8B93A1] hover:text-red-400 transition-colors"
                   >
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                     </svg>
-                  </Button>
+                  </button>
                 </div>
               </div>
               
-              <h3 className="text-xl font-black tracking-tight text-portal-text group-hover:text-primary transition-colors">{client.name}</h3>
-              <p className="text-[10px] text-portal-muted mb-6 font-black uppercase tracking-[0.2em] opacity-60">{client.company || "Independent Business"}</p>
+              <h3 className="text-lg font-semibold tracking-tight text-white mb-1">{client.name}</h3>
+              <p className="text-xs text-[#8B93A1] mb-6">{client.company || "Independent Business"}</p>
               
-              <div className="space-y-3 border-t border-white/5 pt-6">
-                <div className="flex items-center gap-3 text-xs text-portal-muted font-medium">
-                  <div className="p-1.5 rounded-lg bg-white/5">
-                    <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                  </div>
+              <div className="space-y-4 border-t border-white/[0.04] pt-6 mt-auto">
+                <div className="flex items-center gap-3 text-xs text-[#8B93A1]">
+                  <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
                   <span className="truncate">{client.email}</span>
                 </div>
                 {client.projects_count !== undefined && (
-                  <div className="mt-3">
-                    <Badge variant="primary" className="rounded-lg tracking-[0.1em]">{client.projects_count || 0} Managed Projects</Badge>
+                  <div className="flex items-center justify-between">
+                    <Badge variant="default" className="text-[11px]">
+                      {client.projects_count || 0} PROJECTS
+                    </Badge>
                   </div>
                 )}
               </div>
@@ -135,51 +133,53 @@ export function DashboardClientsPage() {
                 className="absolute inset-0 z-0" 
                 aria-label="View Client" 
               />
-            </Card>
+            </div>
           ))}
         </div>
       ) : (
-        <Card className="flex flex-col items-center justify-center py-24 text-center">
-          <div className="mb-6 rounded-3xl bg-gray-50 p-8">
-            <svg className="h-12 w-12 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        <div className="fin-card flex flex-col items-center justify-center py-24 text-center">
+          <div className="mb-6 rounded-full bg-white/[0.02] p-6 text-[#8B93A1]">
+            <svg className="h-10 w-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
           </div>
-          <h3 className="text-xl font-bold text-portal-text">No clients yet</h3>
-          <p className="max-w-xs text-sm text-portal-muted mb-6">Start by adding your first client to create projects and send invoices.</p>
-          <Button onClick={() => setModalOpen(true)}>Add your first client</Button>
-        </Card>
+          <h3 className="text-xl font-semibold text-white">No clients found</h3>
+          <p className="max-w-xs text-sm text-[#8B93A1] mt-2 mb-8">Start by adding your first client to create projects and send invoices.</p>
+          <Button onClick={() => setModalOpen(true)}>Add Client</Button>
+        </div>
       )}
 
       {/* Create Modal */}
       <Modal 
         isOpen={modalOpen} 
         onClose={() => setModalOpen(false)} 
-        title="Add New Client"
+        title="New Client"
         footer={(
-          <>
+          <div className="flex justify-end gap-3">
             <Button variant="ghost" onClick={() => setModalOpen(false)}>Cancel</Button>
             <Button onClick={handleCreate} loading={creating}>Create Client</Button>
-          </>
+          </div>
         )}
       >
-        <form onSubmit={handleCreate} className="space-y-4 py-2">
+        <form onSubmit={handleCreate} className="space-y-6 py-4">
           {formError && (
-            <UpgradeBanner 
-              resource={formError.resource} 
-              limit={formError.limit} 
-              plan={formError.plan} 
-            />
+            <div className="mb-4">
+              <UpgradeBanner 
+                resource={formError.resource} 
+                limit={formError.limit} 
+                plan={formError.plan} 
+              />
+            </div>
           )}
           <Input 
-            label="Full Name" 
+            label="Name" 
             placeholder="e.g. John Doe" 
             required 
             value={formData.name}
             onChange={e => setFormData({...formData, name: e.target.value})}
           />
           <Input 
-            label="Email Address" 
+            label="Email" 
             type="email" 
             placeholder="john@example.com" 
             required 
@@ -187,7 +187,7 @@ export function DashboardClientsPage() {
             onChange={e => setFormData({...formData, email: e.target.value})}
           />
           <Input 
-            label="Company Name" 
+            label="Company" 
             placeholder="e.g. Acme Corp" 
             value={formData.company}
             onChange={e => setFormData({...formData, company: e.target.value})}

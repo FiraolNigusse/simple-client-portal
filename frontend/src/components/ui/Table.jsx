@@ -1,15 +1,15 @@
 export function Table({ headers, children, loading = false, rowCount = 5 }) {
   return (
-    <div className="overflow-x-auto custom-scrollbar rounded-xl border border-white/10 bg-surface shadow-2xl shadow-black/20">
+    <div className="overflow-x-auto custom-scrollbar fin-card">
       <table className="w-full text-left text-sm">
-        <thead className="border-b border-white/10 bg-white/[0.02] text-[10px] font-black text-portal-muted uppercase tracking-[0.2em]">
+        <thead className="border-b border-white/[0.06] text-xs font-medium text-[#8B93A1]">
           <tr>
             {headers.map((h, i) => (
               <th key={i} className={`px-6 py-4 ${i === 0 ? "pl-8" : ""}`}>{h}</th>
             ))}
           </tr>
         </thead>
-        <tbody className="divide-y divide-white/5">
+        <tbody className="divide-y divide-white/[0.04]">
           {loading ? (
             Array.from({ length: rowCount }).map((_, i) => (
               <tr key={i}>
@@ -24,8 +24,8 @@ export function Table({ headers, children, loading = false, rowCount = 5 }) {
             children
           ) : (
             <tr>
-              <td colSpan={headers.length} className="px-6 py-16 text-center text-portal-muted font-medium">
-                No data available in this view.
+              <td colSpan={headers.length} className="px-6 py-20 text-center text-[#8B93A1] text-sm">
+                No data available.
               </td>
             </tr>
           )}
