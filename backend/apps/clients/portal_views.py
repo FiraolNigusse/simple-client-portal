@@ -49,6 +49,7 @@ class PortalInfoView(PortalBaseView):
         # Combined dataset as requested
         projects = Project.objects.filter(client=client)
         invoices = Invoice.objects.filter(client=client).select_related("project")
+        files = ProjectFile.objects.filter(project__client=client)
         # Log that client viewed their portal
         log_portal_event(request, client, "view", "portal_main", 0)
 
