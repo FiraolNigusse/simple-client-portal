@@ -13,6 +13,10 @@ from apps.clients.portal_views import (
     PortalInvoicesView,
     PortalTasksView,
 )
+from apps.files.api.portal_views import (
+    PortalFileDownloadView,
+    PortalFilePreviewView,
+)
 
 api_urlpatterns = [
     path("auth/token/", CustomTokenObtainPairView.as_view(), name="token_obtain_pair"),
@@ -30,6 +34,8 @@ api_urlpatterns = [
     # Client portal (token-authenticated, no JWT needed)
     path("portal/<str:token>/", PortalInfoView.as_view(), name="portal-info"),
     path("portal/<str:token>/files/", PortalProjectFilesView.as_view(), name="portal-files"),
+    path("portal/<str:token>/files/<int:file_id>/download/", PortalFileDownloadView.as_view(), name="portal-file-download"),
+    path("portal/<str:token>/files/<int:file_id>/preview/", PortalFilePreviewView.as_view(), name="portal-file-preview"),
     path("portal/<str:token>/messages/", PortalMessagesView.as_view(), name="portal-messages"),
     path("portal/<str:token>/invoices/", PortalInvoicesView.as_view(), name="portal-invoices"),
     path("portal/<str:token>/tasks/", PortalTasksView.as_view(), name="portal-tasks"),

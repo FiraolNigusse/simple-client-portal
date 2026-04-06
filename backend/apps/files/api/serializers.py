@@ -3,53 +3,53 @@ from ..models import ProjectFile
 
 
 class ProjectFileSerializer(serializers.ModelSerializer):
+    """
+    Secure serializer — NEVER exposes raw Cloudinary URLs.
+    Frontend must call /files/<id>/download/ or /files/<id>/preview/ to get signed URLs.
+    """
     uploaded_by_name = serializers.SerializerMethodField()
     filename = serializers.SerializerMethodField()
     extension = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()
-    download_url = serializers.SerializerMethodField()
     uploaded_at = serializers.DateTimeField(source='created_at', read_only=True)
+    is_previewable = serializers.BooleanField(read_only=True)
 
     class Meta:
         model = ProjectFile
         fields = [
-            'id', 
-            'project', 
-            'file', 
-            'filename', 
-            'size', 
-            'uploaded_by', 
-            'uploaded_by_name', 
+            'id',
+            'project',
+            'filename',
+            'extension',
+            'size',
+            'uploaded_by',
+            'uploaded_by_name',
             'uploaded_at',
             'created_at',
-            'extension',
-            'download_url'
+            'is_previewable',
         ]
         read_only_fields = ['uploaded_by', 'created_at', 'uploaded_at']
 
     def get_filename(self, obj):
-        # Defensive check in case migration hasn't run on production server
         try:
             if hasattr(obj, 'original_name') and obj.original_name:
                 return obj.original_name
-        except:
+        except Exception:
             pass
-        return obj.file.name.split('/')[-1]
+        if obj.file:
+            return obj.file.name.split('/')[-1]
+        # Fallback for Cloudinary-only files
+        return obj.public_id.split('/')[-1] if obj.public_id else "file"
 
     def get_extension(self, obj):
-        return obj.file.name.split('.')[-1] if '.' in obj.file.name else ""
-
-    def get_download_url(self, obj):
-        url = obj.file.url
-        if "/image/upload/" in url:
-            # Force download transformation
-            return url.replace("/image/upload/", "/image/upload/fl_attachment/")
-        return url
+        return obj.extension
 
     def get_size(self, obj):
+        if obj.file_size:
+            return obj.file_size
         try:
-            return obj.file.size
-        except:
+            return obj.file.size if obj.file else 0
+        except Exception:
             return 0
 
     def get_uploaded_by_name(self, obj):
