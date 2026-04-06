@@ -90,7 +90,10 @@ export function ProjectDetailsPage() {
     toast("File uploaded!");
   };
 
-
+  const handleFileDeleted = (fileId) => {
+    setFiles(files.filter(f => f.id !== fileId));
+    toast("File deleted.");
+  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
@@ -147,7 +150,7 @@ export function ProjectDetailsPage() {
             <Card className="bg-white/[0.02] border-dashed border-2 border-white/10 p-10 flex flex-col items-center justify-center">
               <FileUploader projectId={id} onUploaded={handleFileUploaded} />
             </Card>
-            <FileList files={files} />
+            <FileList files={files} onFileDeleted={handleFileDeleted} />
           </div>
         )}
         {activeTab === "messages" && (

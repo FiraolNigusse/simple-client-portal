@@ -23,6 +23,11 @@ export const getProjectFiles = (projectId) => apiClient.get(`/files/project/${pr
 export const uploadFile = (data) => apiClient.post("/files/upload/", data, {
   headers: { "Content-Type": "multipart/form-data" }
 });
+export const deleteFile = (id) => apiClient.delete(`/files/${id}/`);
+
+// Secure file access — returns signed URLs, never raw Cloudinary links
+export const getFileDownloadUrl = (fileId) => apiClient.get(`/files/${fileId}/download/`);
+export const getFilePreviewUrl = (fileId) => apiClient.get(`/files/${fileId}/preview/`);
 
 export const getInvoices = () => apiClient.get("/invoices/");
 export const createInvoice = (data) => apiClient.post("/invoices/", data);
@@ -48,6 +53,9 @@ export default {
   deleteTask,
   getProjectFiles,
   uploadFile,
+  deleteFile,
+  getFileDownloadUrl,
+  getFilePreviewUrl,
   getInvoices,
   createInvoice,
   getDashboardSummary,

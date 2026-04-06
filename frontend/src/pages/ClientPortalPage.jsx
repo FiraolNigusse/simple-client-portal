@@ -5,6 +5,7 @@ import { Card } from "../components/ui/Card";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { PortalChatWindow } from "../components/PortalChatWindow";
+import { FilePreviewModal } from "../components/FilePreviewModal";
 
 // ---------------------------------------------------------------------------
 // Portal API helpers — no JWT, just ?token= query param
@@ -35,6 +36,16 @@ export function ClientPortalPage() {
   const [invoices, setInvoices] = useState([]);
   const [tasks, setTasks] = useState([]);
 
+  // Secure file preview state
+  const [previewState, setPreviewState] = useState({
+    open: false,
+    url: "",
+    filename: "",
+    extension: "",
+    fileId: null,
+  });
+  const [fileActionLoading, setFileActionLoading] = useState(null);
+
   useEffect(() => {
     portalGet(token, "/")
       .then((r) => {
@@ -52,10 +63,44 @@ export function ClientPortalPage() {
 
   useEffect(() => {
     if (!activeProject || !token) return;
-    // Fetch only tasks as they are project-specific and not in the main blob yet
     portalGet(token, "/tasks/", { project: activeProject.id })
       .then(t => setTasks(Array.isArray(t.data) ? t.data : t.data.results || []));
   }, [token, activeProject]);
+
+  // Secure file handlers — fetch signed URLs on demand
+  const handleFilePreview = async (fileId) => {
+    setFileActionLoading(fileId);
+    try {
+      const res = await portalGet(token, `/files/${fileId}/preview/`);
+      setPreviewState({
+        open: true,
+        url: res.data.url,
+        filename: res.data.filename,
+        extension: res.data.extension,
+        fileId,
+      });
+    } catch (err) {
+      console.error("Preview error:", err);
+    } finally {
+      setFileActionLoading(null);
+    }
+  };
+
+  const handleFileDownload = async (fileId) => {
+    setFileActionLoading(fileId);
+    try {
+      const res = await portalGet(token, `/files/${fileId}/download/`);
+      window.open(res.data.url, "_blank");
+    } catch (err) {
+      console.error("Download error:", err);
+    } finally {
+      setFileActionLoading(null);
+    }
+  };
+
+  const closePreview = () => {
+    setPreviewState({ open: false, url: "", filename: "", extension: "", fileId: null });
+  };
 
   if (loading) {
     return (
@@ -84,6 +129,12 @@ export function ClientPortalPage() {
   }
 
   const { client, projects } = data ?? {};
+
+  // Determine if a file is previewable based on extension
+  const isPreviewable = (file) => {
+    const ext = (file.extension || file.filename?.split('.').pop() || "").toLowerCase();
+    return ["jpg", "jpeg", "png", "gif", "webp", "svg", "pdf"].includes(ext);
+  };
 
   return (
     <div className="min-h-screen bg-[#0F1115] text-[#FFFFFF]">
@@ -151,7 +202,7 @@ export function ClientPortalPage() {
                     </div>
                   </div>
 
-                  {/* Files Card */}
+                  {/* Files Card — Secure */}
                   <div className="md:col-span-2 fin-card overflow-hidden">
                     <div className="flex items-center justify-between border-b border-white/[0.04] px-6 py-4">
                       <h3 className="text-sm font-semibold text-white">Files</h3>
@@ -160,15 +211,38 @@ export function ClientPortalPage() {
                     <div className="divide-y divide-white/[0.04]">
                       {files.map(file => (
                         <div key={file.id} className="flex items-center justify-between px-6 py-4 list-row-hover group">
-                          <span className="text-sm font-medium text-white transition-colors">{file.filename}</span>
-                          <a 
-                            href={file.download_url || file.file} 
-                            target="_blank" 
-                            rel="noopener noreferrer" 
-                            className="text-xs font-semibold text-[#8B93A1] hover:text-white transition-colors"
-                          >
-                            Download
-                          </a>
+                          <div className="flex items-center gap-3 min-w-0 flex-1">
+                            <div className="h-8 w-8 rounded-lg bg-white/[0.03] flex items-center justify-center shrink-0">
+                              {isPreviewable(file) ? (
+                                <svg className="h-4 w-4 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                              ) : (
+                                <svg className="h-4 w-4 text-white/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                </svg>
+                              )}
+                            </div>
+                            <span className="text-sm font-medium text-white truncate">{file.filename}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {isPreviewable(file) && (
+                              <button
+                                onClick={() => handleFilePreview(file.id)}
+                                disabled={fileActionLoading === file.id}
+                                className="text-xs font-semibold text-[#8B93A1] hover:text-white transition-colors px-3 py-1.5 rounded-md hover:bg-white/[0.04]"
+                              >
+                                {fileActionLoading === file.id ? "Loading..." : "Preview"}
+                              </button>
+                            )}
+                            <button
+                              onClick={() => handleFileDownload(file.id)}
+                              disabled={fileActionLoading === file.id}
+                              className="text-xs font-semibold text-[#8B93A1] hover:text-white transition-colors px-3 py-1.5 rounded-md hover:bg-white/[0.04]"
+                            >
+                              Download
+                            </button>
+                          </div>
                         </div>
                       ))}
                       {files.length === 0 && (
@@ -252,6 +326,16 @@ export function ClientPortalPage() {
           </div>
         </div>
       </div>
+
+      {/* Secure File Preview Modal */}
+      <FilePreviewModal
+        isOpen={previewState.open}
+        onClose={closePreview}
+        previewUrl={previewState.url}
+        filename={previewState.filename}
+        extension={previewState.extension}
+        onDownload={() => handleFileDownload(previewState.fileId)}
+      />
     </div>
   );
 }
