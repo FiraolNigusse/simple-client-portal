@@ -22,8 +22,10 @@ api_urlpatterns = [
     path("projects/", include("apps.projects.api.urls")),
     path("tasks/", include("apps.tasks.api.urls")),
     path("files/", include("apps.files.api.urls")),
+    path("files/upload/", include("apps.files.api.urls")), # Alias for root calls
     path("invoices/", include("apps.invoices.api.urls")),
     path("messaging/", include("apps.messaging.api.urls")),
+    path("messages/", include("apps.messaging.api.urls")), # Alias for messaging
     path("dashboard/summary/", DashboardSummaryView.as_view(), name="dashboard-summary"),
     # Client portal (token-authenticated, no JWT needed)
     path("portal/<str:token>/", PortalInfoView.as_view(), name="portal-info"),
