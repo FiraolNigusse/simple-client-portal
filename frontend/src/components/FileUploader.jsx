@@ -18,7 +18,7 @@ export function FileUploader({ projectId, onUploaded }) {
     fd.append("filename", file.name);
 
     try {
-      const res = await api.post("/files/", fd, {
+      const res = await api.post("/files/upload/", fd, {
         headers: { "Content-Type": "multipart/form-data" }
       });
       onUploaded(res.data);

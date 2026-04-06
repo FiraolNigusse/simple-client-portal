@@ -24,7 +24,7 @@ export function ChatWindow({ projectId, senderType }) {
 
   const fetchMessages = async () => {
     try {
-      const res = await api.get(`/messages/project/${projectId}/`);
+      const res = await api.get(`/messaging/project/${projectId}/`);
       setMessages(Array.isArray(res.data) ? res.data : res.data.results || []);
     } catch (err) {
       console.error("Fetch messages error:", err);
@@ -37,7 +37,7 @@ export function ChatWindow({ projectId, senderType }) {
 
     setLoading(true);
     try {
-      const res = await api.post("/messages/", {
+      const res = await api.post("/messaging/", {
         project: projectId,
         content: newMessage,
         sender_type: senderType

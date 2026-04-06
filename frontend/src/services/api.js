@@ -20,7 +20,7 @@ export const updateTask = (id, data) => apiClient.patch(`/tasks/${id}/`, data);
 export const deleteTask = (id) => apiClient.delete(`/tasks/${id}/`);
 
 export const getProjectFiles = (projectId) => apiClient.get(`/files/project/${projectId}/`);
-export const uploadFile = (data) => apiClient.post("/files/", data, {
+export const uploadFile = (data) => apiClient.post("/files/upload/", data, {
   headers: { "Content-Type": "multipart/form-data" }
 });
 
