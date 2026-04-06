@@ -22,11 +22,10 @@ class ProjectFileSerializer(serializers.ModelSerializer):
             'uploaded_by_name', 
             'uploaded_at',
             'created_at',
-            'original_name',
             'extension',
             'download_url'
         ]
-        read_only_fields = ['uploaded_by', 'created_at', 'uploaded_at', 'original_name']
+        read_only_fields = ['uploaded_by', 'created_at', 'uploaded_at']
 
     def get_filename(self, obj):
         # Defensive check in case migration hasn't run on production server

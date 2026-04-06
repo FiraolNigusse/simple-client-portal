@@ -25,7 +25,11 @@ class FileUploadView(generics.CreateAPIView):
         original_name = ""
         if "file" in self.request.FILES:
             original_name = self.request.FILES["file"].name
-        serializer.save(uploaded_by=self.request.user, project=project, original_name=original_name)
+        try:
+            serializer.save(uploaded_by=self.request.user, project=project, original_name=original_name)
+        except TypeError:
+            # original_name column may not exist if migration hasn't run
+            serializer.save(uploaded_by=self.request.user, project=project)
 
 
 class ProjectFileListView(generics.ListAPIView):

@@ -35,6 +35,7 @@ export function ProjectDetailsPage() {
   const [tasks, setTasks] = useState([]);
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [activeTab, setActiveTab] = useState("files");
   const toast = useToast();
 
@@ -89,7 +90,7 @@ export function ProjectDetailsPage() {
     toast("File uploaded!");
   };
 
-  if (loading) return <div className="p-8 space-y-6"><Skeleton height="200px" /><Skeleton height="400px" /></div>;
+
 
   return (
     <div className="space-y-6 animate-in fade-in duration-500">
