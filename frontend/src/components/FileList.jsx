@@ -51,8 +51,9 @@ export function FileList({ files, loading }) {
             </p>
           </div>
           <a 
-            href={file.file} 
-            download 
+            href={file.download_url || file.file} 
+            target="_blank" 
+            rel="noopener noreferrer" 
             className="text-portal-muted hover:text-white transition-colors p-2 rounded-lg hover:bg-slate-800"
             title="Download"
           >

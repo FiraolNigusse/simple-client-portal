@@ -20,7 +20,9 @@ class ProjectFileSerializer(serializers.ModelSerializer):
             'uploaded_by_name', 
             'uploaded_at',
             'created_at',
-            'original_name'
+            'original_name',
+            'extension',
+            'download_url'
         ]
         read_only_fields = ['uploaded_by', 'created_at', 'uploaded_at', 'original_name']
 
@@ -28,6 +30,16 @@ class ProjectFileSerializer(serializers.ModelSerializer):
         if obj.original_name:
             return obj.original_name
         return obj.file.name.split('/')[-1]
+
+    def get_extension(self, obj):
+        return obj.file.name.split('.')[-1] if '.' in obj.file.name else ""
+
+    def get_download_url(self, obj):
+        url = obj.file.url
+        if "/image/upload/" in url:
+            # Force download transformation
+            return url.replace("/image/upload/", "/image/upload/fl_attachment/")
+        return url
 
     def get_size(self, obj):
         try:

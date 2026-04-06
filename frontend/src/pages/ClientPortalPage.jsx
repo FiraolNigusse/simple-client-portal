@@ -161,7 +161,14 @@ export function ClientPortalPage() {
                       {files.map(file => (
                         <div key={file.id} className="flex items-center justify-between px-6 py-4 list-row-hover group">
                           <span className="text-sm font-medium text-white transition-colors">{file.filename}</span>
-                          <a href={file.file} download className="text-xs font-semibold text-[#8B93A1] hover:text-white transition-colors">Download</a>
+                          <a 
+                            href={file.download_url || file.file} 
+                            target="_blank" 
+                            rel="noopener noreferrer" 
+                            className="text-xs font-semibold text-[#8B93A1] hover:text-white transition-colors"
+                          >
+                            Download
+                          </a>
                         </div>
                       ))}
                       {files.length === 0 && (
