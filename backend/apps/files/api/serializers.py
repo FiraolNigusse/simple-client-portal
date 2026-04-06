@@ -3,9 +3,11 @@ from ..models import ProjectFile
 
 
 class ProjectFileSerializer(serializers.ModelSerializer):
-    uploaded_by_name = serializers.ReadOnlyField(source='uploaded_by.get_full_name')
+    uploaded_by_name = serializers.SerializerMethodField()
     filename = serializers.SerializerMethodField()
+    extension = serializers.SerializerMethodField()
     size = serializers.SerializerMethodField()
+    download_url = serializers.SerializerMethodField()
     uploaded_at = serializers.DateTimeField(source='created_at', read_only=True)
 
     class Meta:
@@ -27,8 +29,12 @@ class ProjectFileSerializer(serializers.ModelSerializer):
         read_only_fields = ['uploaded_by', 'created_at', 'uploaded_at', 'original_name']
 
     def get_filename(self, obj):
-        if obj.original_name:
-            return obj.original_name
+        # Defensive check in case migration hasn't run on production server
+        try:
+            if hasattr(obj, 'original_name') and obj.original_name:
+                return obj.original_name
+        except:
+            pass
         return obj.file.name.split('/')[-1]
 
     def get_extension(self, obj):
@@ -46,3 +52,8 @@ class ProjectFileSerializer(serializers.ModelSerializer):
             return obj.file.size
         except:
             return 0
+
+    def get_uploaded_by_name(self, obj):
+        if obj.uploaded_by:
+            return obj.uploaded_by.get_full_name() or obj.uploaded_by.email
+        return "System"
