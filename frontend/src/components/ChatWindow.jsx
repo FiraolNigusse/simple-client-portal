@@ -82,7 +82,7 @@ export function ChatWindow({ projectId, senderType }) {
               <div className={`max-w-[75%] space-y-2`}>
                 <div className={`px-5 py-3.5 rounded-2xl text-sm shadow-xl tracking-tight leading-relaxed ${
                   isMe 
-                    ? "bg-primary text-white rounded-tr-none font-bold shadow-primary/10" 
+                    ? "bg-primary text-black rounded-tr-none font-bold shadow-primary/10" 
                     : "bg-white/5 text-portal-text border border-white/10 rounded-tl-none font-medium backdrop-blur-md"
                 }`}>
                   {msg.content}

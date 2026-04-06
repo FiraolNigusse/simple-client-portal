@@ -22,7 +22,10 @@ class FileUploadView(generics.CreateAPIView):
         except Project.DoesNotExist:
             from rest_framework.exceptions import PermissionDenied
             raise PermissionDenied("Project not found or access denied.")
-        serializer.save(uploaded_by=self.request.user, project=project)
+        original_name = ""
+        if "file" in self.request.FILES:
+            original_name = self.request.FILES["file"].name
+        serializer.save(uploaded_by=self.request.user, project=project, original_name=original_name)
 
 
 class ProjectFileListView(generics.ListAPIView):

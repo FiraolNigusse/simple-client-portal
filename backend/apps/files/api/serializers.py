@@ -19,11 +19,14 @@ class ProjectFileSerializer(serializers.ModelSerializer):
             'uploaded_by', 
             'uploaded_by_name', 
             'uploaded_at',
-            'created_at'
+            'created_at',
+            'original_name'
         ]
-        read_only_fields = ['uploaded_by', 'created_at', 'uploaded_at']
+        read_only_fields = ['uploaded_by', 'created_at', 'uploaded_at', 'original_name']
 
     def get_filename(self, obj):
+        if obj.original_name:
+            return obj.original_name
         return obj.file.name.split('/')[-1]
 
     def get_size(self, obj):
