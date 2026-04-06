@@ -4,6 +4,7 @@ import { apiClient } from "../services/apiClient";
 import { Card } from "../components/ui/Card";
 import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
+import { PortalChatWindow } from "../components/PortalChatWindow";
 
 // ---------------------------------------------------------------------------
 // Portal API helpers — no JWT, just ?token= query param
@@ -222,6 +223,11 @@ export function ClientPortalPage() {
                         </div>
                       )}
                     </div>
+                  </div>
+
+                  {/* Messaging Channel */}
+                  <div className="md:col-span-2">
+                    <PortalChatWindow token={token} projectId={activeProject.id} />
                   </div>
                 </div>
               </>
