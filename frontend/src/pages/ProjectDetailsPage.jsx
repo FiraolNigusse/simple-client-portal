@@ -49,9 +49,30 @@ export function ProjectDetailsPage() {
       setTasks(Array.isArray(taskRes.data) ? taskRes.data : taskRes.data.results || []);
       setFiles(Array.isArray(fileRes.data) ? fileRes.data : fileRes.data.results || []);
     })
-    .catch(() => navigate("/projects"))
+    .catch((err) => {
+      console.error("Project load error:", err);
+      toast("Failed to load project details.", "error");
+      setError(true);
+    })
     .finally(() => setLoading(false));
   }, [id, navigate]);
+
+  if (loading) return <div className="p-8 space-y-6"><Skeleton height="200px" /><Skeleton height="400px" /></div>;
+
+  if (error || !project) {
+    return (
+      <div className="flex flex-col items-center justify-center py-32 text-center space-y-6">
+        <div className="rounded-full bg-red-500/10 p-6 text-red-500">
+          <svg className="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+        </div>
+        <h3 className="text-2xl font-bold text-white">Failed to load project</h3>
+        <p className="text-portal-muted max-w-md mx-auto italic">This project may have been deleted or there is a temporary connection issue. Please try again later.</p>
+        <Button onClick={() => navigate("/projects")}>Return to Projects</Button>
+      </div>
+    );
+  }
 
   const handleStatusChange = async (newStatus) => {
     try {

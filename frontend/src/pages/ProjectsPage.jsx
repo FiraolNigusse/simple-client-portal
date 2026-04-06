@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import * as api from "../services/api";
 import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
@@ -62,7 +62,11 @@ export function ProjectsPage() {
       ) : projects.length > 0 ? (
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {projects.map(project => (
-            <div key={project.id} className="fin-card p-6 flex flex-col cursor-pointer transition-all" onClick={() => navigate(`/projects/${project.id}`)}>
+            <Link 
+              key={project.id} 
+              to={`/projects/${project.id}`}
+              className="fin-card p-6 flex flex-col cursor-pointer transition-all hover:border-white/20"
+            >
               <div className="mb-4 flex items-center justify-between">
                 <Badge variant={project.status === "active" ? "success" : "default"}>
                   {project.status.toUpperCase()}
@@ -90,7 +94,7 @@ export function ProjectsPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       ) : (
