@@ -29,6 +29,18 @@ def validate_file_type(value):
 
 
 
+import uuid
+import os
+from django.utils import timezone
+
+def get_project_file_path(instance, filename):
+    ext = filename.split('.')[-1]
+    # Randomized filename to prevent snooping/collisions
+    filename = f"{uuid.uuid4().hex}.{ext}"
+    date_path = timezone.now().strftime("%Y/%m/%d")
+    return os.path.join(f"project_files/{date_path}/", filename)
+
+
 class ProjectFile(models.Model):
     project = models.ForeignKey(
         Project, 
@@ -36,7 +48,7 @@ class ProjectFile(models.Model):
         related_name="files"
     )
     file = models.FileField(
-        upload_to="project_files/%Y/%m/%d/",
+        upload_to=get_project_file_path,
         validators=[
             FileExtensionValidator(allowed_extensions=['pdf', 'docx', 'png', 'jpg', 'zip']),
             validate_file_size,

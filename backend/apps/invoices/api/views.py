@@ -21,6 +21,11 @@ class InvoiceListCreateView(PlanLimitMixin, generics.ListCreateAPIView):
         # Non-blocking notification
         from apps.core.notifications import send_invoice_notification
         send_invoice_notification(invoice)
+        
+        # Logging
+        import logging
+        logger = logging.getLogger("apps.invoices")
+        logger.info(f"User {self.request.user.id} created invoice {invoice.id} for amount {invoice.amount}")
 
     def get_plan_count(self) -> int:
         return Invoice.objects.filter(client__freelancer=self.request.user).count()

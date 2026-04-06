@@ -34,10 +34,8 @@ class ClientPortalRegenerateSerializer(serializers.Serializer):
         return value
 
     def save(self, **kwargs):
-        import uuid
         client_id = self.validated_data["client_id"]
         client = Client.objects.get(id=client_id)
-        client.portal_token = uuid.uuid4()
-        client.save(update_fields=["portal_token"])
+        client.regenerate_portal_token()
         return client
 

@@ -16,10 +16,11 @@ class PortalTokenAuthentication(BaseAuthentication):
     keyword = "Portal"
 
     def authenticate(self, request):
+        # Prefer query param or header, but support URL path kwarg for PortalInfoView
         token = (
             request.query_params.get("token")
             or request.headers.get("X-Portal-Token")
-            # Also allow obtaining from URL kwarg if needed, but usually handled by dispatch
+            or request.resolver_match.kwargs.get("token")
         )
         if not token:
             return None
@@ -28,7 +29,10 @@ class PortalTokenAuthentication(BaseAuthentication):
         try:
             client = Client.objects.get(portal_token=token)
         except (Client.DoesNotExist, ValueError):
-            raise AuthenticationFailed("Invalid or expired portal token.")
+            raise AuthenticationFailed("Invalid portal token.")
+
+        if not client.is_portal_token_valid():
+            raise AuthenticationFailed("Portal token has expired.")
 
         # Return (user=None, auth=client) — auth stores the authenticated client
         return (None, client)

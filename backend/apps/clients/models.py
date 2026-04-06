@@ -17,11 +17,23 @@ class Client(models.Model):
     email = models.EmailField()
     company = models.CharField(max_length=255, blank=True)
     portal_token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
+    portal_token_expires_at = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         ordering = ["-created_at"]
         unique_together = ("freelancer", "email")
+
+    def regenerate_portal_token(self):
+        self.portal_token = uuid.uuid4()
+        # Tokens expire in 30 days by default
+        self.portal_token_expires_at = timezone.now() + timezone.timedelta(days=30)
+        self.save()
+
+    def is_portal_token_valid(self):
+        if not self.portal_token_expires_at:
+            return True # If never set, consider it valid (legacy)
+        return timezone.now() < self.portal_token_expires_at
 
     def __str__(self) -> str:
         return f"{self.name} ({self.email})"
