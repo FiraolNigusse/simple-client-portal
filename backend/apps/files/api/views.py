@@ -12,6 +12,7 @@ from django.shortcuts import get_object_or_404
 from ..models import ProjectFile
 from .serializers import ProjectFileSerializer
 from apps.projects.models import Project
+from apps.users.models import Workspace
 
 logger = logging.getLogger(__name__)
 
@@ -64,8 +65,10 @@ def _generate_signed_url(file_obj, as_attachment=False):
 def _check_file_ownership(file_obj, user):
     """
     Verify the requesting user owns the workspace (freelancer) for this file.
-    The ownership chain: ProjectFile → Project → Client → freelancer.
     """
+    if file_obj.workspace:
+        return file_obj.workspace.owner == user
+    # Fallback legacy ownership chain
     return file_obj.project.client.freelancer == user
 
 
@@ -92,6 +95,12 @@ class FileUploadView(generics.CreateAPIView):
         original_name = uploaded_file.name if uploaded_file else ""
         file_size = uploaded_file.size if uploaded_file else 0
 
+        # Get or create workspace for the user
+        workspace, _ = Workspace.objects.get_or_create(
+            owner=self.request.user,
+            defaults={'name': f"{self.request.user.email.split('@')[0]}'s Workspace"}
+        )
+
         # ------------------------------------------------------------------
         # Attempt Cloudinary authenticated upload (production)
         # ------------------------------------------------------------------
@@ -107,17 +116,13 @@ class FileUploadView(generics.CreateAPIView):
                 )
                 serializer.save(
                     uploaded_by=self.request.user,
+                    workspace=workspace,
                     project=project,
-                    original_name=original_name,
+                    name=original_name,
                     public_id=result.get("public_id", ""),
                     resource_type=result.get("resource_type", "auto"),
                     file_size=result.get("bytes", file_size),
                     file=None,  # Don't store in FileField when using Cloudinary
-                )
-                logger.info(
-                    "Cloudinary authenticated upload: %s (public_id=%s)",
-                    original_name,
-                    result.get("public_id"),
                 )
                 return
             except Exception as exc:
@@ -128,16 +133,13 @@ class FileUploadView(generics.CreateAPIView):
         # ------------------------------------------------------------------
         # Fallback: standard Django FileField upload (development / no Cloudinary)
         # ------------------------------------------------------------------
-        try:
-            serializer.save(
-                uploaded_by=self.request.user,
-                project=project,
-                original_name=original_name,
-                file_size=file_size,
-            )
-        except TypeError:
-            # original_name / file_size columns may not exist if migration hasn't run
-            serializer.save(uploaded_by=self.request.user, project=project)
+        serializer.save(
+            uploaded_by=self.request.user,
+            workspace=workspace,
+            project=project,
+            name=original_name,
+            file_size=file_size,
+        )
 
 
 # ---------------------------------------------------------------------------
@@ -156,6 +158,39 @@ class ProjectFileListView(generics.ListAPIView):
         )
 
 
+import urllib.request
+from django.http import StreamingHttpResponse
+
+def _proxy_file_response(file_obj, as_attachment=False):
+    """
+    Proxies the file from Cloudinary (or local storage) to the client so the client
+    never sees the direct storage URL.
+    """
+    url = _generate_signed_url(file_obj, as_attachment=as_attachment)
+    if not url:
+        return Response({"detail": "File not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    req = urllib.request.Request(url)
+    try:
+        response = urllib.request.urlopen(req)
+    except Exception as exc:
+        logger.error(f"Error proxying file: {exc}")
+        return Response({"detail": "Failed to fetch file from storage."}, status=status.HTTP_502_BAD_GATEWAY)
+
+    content_type = response.headers.get("Content-Type", "application/octet-stream")
+
+    django_response = StreamingHttpResponse(
+        (chunk for chunk in iter(lambda: response.read(8192), b"")),
+        content_type=content_type
+    )
+
+    disposition = "attachment" if as_attachment else "inline"
+    filename = file_obj.original_name or "download"
+    django_response["Content-Disposition"] = f'{disposition}; filename="{filename}"'
+    django_response["Access-Control-Expose-Headers"] = "Content-Disposition"
+    return django_response
+
+
 # ---------------------------------------------------------------------------
 # Secure Download
 # ---------------------------------------------------------------------------
@@ -163,8 +198,7 @@ class ProjectFileListView(generics.ListAPIView):
 class FileDownloadView(APIView):
     """
     GET /api/files/<id>/download/
-    Returns a signed Cloudinary URL (or FileField URL) for downloading.
-    Enforces workspace ownership.
+    Returns a secure signed Cloudinary URL.
     """
     permission_classes = [permissions.IsAuthenticated]
 
@@ -178,13 +212,7 @@ class FileDownloadView(APIView):
             )
 
         url = _generate_signed_url(file_obj, as_attachment=True)
-        if not url:
-            return Response(
-                {"detail": "File not found."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        return Response({"url": url, "filename": file_obj.original_name})
+        return Response({"url": url})
 
 
 # ---------------------------------------------------------------------------
@@ -194,8 +222,7 @@ class FileDownloadView(APIView):
 class FilePreviewView(APIView):
     """
     GET /api/files/<id>/preview/
-    Returns a signed Cloudinary URL for in-browser preview (no attachment flag).
-    Enforces workspace ownership.
+    Returns a secure signed Cloudinary URL for preview.
     """
     permission_classes = [permissions.IsAuthenticated]
 
@@ -209,18 +236,7 @@ class FilePreviewView(APIView):
             )
 
         url = _generate_signed_url(file_obj, as_attachment=False)
-        if not url:
-            return Response(
-                {"detail": "File not found."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        return Response({
-            "url": url,
-            "filename": file_obj.original_name,
-            "extension": file_obj.extension,
-            "is_previewable": file_obj.is_previewable,
-        })
+        return Response({"url": url})
 
 
 # ---------------------------------------------------------------------------

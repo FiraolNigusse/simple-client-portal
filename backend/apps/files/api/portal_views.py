@@ -44,7 +44,7 @@ class PortalFileDownloadView(PortalBaseView):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        return Response({"url": url, "filename": file_obj.original_name})
+        return Response({"url": url, "name": file_obj.name})
 
 
 class PortalFilePreviewView(PortalBaseView):
@@ -72,7 +72,7 @@ class PortalFilePreviewView(PortalBaseView):
 
         return Response({
             "url": url,
-            "filename": file_obj.original_name,
+            "name": file_obj.name,
             "extension": file_obj.extension,
             "is_previewable": file_obj.is_previewable,
         })

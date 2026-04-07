@@ -129,3 +129,16 @@ class Subscription(models.Model):
         sub, _ = cls.objects.get_or_create(user=user)
         return sub
 
+
+class Workspace(models.Model):
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="workspaces",
+    )
+    name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.owner.email})"
+

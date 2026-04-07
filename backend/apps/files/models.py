@@ -3,6 +3,7 @@ from django.conf import settings
 from django.core.validators import FileExtensionValidator
 from django.core.exceptions import ValidationError
 from apps.projects.models import Project
+from apps.users.models import Workspace
 
 
 def validate_file_size(value):
@@ -42,11 +43,18 @@ def get_project_file_path(instance, filename):
 
 
 class ProjectFile(models.Model):
+    workspace = models.ForeignKey(
+        Workspace, 
+        on_delete=models.CASCADE, 
+        related_name="files",
+        null=True,  # Temporary null for migration
+    )
     project = models.ForeignKey(
         Project, 
         on_delete=models.CASCADE, 
         related_name="files"
     )
+    name = models.CharField(max_length=255, blank=True)
     # Legacy FileField — kept for backward compatibility with existing local/cloud files
     file = models.FileField(
         upload_to=get_project_file_path,
@@ -79,7 +87,6 @@ class ProjectFile(models.Model):
         on_delete=models.CASCADE,
         related_name="uploaded_files"
     )
-    original_name = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -92,13 +99,13 @@ class ProjectFile(models.Model):
 
     @property
     def extension(self):
-        name = self.original_name or (self.file.name if self.file else "")
-        return name.rsplit(".", 1)[-1].lower() if "." in name else ""
+        filename = self.name or (self.file.name if self.file else "")
+        return filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
 
     @property
     def is_previewable(self):
         return self.extension in ("jpg", "jpeg", "png", "svg", "gif", "webp", "pdf")
 
     def __str__(self) -> str:
-        name = self.original_name or (self.file.name if self.file else self.public_id)
-        return f"{name} - {self.project.title}"
+        filename = self.name or (self.file.name if self.file else self.public_id)
+        return f"{filename} - {self.project.title}"
