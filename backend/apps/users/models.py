@@ -108,10 +108,18 @@ class Subscription(models.Model):
     @property
     def plan(self):
         return self.user.plan
-        
+
+    @plan.setter
+    def plan(self, value):
+        self.user.plan = value
+
     @property
     def status(self):
         return self.user.plan_status
+
+    @status.setter
+    def status(self, value):
+        self.user.plan_status = value
 
     class Meta:
         ordering = ["-id"]

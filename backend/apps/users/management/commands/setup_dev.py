@@ -37,9 +37,9 @@ class Command(BaseCommand):
             user.save()
 
         # Set subscription to Agency
-        sub = Subscription.get_or_create_for_user(user)
-        sub.plan = Subscription.PLAN_AGENCY
-        sub.save()
+        user.plan = Subscription.PLAN_AGENCY
+        user.plan_status = Subscription.STATUS_ACTIVE
+        user.save()
 
-        self.stdout.write(self.style.SUCCESS(f'Subscription set to AGENCY for {email}'))
+        self.stdout.write(self.style.SUCCESS(f'Subscription set to AGENCY and status set to ACTIVE for {email}'))
         self.stdout.write(self.style.NOTICE(f'Login with: {email} / {password}'))
