@@ -31,7 +31,7 @@ export function TaskBoard({ tasks, setTasks, projectId }) {
   };
 
   const handleToggle = async (task) => {
-    const newStatus = task.status === "completed" ? "todo" : "completed";
+    const newStatus = task.status === "done" ? "todo" : "done";
     try {
       await api.patch(`/tasks/${task.id}/`, { status: newStatus });
       setTasks(tasks.map(t => t.id === task.id ? { ...t, status: newStatus } : t));
@@ -66,25 +66,25 @@ export function TaskBoard({ tasks, setTasks, projectId }) {
             <button 
               onClick={() => handleToggle(task)}
               className={`h-5 w-5 rounded border transition-all flex items-center justify-center ${
-                task.status === "completed" ? "bg-white border-white text-black" : "border-white/20 hover:border-white/40 bg-transparent"
+                task.status === "done" ? "bg-white border-white text-black" : "border-white/20 hover:border-white/40 bg-transparent"
               }`}
             >
-              {task.status === "completed" && (
+              {task.status === "done" && (
                 <svg className="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={4}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               )}
             </button>
             <div className="flex-1 min-w-0">
-              <p className={`text-sm font-semibold transition-all ${task.status === "completed" ? "text-[#8B93A1] line-through opacity-50" : "text-white"}`}>
+              <p className={`text-sm font-semibold transition-all ${task.status === "done" ? "text-[#8B93A1] line-through opacity-50" : "text-white"}`}>
                 {task.title}
               </p>
               {task.description && (
-                <p className={`text-xs mt-0.5 line-clamp-1 ${task.status === "completed" ? "text-[#8B93A1]/40" : "text-[#8B93A1]"}`}>{task.description}</p>
+                <p className={`text-xs mt-0.5 line-clamp-1 ${task.status === "done" ? "text-[#8B93A1]/40" : "text-[#8B93A1]"}`}>{task.description}</p>
               )}
             </div>
             <div className="flex items-center gap-4">
-              <Badge variant={task.status === "completed" ? "success" : "default"}>{task.status === "completed" ? "Done" : "Todo"}</Badge>
+              <Badge variant={task.status === "done" ? "success" : "default"}>{task.status === "done" ? "Done" : "Todo"}</Badge>
               <button 
                 onClick={() => handleDelete(task.id)}
                 className="text-[#8B93A1] hover:text-red-400 transition-all p-1.5 rounded opacity-0 group-hover:opacity-100"
