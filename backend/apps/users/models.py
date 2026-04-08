@@ -43,6 +43,16 @@ class User(AbstractBaseUser, PermissionsMixin):
     name = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
+    plan = models.CharField(
+        choices=[("starter", "Starter"), ("pro", "Pro"), ("agency", "Agency")],
+        default="starter",
+        max_length=20
+    )
+    plan_status = models.CharField(
+        choices=[("active", "Active"), ("pending", "Pending")],
+        default="active",
+        max_length=20
+    )
     created_at = models.DateTimeField(default=timezone.now)
 
     objects = UserManager()
@@ -65,30 +75,28 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 PLAN_LIMITS = {
     "starter":      {"clients": 5,    "projects": 10,  "invoices": 10},
-    "professional": {"clients": 25,   "projects": 50,  "invoices": 100},
+    "pro":          {"clients": 25,   "projects": 50,  "invoices": 100},
     "agency":       {"clients": None, "projects": None, "invoices": None},
 }
 
 
 class Subscription(models.Model):
     PLAN_STARTER = "starter"
-    PLAN_PROFESSIONAL = "professional"
+    PLAN_PRO = "pro"
     PLAN_AGENCY = "agency"
 
     PLAN_CHOICES = [
         (PLAN_STARTER, "Starter"),
-        (PLAN_PROFESSIONAL, "Professional"),
+        (PLAN_PRO, "Pro"),
         (PLAN_AGENCY, "Agency"),
     ]
 
     STATUS_ACTIVE = "active"
-    STATUS_CANCELLED = "cancelled"
-    STATUS_PAST_DUE = "past_due"
+    STATUS_PENDING = "pending"
 
     STATUS_CHOICES = [
         (STATUS_ACTIVE, "Active"),
-        (STATUS_CANCELLED, "Cancelled"),
-        (STATUS_PAST_DUE, "Past Due"),
+        (STATUS_PENDING, "Pending"),
     ]
 
     user = models.OneToOneField(
@@ -96,20 +104,17 @@ class Subscription(models.Model):
         on_delete=models.CASCADE,
         related_name="subscription",
     )
-    plan = models.CharField(
-        max_length=20,
-        choices=PLAN_CHOICES,
-        default=PLAN_STARTER,
-    )
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default=STATUS_ACTIVE,
-    )
-    started_at = models.DateTimeField(default=timezone.now)
+    
+    @property
+    def plan(self):
+        return self.user.plan
+        
+    @property
+    def status(self):
+        return self.user.plan_status
 
     class Meta:
-        ordering = ["-started_at"]
+        ordering = ["-id"]
 
     def __str__(self) -> str:
         return f"{self.user.email} — {self.plan} ({self.status})"

@@ -5,7 +5,7 @@ import { Card } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import { Badge, Skeleton } from "../components/ui/Badge";
 
-const PLAN_ORDER = ["starter", "professional", "agency"];
+const PLAN_ORDER = ["starter", "pro", "agency"];
 
 export function SubscriptionPage() {
   const { user } = useAuth();
@@ -27,7 +27,7 @@ export function SubscriptionPage() {
     setError(null);
     setSuccess(null);
     try {
-      const updated = await upgradePlan(plan);
+      const updated = await upgradePlan(plan, user);
       setSuccess(`Successfully switched to the ${updated.plan_label} plan.`);
     } catch {
       setError("Failed to update your plan. Please try again.");
@@ -118,7 +118,7 @@ export function SubscriptionPage() {
                 
                 <h3 className="text-xl font-bold text-portal-text mb-1">{p.label}</h3>
                 <p className="text-3xl font-extrabold text-portal-text mb-6">
-                  ${p.plan === 'starter' ? '0' : p.plan === 'professional' ? '29' : '99'}
+                  ${p.plan === 'starter' ? '0' : p.plan === 'pro' ? '29' : '99'}
                   <span className="text-sm font-normal text-portal-muted">/mo</span>
                 </p>
 

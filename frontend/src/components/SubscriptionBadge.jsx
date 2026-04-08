@@ -2,7 +2,7 @@ import { useSubscription } from "../context/SubscriptionContext";
 
 const PLAN_STYLES = {
   starter:      "status-badge status-pending",
-  professional: "status-badge status-active",
+  pro:          "status-badge status-active",
   agency:       "status-badge status-active border-accent/30 bg-accent/10 text-accent",
 };
 

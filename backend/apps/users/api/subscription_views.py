@@ -18,10 +18,18 @@ class MySubscriptionView(APIView):
         return Response(SubscriptionSerializer(sub).data)
 
     def patch(self, request):
+        if not request.user.is_staff:
+            return Response({"detail": "Payment required"}, status=403)
+            
         sub = Subscription.get_or_create_for_user(request.user)
         serializer = SubscriptionSerializer(sub, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
+        
+        # Also sync User model
+        request.user.plan = sub.plan
+        request.user.save()
+        
         return Response(serializer.data)
 
 

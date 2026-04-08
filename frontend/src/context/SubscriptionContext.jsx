@@ -4,7 +4,7 @@ import { apiClient } from "../services/apiClient";
 
 const SubscriptionContext = createContext(null);
 
-const PLAN_ORDER = ["starter", "professional", "agency"];
+const PLAN_ORDER = ["starter", "pro", "agency"];
 
 export function SubscriptionProvider({ children }) {
   const [subscription, setSubscription] = useState(null);
@@ -37,11 +37,20 @@ export function SubscriptionProvider({ children }) {
     fetchSubscription();
   }, [fetchSubscription]);
 
-  const upgradePlan = useCallback(async (plan) => {
-    const res = await apiClient.patch("/users/subscriptions/me/", { plan });
-    setSubscription(res.data);
-    return res.data;
-  }, []);
+  const upgradePlan = useCallback(async (plan, user) => {
+    if (user?.is_staff) {
+      const res = await apiClient.post("/users/admin/change-plan/", { user_id: user.id, plan });
+      await fetchSubscription();
+      return res.data;
+    } else {
+      const res = await apiClient.post("/users/create-checkout-session/", { plan });
+      if (res.data.fake_payment_url) {
+        // For mock flow, we just redirect. In real Stripe logic, we might use Stripe SDK.
+        window.location.href = res.data.fake_payment_url;
+      }
+      return res.data;
+    }
+  }, [fetchSubscription]);
 
   const value = useMemo(
     () => ({

@@ -3,9 +3,11 @@ from ..models import Subscription, PLAN_LIMITS
 
 
 class SubscriptionSerializer(serializers.ModelSerializer):
-    plan_label = serializers.CharField(source="get_plan_display", read_only=True)
-    status_label = serializers.CharField(source="get_status_display", read_only=True)
+    plan_label = serializers.SerializerMethodField()
+    status_label = serializers.SerializerMethodField()
     limits = serializers.SerializerMethodField()
+    plan = serializers.CharField(read_only=True)
+    status = serializers.CharField(read_only=True)
 
     class Meta:
         model = Subscription
@@ -15,10 +17,14 @@ class SubscriptionSerializer(serializers.ModelSerializer):
             "plan_label",
             "status",
             "status_label",
-            "started_at",
             "limits",
         ]
-        read_only_fields = ["started_at", "status"]
+
+    def get_plan_label(self, obj):
+        return obj.user.get_plan_display()
+
+    def get_status_label(self, obj):
+        return obj.user.get_plan_status_display()
 
     def get_limits(self, obj):
         raw = obj.limits
