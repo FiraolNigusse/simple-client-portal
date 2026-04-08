@@ -10,3 +10,4 @@ gunicorn>=21.2
 cloudinary>=1.38
 django-cloudinary-storage==0.3.0
 resend>=2.4.0
+stripe>=8.0.0

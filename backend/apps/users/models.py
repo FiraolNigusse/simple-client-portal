@@ -53,6 +53,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         default="active",
         max_length=20
     )
+    stripe_customer_id = models.CharField(max_length=255, blank=True, null=True)
+    subscription_id = models.CharField(max_length=255, blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     objects = UserManager()

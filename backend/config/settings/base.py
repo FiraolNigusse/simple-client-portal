@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "apps.invoices",
     "apps.messaging",
     "apps.analytics",
+    "apps.payments",
 ]
 
 MIDDLEWARE = [
@@ -160,6 +161,11 @@ SITE_DOMAIN = config("SITE_DOMAIN", default="localhost:8000")
 # Resend Email Integration
 RESEND_API_KEY = config("RESEND_API_KEY", default="")
 RESEND_FROM_EMAIL = config("RESEND_FROM_EMAIL", default="AuroraDesk <portal@notifications.auroradesk.com>")
+
+# Stripe Configuration
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", default="")
+STRIPE_PUBLIC_KEY = config("STRIPE_PUBLIC_KEY", default="")
+STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET", default="")
 
 # Logging
 LOGGING = {
