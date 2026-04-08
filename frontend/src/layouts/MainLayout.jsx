@@ -148,7 +148,7 @@ export function MainLayout() {
       </aside>
 
       {/* Main Container */}
-      <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col bg-background">
         <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/[0.04] px-8 relative z-10">
           <div className="flex items-center gap-4">
             <button 
