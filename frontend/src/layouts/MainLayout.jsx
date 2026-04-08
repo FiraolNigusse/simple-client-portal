@@ -88,14 +88,14 @@ export function MainLayout() {
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+          className="fixed inset-0 z-[50] bg-black/60 backdrop-blur-sm md:hidden"
           onClick={closeSidebar}
         />
       )}
 
       {/* Sidebar */}
       <aside className={`
-        fixed inset-y-0 left-0 z-50 flex w-64 flex-col bg-[#0F1115] border-r border-white/[0.04] transition-transform duration-300
+        fixed inset-y-0 left-0 z-[60] flex w-64 flex-col bg-[#0F1115] border-r border-white/[0.04] transition-transform duration-300
         ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
         md:relative md:flex md:translate-x-0
       `}>
@@ -149,7 +149,7 @@ export function MainLayout() {
 
       {/* Main Container */}
       <div className="flex flex-1 flex-col">
-        <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/[0.04] px-8 z-50">
+        <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/[0.04] px-8 relative z-10">
           <div className="flex items-center gap-4">
             <button 
               className="p-1.5 text-[#8B93A1] md:hidden"
