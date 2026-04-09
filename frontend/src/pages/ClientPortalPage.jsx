@@ -67,35 +67,26 @@ export function ClientPortalPage() {
       .then(t => setTasks(Array.isArray(t.data) ? t.data : t.data.results || []));
   }, [token, activeProject]);
 
-  // Secure file handlers — fetch signed URLs on demand
-  const handleFilePreview = async (fileId) => {
-    setFileActionLoading(fileId);
-    try {
-      const res = await portalGet(token, `/files/${fileId}/preview/`);
-      setPreviewState({
-        open: true,
-        url: res.data.url,
-        filename: res.data.filename,
-        extension: res.data.extension,
-        fileId,
-      });
-    } catch (err) {
-      console.error("Preview error:", err);
-    } finally {
-      setFileActionLoading(null);
-    }
+  // Secure file handlers — fetch proxied URLs on demand
+  const getFileUrl = (fileId, download = false) => {
+    const rawBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
+    const baseUrl = rawBaseUrl.endsWith("/") ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
+    return `${baseUrl}/portal/${token}/files/${fileId}/download/?token=${token}&download=${download}`;
   };
 
-  const handleFileDownload = async (fileId) => {
-    setFileActionLoading(fileId);
-    try {
-      const res = await portalGet(token, `/files/${fileId}/download/`);
-      window.open(res.data.url, "_blank");
-    } catch (err) {
-      console.error("Download error:", err);
-    } finally {
-      setFileActionLoading(null);
-    }
+  const handleFilePreview = (file) => {
+    setPreviewState({
+      open: true,
+      url: getFileUrl(file.id, false),
+      filename: file.filename,
+      extension: file.extension || (file.filename || "").split('.').pop() || "",
+      fileId: file.id,
+    });
+  };
+
+  const handleFileDownload = (fileId) => {
+    // Direct link to proxy endpoint triggers browser download automatically
+    window.location.href = getFileUrl(fileId, true);
   };
 
   const closePreview = () => {
@@ -226,21 +217,11 @@ export function ClientPortalPage() {
                             <span className="text-sm font-medium text-white truncate">{file.filename}</span>
                           </div>
                           <div className="flex items-center gap-2">
-                            {isPreviewable(file) && (
-                              <button
-                                onClick={() => handleFilePreview(file.id)}
-                                disabled={fileActionLoading === file.id}
-                                className="text-xs font-semibold text-[#8B93A1] hover:text-white transition-colors px-3 py-1.5 rounded-md hover:bg-white/[0.04]"
-                              >
-                                {fileActionLoading === file.id ? "Loading..." : "Preview"}
-                              </button>
-                            )}
                             <button
-                              onClick={() => handleFileDownload(file.id)}
-                              disabled={fileActionLoading === file.id}
-                              className="text-xs font-semibold text-[#8B93A1] hover:text-white transition-colors px-3 py-1.5 rounded-md hover:bg-white/[0.04]"
+                              onClick={() => handleFilePreview(file)}
+                              className="text-xs font-semibold text-[#8B93A1] hover:text-white transition-colors px-4 py-2 rounded-md hover:bg-white/[0.04] border border-transparent hover:border-white/[0.04]"
                             >
-                              Download
+                              Open
                             </button>
                           </div>
                         </div>

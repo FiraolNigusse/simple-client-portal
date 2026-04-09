@@ -15,7 +15,7 @@ from apps.clients.portal_auth import PortalTokenAuthentication
 from apps.clients.models import Client
 from apps.clients.portal_views import PortalPermission, PortalBaseView
 from apps.files.models import ProjectFile
-from apps.files.api.views import _generate_signed_url
+from apps.files.api.views import _generate_signed_url, _proxy_file_response
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 class PortalFileDownloadView(PortalBaseView):
     """
     GET /api/portal/<token>/files/<file_id>/download/
-    Returns a signed URL for the client to download the file.
+    Proxies the file content directly so the client never sees Cloudinary URLs.
     """
 
     def get(self, request, token, file_id):
@@ -37,14 +37,8 @@ class PortalFileDownloadView(PortalBaseView):
                 status=status.HTTP_403_FORBIDDEN,
             )
 
-        url = _generate_signed_url(file_obj, as_attachment=True)
-        if not url:
-            return Response(
-                {"detail": "File not found."},
-                status=status.HTTP_404_NOT_FOUND,
-            )
-
-        return Response({"url": url, "name": file_obj.name})
+        download = request.query_params.get("download", "true") == "true"
+        return _proxy_file_response(file_obj, as_attachment=download)
 
 
 class PortalFilePreviewView(PortalBaseView):
