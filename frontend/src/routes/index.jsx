@@ -15,6 +15,7 @@ import { ForgotPasswordPage } from "../pages/ForgotPasswordPage";
 import { ResetPasswordPage } from "../pages/ResetPasswordPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
 import { useAuth } from "../context/AuthContext";
+import AdminDashboard from "../pages/AdminDashboard";
 
 function ProtectedRoute({ children }) {
   const { isAuthenticated, initializing } = useAuth();
@@ -75,6 +76,10 @@ export function AppRoutes() {
         <Route
           path="/settings"
           element={<SettingsPage />}
+        />
+        <Route
+          path="/admin"
+          element={<AdminDashboard />}
         />
       </Route>
       <Route path="/login" element={<LoginPage />} />
