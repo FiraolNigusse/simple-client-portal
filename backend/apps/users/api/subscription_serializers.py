@@ -6,8 +6,6 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     plan_label = serializers.SerializerMethodField()
     status_label = serializers.SerializerMethodField()
     limits = serializers.SerializerMethodField()
-    plan = serializers.CharField(read_only=True)
-    status = serializers.CharField(read_only=True)
 
     class Meta:
         model = Subscription
@@ -21,10 +19,10 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         ]
 
     def get_plan_label(self, obj):
-        return obj.user.get_plan_display()
+        return obj.get_plan_display()
 
     def get_status_label(self, obj):
-        return obj.user.get_plan_status_display()
+        return obj.get_status_display()
 
     def get_limits(self, obj):
         raw = obj.limits

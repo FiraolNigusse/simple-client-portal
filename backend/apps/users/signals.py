@@ -18,3 +18,26 @@ def create_subscription_for_new_user(sender, instance, created, **kwargs):
                 "status": "active" if getattr(instance, "plan_status", "active") == "active" else "incomplete"
             }
         )
+
+@receiver(post_save, sender=Subscription)
+def sync_subscription_to_user(sender, instance, **kwargs):
+    """
+    Sync subscription data back to User model for legacy support/frontend parity.
+    """
+    user = instance.user
+    changed = False
+    
+    if user.plan != instance.plan:
+        user.plan = instance.plan
+        changed = True
+        
+    # Sync status to plan_status
+    if instance.status == Subscription.STATUS_ACTIVE and user.plan_status != "active":
+        user.plan_status = "active"
+        changed = True
+    elif instance.status != Subscription.STATUS_ACTIVE and user.plan_status == "active":
+        user.plan_status = "pending"  # or mapping appropriate status
+        changed = True
+        
+    if changed:
+        user.save()
