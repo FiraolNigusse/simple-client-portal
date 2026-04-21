@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getAccessToken, getRefreshToken, setAccessToken, setRefreshToken, clearTokens } from "../utils/authStorage";
 
-const rawBaseURL = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+const rawBaseURL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
 const baseURL = rawBaseURL.endsWith("/") ? rawBaseURL.slice(0, -1) : rawBaseURL;
 
 export const apiClient = axios.create({

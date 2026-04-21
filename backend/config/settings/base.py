@@ -138,10 +138,10 @@ SIMPLE_JWT = {
 
 # CORS & CSRF
 CORS_ALLOW_CREDENTIALS = True
-_cors_origins = config("CORS_ALLOWED_ORIGINS", default="http://localhost:5173", cast=Csv())
+_cors_origins = config("CORS_ALLOWED_ORIGINS", default="http://localhost:5173,http://localhost:5174,https://mela-client-portal.vercel.app", cast=Csv())
 CORS_ALLOWED_ORIGINS = [origin.rstrip("/") for origin in _cors_origins]
 
-_csrf_origins = config("CSRF_TRUSTED_ORIGINS", default="http://localhost:5173", cast=Csv())
+_csrf_origins = config("CSRF_TRUSTED_ORIGINS", default="http://localhost:5173,http://localhost:5174,https://mela-client-portal.vercel.app", cast=Csv())
 CSRF_TRUSTED_ORIGINS = [origin.rstrip("/") for origin in _csrf_origins]
 
 # Email configuration

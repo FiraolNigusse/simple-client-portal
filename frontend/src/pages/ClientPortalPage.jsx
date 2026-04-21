@@ -69,7 +69,7 @@ export function ClientPortalPage() {
 
   // Secure file handlers — fetch proxied URLs on demand
   const getFileUrl = (fileId, download = false) => {
-    const rawBaseUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api";
+    const rawBaseUrl = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || "http://localhost:8000/api";
     const baseUrl = rawBaseUrl.endsWith("/") ? rawBaseUrl.slice(0, -1) : rawBaseUrl;
     return `${baseUrl}/portal/${token}/files/${fileId}/download/?token=${token}&download=${download}`;
   };
