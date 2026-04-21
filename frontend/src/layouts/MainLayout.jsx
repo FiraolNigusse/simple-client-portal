@@ -60,6 +60,16 @@ const NAV_ITEMS = [
         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
       </svg>
     )
+  },
+  {
+    to: "/admin",
+    label: "Admin",
+    isStaffPost: true,
+    icon: (props) => (
+      <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+      </svg>
+    )
   }
 ];
 
@@ -79,7 +89,9 @@ export function MainLayout() {
 
   const closeSidebar = () => setSidebarOpen(false);
 
-  const currentPage = NAV_ITEMS.find(item => 
+  const filteredNavItems = NAV_ITEMS.filter(item => !item.isStaffPost || user?.is_staff);
+
+  const currentPage = filteredNavItems.find(item => 
     item.end ? location.pathname === item.to : location.pathname.startsWith(item.to)
   )?.label || "Dashboard";
 
@@ -111,7 +123,7 @@ export function MainLayout() {
 
         {/* Sidebar Nav */}
         <nav className="flex-1 space-y-1 px-3 py-6 overflow-y-auto">
-          {NAV_ITEMS.map((item) => (
+          {filteredNavItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -140,7 +152,12 @@ export function MainLayout() {
               {user?.email?.[0].toUpperCase()}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-semibold text-white">{user?.email?.split('@')[0]}</p>
+              <div className="flex items-center gap-1.5">
+                <p className="truncate text-xs font-semibold text-white">{user?.email?.split('@')[0]}</p>
+                {user?.is_staff && (
+                  <span className="text-[8px] font-bold px-1 py-0.5 rounded bg-white/10 text-white leading-none">STAFF</span>
+                )}
+              </div>
               <p className="truncate text-[10px] text-[#8B93A1] font-medium">Free Workspace</p>
             </div>
           </div>
@@ -181,6 +198,18 @@ export function MainLayout() {
                     <p className="text-[10px] text-[#8B93A1]">Personal Account</p>
                   </div>
                   <div className="p-1">
+                    {user?.is_staff && (
+                      <NavLink
+                        to="/admin"
+                        onClick={() => setProfileOpen(false)}
+                        className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-white hover:bg-white/5 rounded transition-colors"
+                      >
+                        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                        Admin Panel
+                      </NavLink>
+                    )}
                     <button
                       onClick={handleLogout}
                       className="flex w-full items-center gap-2 px-3 py-2 text-xs font-medium text-red-400 hover:bg-red-400/5 rounded transition-colors"
