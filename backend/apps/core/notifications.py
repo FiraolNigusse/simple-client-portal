@@ -18,7 +18,7 @@ def send_invoice_notification(invoice):
     client = invoice.client
     portal_link = f"{settings.FRONTEND_ORIGIN}/portal/{client.portal_token}"
 
-    subject = "New Invoice from AuroraDesk"
+    subject = "New Invoice from Mela"
     
     body = (
         f"Hello {client.name},\n\n"

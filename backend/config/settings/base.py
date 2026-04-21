@@ -160,7 +160,7 @@ SITE_DOMAIN = config("SITE_DOMAIN", default="localhost:8000")
 
 # Resend Email Integration
 RESEND_API_KEY = config("RESEND_API_KEY", default="")
-RESEND_FROM_EMAIL = config("RESEND_FROM_EMAIL", default="AuroraDesk <portal@notifications.auroradesk.com>")
+RESEND_FROM_EMAIL = config("RESEND_FROM_EMAIL", default="Mela <portal@notifications.mela.com>")
 
 # Stripe Configuration
 STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY", default="")
