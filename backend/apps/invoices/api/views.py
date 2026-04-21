@@ -22,6 +22,14 @@ class InvoiceListCreateView(PlanLimitMixin, generics.ListCreateAPIView):
         from apps.core.notifications import send_invoice_notification
         send_invoice_notification(invoice)
         
+        # Analytics
+        from apps.analytics.utils import track_event
+        track_event(
+            user=self.request.user,
+            event_type="invoice_sent",
+            metadata={"invoice_id": invoice.id, "amount": float(invoice.amount), "client": invoice.client.name}
+        )
+
         # Logging
         import logging
         logger = logging.getLogger("apps.invoices")

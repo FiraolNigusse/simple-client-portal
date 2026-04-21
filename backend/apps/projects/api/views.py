@@ -20,6 +20,15 @@ class ProjectListCreateView(PlanLimitMixin, generics.ListCreateAPIView):
             client__freelancer=self.request.user
         )
 
+    def perform_create(self, serializer):
+        project = serializer.save()
+        from apps.analytics.utils import track_event
+        track_event(
+            user=self.request.user,
+            event_type="created_project",
+            metadata={"project_id": project.id, "title": project.title}
+        )
+
     def get_serializer_context(self):
         ctx = super().get_serializer_context()
         ctx["request"] = self.request

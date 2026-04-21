@@ -13,3 +13,15 @@ def log_portal_event(request, client, action, resource_type, resource_id, metada
         ip_address=request.META.get("REMOTE_ADDR"),
         user_agent=request.META.get("HTTP_USER_AGENT", ""),
     )
+
+def track_event(user, event_type, metadata=None):
+    """
+    Utility to record generic user-driven events for analytics.
+    Ensures safe import to avoid circular dependencies.
+    """
+    from .models import Event
+    return Event.objects.create(
+        user=user,
+        type=event_type,
+        metadata=metadata or {}
+    )

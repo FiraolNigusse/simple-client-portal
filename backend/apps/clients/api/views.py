@@ -26,7 +26,13 @@ class ClientListCreateView(PlanLimitMixin, generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         try:
-            serializer.save(freelancer=self.request.user)
+            client = serializer.save(freelancer=self.request.user)
+            from apps.analytics.utils import track_event
+            track_event(
+                user=self.request.user,
+                event_type="invited_client",
+                metadata={"client_id": client.id, "email": client.email}
+            )
         except IntegrityError:
             raise serializers.ValidationError({"email": "A client with this email already exists for your account."})
 

@@ -11,4 +11,10 @@ from .models import Subscription
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_subscription_for_new_user(sender, instance, created, **kwargs):
     if created:
-        Subscription.objects.get_or_create(user=instance)
+        Subscription.objects.get_or_create(
+            user=instance,
+            defaults={
+                "plan": getattr(instance, "plan", "starter"),
+                "status": "active" if getattr(instance, "plan_status", "active") == "active" else "incomplete"
+            }
+        )

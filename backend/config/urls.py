@@ -32,6 +32,7 @@ api_urlpatterns = [
     path("messaging/", include("apps.messaging.api.urls")),
     path("messages/", include("apps.messaging.api.urls")), # Alias for messaging
     path("dashboard/summary/", DashboardSummaryView.as_view(), name="dashboard-summary"),
+    path("admin/", include("apps.analytics.urls")),
     # Client portal (token-authenticated, no JWT needed)
     path("portal/<str:token>/", PortalInfoView.as_view(), name="portal-info"),
     path("portal/<str:token>/files/", PortalProjectFilesView.as_view(), name="portal-files"),

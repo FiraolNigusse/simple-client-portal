@@ -55,6 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     )
     stripe_customer_id = models.CharField(max_length=255, blank=True, null=True)
     subscription_id = models.CharField(max_length=255, blank=True, null=True)
+    last_active = models.DateTimeField(null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
 
     objects = UserManager()
@@ -94,11 +95,13 @@ class Subscription(models.Model):
     ]
 
     STATUS_ACTIVE = "active"
-    STATUS_PENDING = "pending"
+    STATUS_CANCELED = "canceled"
+    STATUS_INCOMPLETE = "incomplete"
 
     STATUS_CHOICES = [
         (STATUS_ACTIVE, "Active"),
-        (STATUS_PENDING, "Pending"),
+        (STATUS_CANCELED, "Canceled"),
+        (STATUS_INCOMPLETE, "Incomplete"),
     ]
 
     user = models.OneToOneField(
@@ -106,22 +109,20 @@ class Subscription(models.Model):
         on_delete=models.CASCADE,
         related_name="subscription",
     )
-    
-    @property
-    def plan(self):
-        return self.user.plan
-
-    @plan.setter
-    def plan(self, value):
-        self.user.plan = value
-
-    @property
-    def status(self):
-        return self.user.plan_status
-
-    @status.setter
-    def status(self, value):
-        self.user.plan_status = value
+    plan = models.CharField(
+        max_length=20, 
+        choices=PLAN_CHOICES, 
+        default=PLAN_STARTER
+    )
+    status = models.CharField(
+        max_length=20, 
+        choices=STATUS_CHOICES, 
+        default=STATUS_ACTIVE
+    )
+    stripe_customer_id = models.CharField(max_length=255, blank=True)
+    stripe_subscription_id = models.CharField(max_length=255, blank=True)
+    current_period_end = models.DateTimeField(null=True, blank=True)
+    created_at = models.DateTimeField(default=timezone.now)
 
     class Meta:
         ordering = ["-id"]
