@@ -14,6 +14,7 @@ import { RegisterPage } from "../pages/RegisterPage";
 import { ForgotPasswordPage } from "../pages/ForgotPasswordPage";
 import { ResetPasswordPage } from "../pages/ResetPasswordPage";
 import { NotFoundPage } from "../pages/NotFoundPage";
+import { LandingPage } from "../pages/LandingPage";
 import { useAuth } from "../context/AuthContext";
 import AdminDashboard from "../pages/AdminDashboard";
 
@@ -32,8 +33,18 @@ function ProtectedRoute({ children }) {
 }
 
 export function AppRoutes() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <Routes>
+      {/* Landing Page - Root */}
+      <Route
+        path="/"
+        element={
+          isAuthenticated ? <Navigate to="/dashboard" replace /> : <LandingPage />
+        }
+      />
+
       <Route
         element={
           <ProtectedRoute>
@@ -41,10 +52,6 @@ export function AppRoutes() {
           </ProtectedRoute>
         }
       >
-        <Route
-          path="/"
-          element={<Navigate to="/dashboard" replace />}
-        />
         <Route
           path="/dashboard"
           element={<DashboardPage />}
