@@ -9,6 +9,7 @@ import {
   Zap,
   Users
 } from "lucide-react";
+import { Logo } from "../components/ui/Logo";
 import { Link } from "react-router-dom";
 import { Button } from "../components/ui/Button";
 
@@ -31,12 +32,7 @@ export function LandingPage() {
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-50 border-b border-white/[0.04] bg-[#0F1115]/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 bg-white rounded-lg flex items-center justify-center">
-              <span className="text-black font-bold text-xl">M</span>
-            </div>
-            <span className="text-xl font-bold tracking-tight">Mela</span>
-          </div>
+          <Logo />
           <div className="flex items-center gap-6">
             <Link to="/login" className="text-sm font-medium text-[#8B93A1] hover:text-white transition-colors">Login</Link>
             <Link to="/register">

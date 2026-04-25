@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { Card } from "../components/ui/Card";
+import { Logo } from "../components/ui/Logo";
 
 export function LoginPage() {
   const { signIn } = useAuth();
@@ -32,7 +33,8 @@ export function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0F1115] px-6">
       <div className="w-full max-w-md space-y-10">
-        <div className="text-center">
+        <div className="text-center flex flex-col items-center">
+          <Logo className="mb-8" size="lg" />
           <h1 className="text-3xl font-semibold tracking-tight text-white mb-2">Welcome back</h1>
           <p className="text-sm text-[#8B93A1]">Sign in to manage your clients and projects.</p>
         </div>

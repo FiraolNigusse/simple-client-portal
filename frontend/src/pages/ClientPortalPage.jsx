@@ -6,6 +6,7 @@ import { Badge } from "../components/ui/Badge";
 import { Button } from "../components/ui/Button";
 import { PortalChatWindow } from "../components/PortalChatWindow";
 import { FilePreviewModal } from "../components/FilePreviewModal";
+import { Logo } from "../components/ui/Logo";
 
 // ---------------------------------------------------------------------------
 // Portal API helpers — no JWT, just ?token= query param
@@ -130,6 +131,10 @@ export function ClientPortalPage() {
   return (
     <div className="min-h-screen bg-[#0F1115] text-[#FFFFFF]">
       <div className="mx-auto max-w-7xl px-8 py-12 space-y-12">
+        <div className="flex justify-between items-center mb-4">
+          <Logo size="sm" />
+          <div className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">Secured by Mela</div>
+        </div>
         {/* Portal Header */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/[0.04] pb-10">
           <div>

@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
 import { Card } from "../components/ui/Card";
+import { Logo } from "../components/ui/Logo";
 
 export function RegisterPage() {
   const { signUp } = useAuth();
@@ -34,16 +35,12 @@ export function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background p-6">
+    <div className="min-h-screen flex items-center justify-center bg-[#0F1115] p-6">
       <div className="w-full max-w-md space-y-8 animate-in fade-in duration-700">
-        <div className="text-center">
-          <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary mb-6">
-            <svg className="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
-          <h1 className="text-3xl font-black tracking-tight text-portal-text uppercase tracking-[0.1em]">Get started</h1>
-          <p className="mt-2 text-sm text-portal-muted font-medium">Join 2,000+ freelancers managing their business on Portal.</p>
+        <div className="text-center flex flex-col items-center">
+          <Logo className="mb-8" size="lg" />
+          <h1 className="text-3xl font-bold tracking-tight text-white uppercase tracking-[0.1em]">Get started</h1>
+          <p className="mt-2 text-sm text-[#8B93A1] font-medium">Join 2,000+ freelancers managing their business on Mela.</p>
         </div>
 
         <Card className="p-8 border-slate-800/60 shadow-2xl shadow-black/50">

@@ -3,6 +3,7 @@ import { Outlet, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useSubscription } from "../context/SubscriptionContext";
 import { Button } from "../components/ui/Button";
+import { Logo } from "../components/ui/Logo";
 
 const NAV_ITEMS = [
   { 
@@ -113,12 +114,7 @@ export function MainLayout() {
       `}>
         {/* Sidebar Header */}
         <div className="flex h-14 items-center gap-3 px-6">
-          <div className="h-6 w-6 rounded bg-white flex items-center justify-center text-black">
-            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
-          <span className="text-sm font-semibold tracking-tight">Portal</span>
+          <Logo size="sm" />
         </div>
 
         {/* Sidebar Nav */}
