@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Invoice {{ invoice.invoice_number }}</title>
+    <style>
+        @page {
+            size: a4 portrait;
+            margin: 2cm;
+        }
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 10pt;
+            line-height: 1.4;
+            color: #333;
+        }
+        .header {
+            margin-bottom: 40px;
+        }
+        .brand {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #000;
+        }
+        .invoice-title {
+            font-size: 18pt;
+            font-weight: bold;
+            text-align: right;
+            color: #666;
+        }
+        .meta-table {
+            width: 100%;
+            margin-bottom: 30px;
+        }
+        .meta-table td {
+            vertical-align: top;
+            width: 50%;
+        }
+        .label {
+            color: #888;
+            font-size: 9pt;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .value {
+            font-weight: bold;
+            font-size: 11pt;
+        }
+        .line-items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 40px;
+        }
+        .line-items th {
+            text-align: left;
+            background-color: #f5f5f5;
+            padding: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+        .line-items td {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .totals {
+            width: 40%;
+            float: right;
+        }
+        .total-row {
+            margin-bottom: 10px;
+        }
+        .total-row.grand-total {
+            font-size: 14pt;
+            font-weight: bold;
+            border-top: 2px solid #000;
+            padding-top: 10px;
+        }
+        .payment-info {
+            clear: both;
+            margin-top: 60px;
+            padding: 20px;
+            background-color: #f9fafb;
+            border-radius: 4px;
+        }
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 8pt;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <table style="width: 100%;">
+            <tr>
+                <td class="brand">MELA</td>
+                <td class="invoice-title">INVOICE</td>
+            </tr>
+        </table>
+    </div>
+
+    <table class="meta-table">
+        <tr>
+            <td>
+                <div class="label">From</div>
+                <div class="value">{{ freelancer.get_full_name|default:freelancer.username }}</div>
+                <div>{{ freelancer.email }}</div>
+            </td>
+            <td style="text-align: right;">
+                <div class="label">Bill To</div>
+                <div class="value">{{ client.name }}</div>
+                <div>{{ client.email }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <table class="meta-table">
+        <tr>
+            <td>
+                <div class="label">Invoice Number</div>
+                <div class="value">{{ invoice.invoice_number }}</div>
+            </td>
+            <td style="text-align: right;">
+                <div class="label">Issue Date</div>
+                <div class="value">{{ invoice.issue_date }}</div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="label">Status</div>
+                <div class="value">{{ invoice.get_status_display }}</div>
+            </td>
+            <td style="text-align: right;">
+                <div class="label">Due Date</div>
+                <div class="value">{{ invoice.due_date|default:"N/A" }}</div>
+            </td>
+        </tr>
+    </table>
+
+    <div style="margin-bottom: 10px; font-weight: bold; font-size: 12pt;">
+        {{ invoice.title }}
+    </div>
+    <div style="margin-bottom: 30px; color: #555;">
+        {{ invoice.description|linebreaksbr }}
+    </div>
+
+    <table class="line-items">
+        <thead>
+            <tr>
+                <th>Description</th>
+                <th style="text-align: right;">Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ invoice.title }}</td>
+                <td style="text-align: right;">{{ invoice.currency }} {{ invoice.total_amount }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="totals">
+        <div class="total-row">
+            <table style="width: 100%;">
+                <tr>
+                    <td>Total:</td>
+                    <td style="text-align: right;">{{ invoice.currency }} {{ invoice.total_amount }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="total-row">
+            <table style="width: 100%;">
+                <tr>
+                    <td>Amount Paid:</td>
+                    <td style="text-align: right;">{{ invoice.currency }} {{ invoice.amount_paid }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="total-row grand-total">
+            <table style="width: 100%;">
+                <tr>
+                    <td>Balance Due:</td>
+                    <td style="text-align: right;">{{ invoice.currency }} {{ invoice.balance_due }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="payment-info">
+        <div style="font-weight: bold; margin-bottom: 10px;">Payment Information</div>
+        <div>Please pay by the due date to avoid late fees.</div>
+        <div style="margin-top: 10px;">
+            <strong>Secure Payment Link:</strong><br>
+            {{ payment_url }}
+        </div>
+    </div>
+
+    <div class="footer">
+        Generated by Mela Client Portal. Thank you for your business!
+    </div>
+</body>
+</html>

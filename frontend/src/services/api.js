@@ -31,6 +31,15 @@ export const getFilePreviewUrl = (fileId) => apiClient.get(`/files/${fileId}/pre
 
 export const getInvoices = () => apiClient.get("/invoices/");
 export const createInvoice = (data) => apiClient.post("/invoices/", data);
+export const getInvoiceDetails = (id) => apiClient.get(`/invoices/${id}/`);
+export const getInvoiceMetrics = () => apiClient.get("/invoices/metrics/");
+export const generateInvoicePDF = (id) => apiClient.post(`/invoices/${id}/`);
+
+// Public/Portal Invoice Endpoints
+export const getPublicInvoice = (uuid) => apiClient.get(`/invoices/p/${uuid}/`);
+export const confirmPublicPayment = (uuid, data) => apiClient.post(`/invoices/p/${uuid}/confirm/`, data);
+export const getPortalInvoices = (token) => apiClient.get(`/invoices/portal/${token}/`);
+export const getPortalInvoiceDetail = (token, uuid) => apiClient.get(`/invoices/portal/${token}/${uuid}/`);
 
 export const getDashboardSummary = () => apiClient.get("/dashboard/summary/");
 
@@ -58,5 +67,12 @@ export default {
   getFilePreviewUrl,
   getInvoices,
   createInvoice,
+  getInvoiceDetails,
+  getInvoiceMetrics,
+  generateInvoicePDF,
+  getPublicInvoice,
+  confirmPublicPayment,
+  getPortalInvoices,
+  getPortalInvoiceDetail,
   getDashboardSummary,
 };

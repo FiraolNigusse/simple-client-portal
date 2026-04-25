@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import * as api from "../services/api";
 import { getDashboardSummary } from "../services/api";
 import { StatsCard, Card } from "../components/ui/Card";
 import { Badge, Skeleton } from "../components/ui/Badge";
@@ -25,17 +26,29 @@ const icons = {
     <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
     </svg>
+  ),
+  trend: (props) => (
+    <svg {...props} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+    </svg>
   )
 };
 
 export function DashboardPage() {
   const [data, setData] = useState(null);
+  const [metrics, setMetrics] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    getDashboardSummary()
-      .then(res => setData(res.data))
+    Promise.all([
+      getDashboardSummary(),
+      api.getInvoiceMetrics()
+    ])
+      .then(([summaryRes, metricsRes]) => {
+        setData(summaryRes.data);
+        setMetrics(metricsRes.data);
+      })
       .catch(err => console.error("Dashboard error:", err))
       .finally(() => setLoading(false));
   }, []);
@@ -64,14 +77,15 @@ export function DashboardPage() {
           icon={icons.clients} 
         />
         <StatsCard 
-          label="Active Projects" 
-          value={data?.active_projects || 0} 
-          icon={icons.projects} 
+          label="Outstanding" 
+          value={`$${metrics?.total_outstanding || 0}`} 
+          icon={icons.invoices} 
+          trend={{ value: metrics?.overdue_balance > 0 ? "Check Invoices" : "Healthy", color: metrics?.overdue_balance > 0 ? "red" : "green" }}
         />
         <StatsCard 
-          label="Pending Invoices" 
-          value={data?.pending_invoices || 0} 
-          icon={icons.invoices} 
+          label="Paid (Month)" 
+          value={`$${metrics?.paid_this_month || 0}`} 
+          icon={icons.trend} 
         />
         <StatsCard 
           label="Tasks Completed" 

@@ -14,7 +14,9 @@ export function CreateInvoiceModal({ open, onClose, onCreate }) {
   const [form, setForm] = useState({
     client: "",
     project: "",
-    amount: "",
+    title: "",
+    description: "",
+    total_amount: "",
     due_date: "",
   });
 
@@ -53,18 +55,20 @@ export function CreateInvoiceModal({ open, onClose, onCreate }) {
       const payload = {
         client: Number(form.client),
         project: form.project ? Number(form.project) : null,
-        amount: form.amount,
+        title: form.title || "Services Rendered",
+        description: form.description,
+        total_amount: form.total_amount,
         due_date: form.due_date || null,
       };
       const response = await api.post("/invoices/", payload);
       onCreate(response.data);
-      setForm({ client: "", project: "", amount: "", due_date: "" });
+      setForm({ client: "", project: "", title: "", description: "", total_amount: "", due_date: "" });
       onClose();
     } catch (err) {
       const data = err?.response?.data;
       const msg =
         data?.detail ||
-        data?.amount?.[0] ||
+        data?.total_amount?.[0] ||
         data?.client?.[0] ||
         "Failed to create invoice. Please check the fields.";
       setError(msg);
@@ -77,7 +81,7 @@ export function CreateInvoiceModal({ open, onClose, onCreate }) {
     <Modal
       isOpen={open}
       onClose={onClose}
-      title="Generate Invoice"
+      title="Create New Invoice"
       footer={(
         <>
           <Button variant="ghost" onClick={onClose}>Cancel</Button>
@@ -117,27 +121,46 @@ export function CreateInvoiceModal({ open, onClose, onCreate }) {
         </Select>
 
         <Input
-          label="Amount (USD)"
-          name="amount"
-          type="number"
-          min="0.01"
-          step="0.01"
-          placeholder="0.00"
-          value={form.amount}
+          label="Invoice Title"
+          name="title"
+          placeholder="e.g. Website Design - Final Payment"
+          value={form.title}
           onChange={handleChange}
           required
         />
 
         <Input
-          label="Due Date (Optional)"
-          name="due_date"
-          type="date"
-          value={form.due_date}
+          label="Description"
+          name="description"
+          placeholder="Detailed breakdown of work..."
+          value={form.description}
           onChange={handleChange}
         />
 
+        <div className="grid grid-cols-2 gap-4">
+            <Input
+            label="Amount (USD)"
+            name="total_amount"
+            type="number"
+            min="0.01"
+            step="0.01"
+            placeholder="0.00"
+            value={form.total_amount}
+            onChange={handleChange}
+            required
+            />
+
+            <Input
+            label="Due Date"
+            name="due_date"
+            type="date"
+            value={form.due_date}
+            onChange={handleChange}
+            />
+        </div>
+
         {error && (
-          <p className="rounded-xl border border-portal-error/20 bg-portal-error/10 px-4 py-3 text-xs text-portal-error font-medium">
+          <p className="rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-xs text-red-500 font-medium">
             {error}
           </p>
         )}
@@ -145,4 +168,3 @@ export function CreateInvoiceModal({ open, onClose, onCreate }) {
     </Modal>
   );
 }
-
