@@ -87,6 +87,8 @@ class Invoice(models.Model):
 
     @property
     def balance_due(self) -> Decimal:
+        if self.total_amount is None:
+            return Decimal("0.00")
         return self.total_amount - self.amount_paid
 
     @property

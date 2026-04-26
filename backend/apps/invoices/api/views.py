@@ -96,17 +96,19 @@ class InvoiceMetricsView(APIView):
         print(f"DEBUG: Found {invoices.count()} total invoices for user {user.email}")
         
         # 1. Total Outstanding
+        from django.db.models.functions import Coalesce
+        from decimal import Decimal
         total_outstanding = invoices.exclude(
             status__in=[Invoice.STATUS_PAID, Invoice.STATUS_CANCELLED]
         ).aggregate(
-            res=Sum(F("total_amount") - F("amount_paid"))
+            res=Sum(Coalesce(F("total_amount"), Decimal("0.00")) - F("amount_paid"))
         )["res"] or 0
         
         # 2. Overdue Balance
         overdue_balance = invoices.filter(
             status=Invoice.STATUS_OVERDUE
         ).aggregate(
-            res=Sum(F("total_amount") - F("amount_paid"))
+            res=Sum(Coalesce(F("total_amount"), Decimal("0.00")) - F("amount_paid"))
         )["res"] or 0
         
         # 3. Paid this month
@@ -122,7 +124,7 @@ class InvoiceMetricsView(APIView):
         
         # 5. Collection Rate (%)
         totals = invoices.aggregate(
-            total_invoiced=Sum("total_amount"),
+            total_invoiced=Sum(Coalesce("total_amount", Decimal("0.00"))),
             total_paid=Sum("amount_paid")
         )
         total_invoiced = float(totals["total_invoiced"] or 0)
