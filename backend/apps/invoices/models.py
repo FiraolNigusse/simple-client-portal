@@ -93,16 +93,14 @@ class Invoice(models.Model):
 
     @property
     def is_overdue(self) -> bool:
-        if self.status in [self.STATUS_PAID, self.STATUS_CANCELLED]:
+        if not self.due_date:
             return False
-        if self.due_date and self.due_date < timezone.now().date():
-            return True
-        return False
+        return self.status != self.STATUS_PAID and self.due_date < timezone.now().date()
 
     @property
     def payment_progress_percent(self) -> float:
-        if self.total_amount <= 0:
-            return 0
+        if not self.total_amount or self.total_amount <= 0:
+            return 0.0
         return float((self.amount_paid / self.total_amount) * 100)
 
     def update_status(self):
