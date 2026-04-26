@@ -8,6 +8,7 @@ import { ProjectDetailsPage } from "../pages/ProjectDetailsPage";
 import { InvoicesPage } from "../pages/InvoicesPage";
 import { SubscriptionPage } from "../pages/SubscriptionPage";
 import { SettingsPage } from "../pages/SettingsPage";
+import { LeadsPage } from "../pages/LeadsPage";
 import { ClientPortalPage } from "../pages/ClientPortalPage";
 import { LoginPage } from "../pages/LoginPage";
 import { RegisterPage } from "../pages/RegisterPage";
@@ -79,6 +80,10 @@ export function AppRoutes() {
         <Route
           path="/subscription"
           element={<SubscriptionPage />}
+        />
+        <Route
+          path="/leads"
+          element={<LeadsPage />}
         />
         <Route
           path="/settings"
