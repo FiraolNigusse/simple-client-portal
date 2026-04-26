@@ -52,37 +52,37 @@ export function ClientPortalPage() {
   const [selectedInvoice, setSelectedInvoice] = useState(null);
   const [invoiceFilter, setInvoiceFilter] = useState("all"); // all, pending, paid, overdue
 
-  useEffect(() => {
+  const refreshPortalData = useCallback((isInitial = false) => {
+    if (isInitial) setLoading(true);
+    
     portalGet(token, "/")
       .then((r) => {
         setData(r.data);
         setFiles(r.data.files || []);
         setInvoices(r.data.invoices || []);
-        const first = r.data.projects?.[0];
-        if (first) {
-          setActiveProject(first);
+        
+        if (isInitial) {
+          const first = r.data.projects?.[0];
+          if (first) setActiveProject(first);
         }
+
+        // Update selected invoice state without triggering dependency loop
+        setSelectedInvoice(current => {
+          if (!current) return null;
+          return r.data.invoices.find(i => i.id === current.id) || null;
+        });
       })
-      .catch(() => setError("Invalid or expired portal link."))
-      .finally(() => setLoading(false));
+      .catch((err) => {
+        if (isInitial) setError("Invalid or expired portal link.");
+        console.error("Portal fetch error:", err);
+      })
+      .finally(() => {
+        if (isInitial) setLoading(false);
+      });
   }, [token]);
 
-  const refreshPortalData = useCallback(() => {
-    portalGet(token, "/")
-      .then((r) => {
-        setData(r.data);
-        setFiles(r.data.files || []);
-        setInvoices(r.data.invoices || []);
-        // Update selected invoice if open
-        if (selectedInvoice) {
-            const updated = r.data.invoices.find(i => i.id === selectedInvoice.id);
-            if (updated) setSelectedInvoice(updated);
-        }
-      });
-  }, [token, selectedInvoice]);
-
   useEffect(() => {
-    refreshPortalData();
+    refreshPortalData(true);
   }, [refreshPortalData]);
 
   useEffect(() => {
