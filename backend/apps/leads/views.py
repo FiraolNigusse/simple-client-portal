@@ -1,13 +1,13 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from django.db.models import Count, Q
+from django.db.models import Q
 from .models import Lead
 from .serializers import LeadSerializer
 
 class LeadViewSet(viewsets.ModelViewSet):
     serializer_class = LeadSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAdminUser]  # Staff-only
 
     def get_queryset(self):
         return Lead.objects.filter(user=self.request.user)

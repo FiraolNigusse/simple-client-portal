@@ -22,14 +22,16 @@ import AdminDashboard from "../pages/AdminDashboard";
 function ProtectedRoute({ children }) {
   const { isAuthenticated, initializing } = useAuth();
 
-  if (initializing) {
-    return null;
-  }
+  if (initializing) return null;
+  if (!isAuthenticated) return <Navigate to="/login" replace />;
+  return children;
+}
 
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
-  }
+function StaffOnlyRoute({ children }) {
+  const { user, initializing } = useAuth();
 
+  if (initializing) return null;
+  if (!user?.is_staff) return <Navigate to="/dashboard" replace />;
   return children;
 }
 
@@ -83,7 +85,7 @@ export function AppRoutes() {
         />
         <Route
           path="/leads"
-          element={<LeadsPage />}
+          element={<StaffOnlyRoute><LeadsPage /></StaffOnlyRoute>}
         />
         <Route
           path="/settings"
