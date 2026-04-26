@@ -61,25 +61,38 @@ class PublicInvoicePDFDownloadView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, uuid):
-        invoice = get_object_or_404(Invoice, uuid=uuid)
-        
-        if not invoice.pdf_file:
-            return Response({"error": "PDF not generated yet"}, status=404)
-
-        url = invoice.pdf_file.url
-        
         try:
-            req = urllib.request.Request(url)
-            response = urllib.request.urlopen(req)
+            invoice = get_object_or_404(Invoice, uuid=uuid)
             
-            django_response = StreamingHttpResponse(
-                (chunk for chunk in iter(lambda: response.read(8192), b"")),
-                content_type="application/pdf"
-            )
+            if not invoice.pdf_file:
+                return Response({"error": "PDF not generated yet"}, status=404)
+
+            url = invoice.pdf_file.url
             
-            filename = f"invoice_{invoice.invoice_number}.pdf"
-            django_response["Content-Disposition"] = f'inline; filename="{filename}"'
-            return django_response
-            
+            try:
+                # Add a User-Agent to avoid being blocked by some CDNs
+                req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+                response = urllib.request.urlopen(req)
+                
+                django_response = StreamingHttpResponse(
+                    (chunk for chunk in iter(lambda: response.read(8192), b"")),
+                    content_type="application/pdf"
+                )
+                
+                filename = f"invoice_{invoice.invoice_number}.pdf"
+                django_response["Content-Disposition"] = f'inline; filename="{filename}"'
+                return django_response
+                
+            except Exception as e:
+                import traceback
+                return Response({
+                    "error": f"Failed to fetch PDF from storage: {str(e)}",
+                    "trace": traceback.format_exc(),
+                    "url_attempted": url
+                }, status=502)
         except Exception as e:
-            return Response({"error": "Failed to fetch PDF from storage"}, status=502)
+            import traceback
+            return Response({
+                "error": str(e),
+                "trace": traceback.format_exc()
+            }, status=500)
