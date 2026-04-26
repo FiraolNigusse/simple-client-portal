@@ -112,7 +112,10 @@ class Invoice(models.Model):
 
         today = timezone.now().date()
         
-        if self.amount_paid >= self.total_amount:
+        # Safety check for None total_amount
+        total = self.total_amount or Decimal("0.00")
+        
+        if self.amount_paid >= total and total > 0:
             self.status = self.STATUS_PAID
         elif self.amount_paid > 0:
             if self.due_date and self.due_date < today:
