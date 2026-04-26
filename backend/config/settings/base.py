@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     "apps.messaging",
     "apps.analytics",
     "apps.payments",
+    "apps.leads",
 ]
 
 MIDDLEWARE = [
