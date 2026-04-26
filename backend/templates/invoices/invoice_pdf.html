@@ -105,7 +105,7 @@
         <tr>
             <td>
                 <div class="label">From</div>
-                <div class="value">{{ freelancer.get_full_name|default:freelancer.username }}</div>
+                <div class="value">{{ freelancer.name|default:freelancer.email }}</div>
                 <div>{{ freelancer.email }}</div>
             </td>
             <td style="text-align: right;">
