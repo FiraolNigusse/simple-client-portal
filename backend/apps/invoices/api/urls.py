@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import InvoiceListCreateView, InvoiceDetailView, InvoiceMetricsView
+from .views import InvoiceListCreateView, InvoiceDetailView, InvoiceMetricsView, InvoicePDFDownloadView
 from .public_views import PublicInvoiceDetailView, PublicPaymentConfirmView
 
 from .portal_views import ClientPortalInvoiceListView, ClientPortalInvoiceDetailView
@@ -9,6 +9,7 @@ urlpatterns = [
     path("", InvoiceListCreateView.as_view(), name="invoice-list-create"),
     path("metrics/", InvoiceMetricsView.as_view(), name="invoice-metrics"),
     path("<int:pk>/", InvoiceDetailView.as_view(), name="invoice-detail"),
+    path("<int:pk>/download/", InvoicePDFDownloadView.as_view(), name="invoice-pdf-download"),
     
     # Public routes (Payment Link - UUID based)
     path("p/<uuid:uuid>/", PublicInvoiceDetailView.as_view(), name="public-invoice-detail"),

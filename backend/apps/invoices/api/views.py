@@ -12,6 +12,10 @@ from apps.users.permissions import PlanLimitMixin
 from apps.core.permissions import IsOwner
 from ..utils import generate_invoice_pdf
 
+import urllib.request
+from django.http import StreamingHttpResponse
+from django.shortcuts import get_object_or_404
+
 logger = logging.getLogger("apps.invoices")
 
 
@@ -76,8 +80,50 @@ class InvoiceDetailView(generics.RetrieveUpdateAPIView):
         if success:
             # Ensure we have the latest data including the saved pdf_file
             invoice.refresh_from_db()
-            return Response({"message": "PDF generated successfully", "pdf_url": invoice.pdf_file.url})
+            # Return our local proxy URL instead of direct Cloudinary URL
+            from django.urls import reverse
+            proxy_url = request.build_absolute_uri(
+                reverse("invoice-pdf-download", kwargs={"pk": invoice.id})
+            )
+            return Response({"message": "PDF generated successfully", "pdf_url": proxy_url})
         return Response({"error": "PDF generation failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class InvoicePDFDownloadView(APIView):
+    """
+    GET /api/invoices/{id}/download/
+    Proxies the PDF from storage to avoid domain/auth issues.
+    """
+    permission_classes = [permissions.IsAuthenticated, IsOwner]
+
+    def get_queryset(self):
+        return Invoice.objects.filter(client__freelancer=self.request.user)
+
+    def get(self, request, pk):
+        invoice = get_object_or_404(self.get_queryset(), pk=pk)
+        
+        if not invoice.pdf_file:
+            return Response({"error": "PDF not generated yet"}, status=404)
+
+        url = invoice.pdf_file.url
+        
+        # Proxy the request
+        try:
+            req = urllib.request.Request(url)
+            response = urllib.request.urlopen(req)
+            
+            django_response = StreamingHttpResponse(
+                (chunk for chunk in iter(lambda: response.read(8192), b"")),
+                content_type="application/pdf"
+            )
+            
+            filename = f"invoice_{invoice.invoice_number}.pdf"
+            django_response["Content-Disposition"] = f'inline; filename="{filename}"'
+            return django_response
+            
+        except Exception as e:
+            logger.error(f"PDF Proxy error for invoice {pk}: {str(e)}")
+            return Response({"error": "Failed to fetch PDF from storage"}, status=502)
 
 
 class InvoiceMetricsView(APIView):
