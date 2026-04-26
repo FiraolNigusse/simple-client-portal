@@ -23,7 +23,7 @@ class DashboardSummaryView(APIView):
         stats = user.clients.aggregate(
             total_clients=Count('id', distinct=True),
             active_projects=Count('projects', filter=Q(projects__status=Project.STATUS_ACTIVE), distinct=True),
-            pending_invoices=Count('invoices', filter=Q(invoices__status=Invoice.STATUS_PENDING), distinct=True),
+            pending_invoices=Count('invoices', filter=Q(invoices__status__in=[Invoice.STATUS_SENT, Invoice.STATUS_PARTIAL, Invoice.STATUS_OVERDUE]), distinct=True),
             completed_tasks=Count('projects__tasks', filter=Q(projects__tasks__status=Task.STATUS_DONE), distinct=True)
         )
 

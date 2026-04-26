@@ -89,8 +89,8 @@ class InvoiceMetricsView(APIView):
         now = timezone.now()
         start_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         
-        # Base queryset for this user's invoices (excluding demo data)
-        invoices = Invoice.objects.filter(client__freelancer=user, is_demo_data=False)
+        # Base queryset for this user's invoices
+        invoices = Invoice.objects.filter(client__freelancer=user)
         
         # 1. Total Outstanding
         total_outstanding = invoices.exclude(
@@ -109,7 +109,6 @@ class InvoiceMetricsView(APIView):
         # 3. Paid this month
         paid_this_month = Payment.objects.filter(
             invoice__client__freelancer=user,
-            invoice__is_demo_data=False,
             payment_date__gte=start_of_month
         ).aggregate(res=Sum("amount"))["res"] or 0
         
@@ -129,8 +128,7 @@ class InvoiceMetricsView(APIView):
         
         # 6. Average Payment Time (Days)
         avg_payment_time = Payment.objects.filter(
-            invoice__client__freelancer=user,
-            invoice__is_demo_data=False
+            invoice__client__freelancer=user
         ).annotate(
             days_to_pay=F("payment_date") - F("invoice__issue_date")
         ).aggregate(res=Avg("days_to_pay"))["res"]
