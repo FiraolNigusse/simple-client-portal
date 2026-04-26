@@ -45,7 +45,7 @@ class DashboardSummaryView(APIView):
         )
         recent_invoices = list(
             invoices_qs[:5].values(
-                "id", "amount", "status", "created_at", "client__name"
+                "id", "total_amount", "status", "created_at", "client__name"
             )
         )
 
