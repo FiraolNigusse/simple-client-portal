@@ -217,12 +217,7 @@ export function LandingPage() {
       {/* Footer */}
       <footer className="py-12 px-6 border-t border-white/[0.04] bg-[#0F1115]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
-          <div className="flex items-center gap-2">
-            <div className="h-6 w-6 bg-white rounded flex items-center justify-center">
-              <span className="text-black font-bold text-sm">M</span>
-            </div>
-            <span className="text-sm font-bold tracking-tight">Mela</span>
-          </div>
+          <Logo size="sm" />
           <p className="text-[#8B93A1] text-xs">© 2026 Mela Client Portal. Built for designers.</p>
         </div>
       </footer>
