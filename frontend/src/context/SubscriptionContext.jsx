@@ -43,12 +43,14 @@ export function SubscriptionProvider({ children }) {
       await fetchSubscription();
       return res.data;
     } else {
-      const res = await apiClient.post("/users/create-checkout-session/", { plan });
-      if (res.data.fake_payment_url) {
-        // For mock flow, we just redirect. In real Stripe logic, we might use Stripe SDK.
-        window.location.href = res.data.fake_payment_url;
-      }
-      return res.data;
+      // Mock payment flow: Call create session, then immediately call success
+      // In a real Stripe integration, this would redirect to stripe.com
+      await apiClient.post("/users/create-checkout-session/", { plan });
+      
+      // Simulate successful return from Stripe
+      const res = await apiClient.get(`/users/billing/payment-success/?plan=${plan}`);
+      await fetchSubscription();
+      return res.data.subscription;
     }
   }, [fetchSubscription]);
 

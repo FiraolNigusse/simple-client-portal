@@ -27,7 +27,12 @@ class AdminChangePlanView(APIView):
         user.plan_status = "active"
         user.save()
         
+        # Sync Subscription model
         sub = Subscription.get_or_create_for_user(user)
+        sub.plan = new_plan
+        sub.status = "active"
+        sub.save()
+        
         return Response(SubscriptionSerializer(sub).data)
 
 class CreateCheckoutSessionView(APIView):
@@ -71,5 +76,10 @@ class PaymentSuccessView(APIView):
         user.plan_status = "active"
         user.save()
         
+        # Sync Subscription model
         sub = Subscription.get_or_create_for_user(user)
+        sub.plan = plan
+        sub.status = "active"
+        sub.save()
+        
         return Response({"status": "payment successful, plan updated", "subscription": SubscriptionSerializer(sub).data})
