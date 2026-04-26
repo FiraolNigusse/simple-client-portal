@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, parsers
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
@@ -28,7 +28,7 @@ class PublicPaymentConfirmView(APIView):
     Endpoint for clients to confirm they have made a payment (manual flow).
     """
     permission_classes = [permissions.AllowAny]
-    parser_classes = [generics.MultiPartParser, generics.FormParser, generics.JSONParser]
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser, parsers.JSONParser]
     
     def post(self, request, uuid):
         invoice = get_object_or_404(Invoice, uuid=uuid)
