@@ -7,6 +7,7 @@ import { Button } from "../components/ui/Button";
 import { PortalChatWindow } from "../components/PortalChatWindow";
 import { FilePreviewModal } from "../components/FilePreviewModal";
 import { Logo } from "../components/ui/Logo";
+import { PortalInvoiceDetailModal } from "../components/PortalInvoiceDetailModal";
 
 // ---------------------------------------------------------------------------
 // Portal API helpers — no JWT, just ?token= query param
@@ -47,6 +48,10 @@ export function ClientPortalPage() {
   });
   const [fileActionLoading, setFileActionLoading] = useState(null);
 
+  // Invoice Detail & Filter state
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+  const [invoiceFilter, setInvoiceFilter] = useState("all"); // all, pending, paid, overdue
+
   useEffect(() => {
     portalGet(token, "/")
       .then((r) => {
@@ -61,6 +66,24 @@ export function ClientPortalPage() {
       .catch(() => setError("Invalid or expired portal link."))
       .finally(() => setLoading(false));
   }, [token]);
+
+  const refreshPortalData = useCallback(() => {
+    portalGet(token, "/")
+      .then((r) => {
+        setData(r.data);
+        setFiles(r.data.files || []);
+        setInvoices(r.data.invoices || []);
+        // Update selected invoice if open
+        if (selectedInvoice) {
+            const updated = r.data.invoices.find(i => i.id === selectedInvoice.id);
+            if (updated) setSelectedInvoice(updated);
+        }
+      });
+  }, [token, selectedInvoice]);
+
+  useEffect(() => {
+    refreshPortalData();
+  }, [refreshPortalData]);
 
   useEffect(() => {
     if (!activeProject || !token) return;
@@ -271,19 +294,59 @@ export function ClientPortalPage() {
                   <div className="fin-card overflow-hidden">
                     <div className="flex items-center justify-between border-b border-white/[0.04] px-6 py-4">
                       <h3 className="text-sm font-semibold text-white">Invoices</h3>
+                      <div className="flex items-center gap-2">
+                        {["all", "pending", "paid", "overdue"].map((f) => (
+                          <button
+                            key={f}
+                            onClick={() => setInvoiceFilter(f)}
+                            className={`text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded transition-colors ${
+                              invoiceFilter === f ? "bg-white text-black" : "text-[#8B93A1] hover:text-white"
+                            }`}
+                          >
+                            {f}
+                          </button>
+                        ))}
+                      </div>
                     </div>
                     <div className="divide-y divide-white/[0.04]">
-                      {invoices.map(inv => (
-                        <div key={inv.id} className="flex items-center justify-between px-6 py-4 list-row-hover group">
-                          <div>
-                            <p className="text-sm font-semibold text-white tracking-tight">${inv.amount}</p>
-                            <p className="text-[10px] text-[#8B93A1] uppercase tracking-wider mt-0.5">Due: {new Date(inv.due_date).toLocaleDateString()}</p>
+                      {invoices
+                        .filter((inv) => {
+                          if (invoiceFilter === "all") return true;
+                          if (invoiceFilter === "pending") return inv.status !== "paid";
+                          if (invoiceFilter === "paid") return inv.status === "paid";
+                          if (invoiceFilter === "overdue") return inv.is_overdue && inv.status !== "paid";
+                          return true;
+                        })
+                        .map((inv) => (
+                          <div 
+                            key={inv.id} 
+                            onClick={() => setSelectedInvoice(inv)}
+                            className="flex items-center justify-between px-6 py-4 list-row-hover group cursor-pointer"
+                          >
+                            <div className="flex flex-col">
+                              <div className="flex items-center gap-2">
+                                <span className="text-sm font-semibold text-white tracking-tight">${inv.total_amount}</span>
+                                {inv.is_overdue && inv.status !== 'paid' && (
+                                  <span className="text-[10px] font-bold text-red-400 uppercase tracking-tighter bg-red-400/10 px-1.5 rounded">Urgent</span>
+                                )}
+                              </div>
+                              <p className="text-[10px] text-[#8B93A1] uppercase tracking-wider mt-0.5">
+                                {inv.invoice_number} • Due {new Date(inv.due_date).toLocaleDateString()}
+                              </p>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              <div className="text-right mr-2 hidden md:block">
+                                <p className="text-[10px] text-[#8B93A1] uppercase font-bold tracking-widest">Balance</p>
+                                <p className={`text-xs font-semibold ${parseFloat(inv.balance_due) > 0 ? 'text-white' : 'text-green-500'}`}>
+                                  ${inv.balance_due}
+                                </p>
+                              </div>
+                              <Badge variant={inv.status === 'paid' ? 'success' : inv.is_overdue ? 'error' : 'warning'}>
+                                {inv.status.toUpperCase()}
+                              </Badge>
+                            </div>
                           </div>
-                          <Badge variant={inv.status === 'paid' ? 'success' : 'warning'}>
-                            {inv.status.toUpperCase()}
-                          </Badge>
-                        </div>
-                      ))}
+                        ))}
                       {invoices.length === 0 && (
                         <div className="px-6 py-12 text-center text-[#8B93A1] text-sm italic">
                           No invoices found.
@@ -321,6 +384,13 @@ export function ClientPortalPage() {
         filename={previewState.filename}
         extension={previewState.extension}
         onDownload={() => handleFileDownload(previewState.fileId)}
+      />
+      <PortalInvoiceDetailModal 
+        isOpen={!!selectedInvoice}
+        onClose={() => setSelectedInvoice(null)}
+        invoice={selectedInvoice}
+        token={token}
+        onPaymentSuccess={refreshPortalData}
       />
     </div>
   );

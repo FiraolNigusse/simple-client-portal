@@ -28,22 +28,24 @@ class PublicPaymentConfirmView(APIView):
     Endpoint for clients to confirm they have made a payment (manual flow).
     """
     permission_classes = [permissions.AllowAny]
+    parser_classes = [generics.MultiPartParser, generics.FormParser, generics.JSONParser]
     
     def post(self, request, uuid):
         invoice = get_object_or_404(Invoice, uuid=uuid)
         amount = request.data.get("amount")
         reference = request.data.get("reference", "Manual confirmation")
+        proof = request.FILES.get("proof_of_payment")
         
         if not amount:
             return Response({"error": "Amount is required"}, status=status.HTTP_400_BAD_REQUEST)
             
-        # Create a payment record (marked as pending/manual if we had a status on Payment)
-        # For now, we assume this confirm flow records it directly as per "manual payment confirmation flow"
+        # Create a payment record
         Payment.objects.create(
             invoice=invoice,
             amount=amount,
             payment_method="manual",
             transaction_reference=reference,
+            proof_of_payment=proof,
             notes=f"Client confirmed payment via portal: {request.data.get('notes', '')}"
         )
         

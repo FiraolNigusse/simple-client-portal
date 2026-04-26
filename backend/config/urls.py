@@ -12,6 +12,7 @@ from apps.clients.portal_views import (
     PortalMessagesView,
     PortalInvoicesView,
     PortalTasksView,
+    PortalInvoiceDetailView,
 )
 from apps.files.api.portal_views import (
     PortalFileDownloadView,
@@ -40,6 +41,7 @@ api_urlpatterns = [
     path("portal/<str:token>/files/<int:file_id>/preview/", PortalFilePreviewView.as_view(), name="portal-file-preview"),
     path("portal/<str:token>/messages/", PortalMessagesView.as_view(), name="portal-messages"),
     path("portal/<str:token>/invoices/", PortalInvoicesView.as_view(), name="portal-invoices"),
+    path("portal/<str:token>/invoices/<uuid:uuid>/", PortalInvoiceDetailView.as_view(), name="portal-invoice-detail"),
     path("portal/<str:token>/tasks/", PortalTasksView.as_view(), name="portal-tasks"),
 ]
 

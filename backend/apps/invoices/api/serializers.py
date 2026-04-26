@@ -12,6 +12,7 @@ class PaymentSerializer(serializers.ModelSerializer):
             "payment_date", 
             "payment_method", 
             "transaction_reference", 
+            "proof_of_payment",
             "notes", 
             "created_at"
         ]
@@ -22,6 +23,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
     client_name = serializers.ReadOnlyField(source="client.name")
     project_title = serializers.ReadOnlyField(source="project.title")
     status_label = serializers.CharField(source="get_status_display", read_only=True)
+    amount = serializers.ReadOnlyField(source="total_amount")
     
     balance_due = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     is_overdue = serializers.BooleanField(read_only=True)
@@ -44,6 +46,7 @@ class InvoiceSerializer(serializers.ModelSerializer):
             "issue_date",
             "due_date",
             "total_amount",
+            "amount",
             "amount_paid",
             "balance_due",
             "currency",

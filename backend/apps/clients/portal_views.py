@@ -128,6 +128,14 @@ class PortalInvoicesView(PortalBaseView):
         return Response(InvoiceSerializer(invoices, many=True).data)
 
 
+class PortalInvoiceDetailView(PortalBaseView):
+    """GET /portal/{token}/invoices/{uuid}/ — client views specific invoice."""
+
+    def get(self, request, token, uuid):
+        client = self.get_client()
+        invoice = get_object_or_404(Invoice, uuid=uuid, client=client)
+        return Response(InvoiceSerializer(invoice).data)
+
 class PortalTasksView(PortalBaseView):
     """GET /portal/{token}/tasks/?project=<id> — client views tasks."""
 

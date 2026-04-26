@@ -165,6 +165,7 @@ class Payment(models.Model):
     payment_date = models.DateTimeField(default=timezone.now)
     payment_method = models.CharField(max_length=50, blank=True)
     transaction_reference = models.CharField(max_length=100, blank=True)
+    proof_of_payment = models.FileField(upload_to="payments/proofs/", null=True, blank=True)
     notes = models.TextField(blank=True)
     
     created_at = models.DateTimeField(auto_now_add=True)
