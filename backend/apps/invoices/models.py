@@ -25,7 +25,7 @@ class Invoice(models.Model):
     ]
 
     # Unique token for secure public links
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, null=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True, null=True)
     
     invoice_number = models.CharField(max_length=50, unique=True, db_index=True, null=True, blank=True)
     title = models.CharField(max_length=255, default="Untitled Invoice")

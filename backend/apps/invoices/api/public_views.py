@@ -62,7 +62,11 @@ class PublicInvoicePDFDownloadView(APIView):
 
     def get(self, request, uuid):
         try:
-            invoice = get_object_or_404(Invoice, uuid=uuid)
+            # Use filter().first() instead of get_object_or_404 to avoid crashes if 
+            # migration/seeding caused duplicate UUIDs
+            invoice = Invoice.objects.filter(uuid=uuid).first()
+            if not invoice:
+                return Response({"error": "Invoice not found"}, status=404)
             
             if not invoice.pdf_file:
                 return Response({"error": "PDF not generated yet"}, status=404)
@@ -84,15 +88,6 @@ class PublicInvoicePDFDownloadView(APIView):
                 return django_response
                 
             except Exception as e:
-                import traceback
-                return Response({
-                    "error": f"Failed to fetch PDF from storage: {str(e)}",
-                    "trace": traceback.format_exc(),
-                    "url_attempted": url
-                }, status=502)
+                return Response({"error": f"Failed to fetch PDF from storage: {str(e)}"}, status=502)
         except Exception as e:
-            import traceback
-            return Response({
-                "error": str(e),
-                "trace": traceback.format_exc()
-            }, status=500)
+            return Response({"error": "Internal server error"}, status=500)
