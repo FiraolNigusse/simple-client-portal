@@ -48,3 +48,38 @@ class PublicPaymentConfirmView(APIView):
         )
         
         return Response({"message": "Payment confirmed and recorded."}, status=status.HTTP_201_CREATED)
+
+
+import urllib.request
+from django.http import StreamingHttpResponse
+
+class PublicInvoicePDFDownloadView(APIView):
+    """
+    Publicly accessible PDF download via UUID.
+    Used for browser window.open() which doesn't support headers.
+    """
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, uuid):
+        invoice = get_object_or_404(Invoice, uuid=uuid)
+        
+        if not invoice.pdf_file:
+            return Response({"error": "PDF not generated yet"}, status=404)
+
+        url = invoice.pdf_file.url
+        
+        try:
+            req = urllib.request.Request(url)
+            response = urllib.request.urlopen(req)
+            
+            django_response = StreamingHttpResponse(
+                (chunk for chunk in iter(lambda: response.read(8192), b"")),
+                content_type="application/pdf"
+            )
+            
+            filename = f"invoice_{invoice.invoice_number}.pdf"
+            django_response["Content-Disposition"] = f'inline; filename="{filename}"'
+            return django_response
+            
+        except Exception as e:
+            return Response({"error": "Failed to fetch PDF from storage"}, status=502)
