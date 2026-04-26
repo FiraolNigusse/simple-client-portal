@@ -5,7 +5,7 @@ export function TaskItem({ task, onStatusChange, onDelete }) {
   };
 
   return (
-    <div className="rounded-xl border border-white/[0.05] bg-surface px-4 py-3 space-y-2 transition-all hover:bg-white/[0.02]">
+    <div className="rounded-xl border border-white/[0.05] bg-white/5 px-4 py-3 space-y-2 transition-all hover:bg-white/[0.02]">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-portal-text group-hover:text-primary transition-colors">{task.title}</p>

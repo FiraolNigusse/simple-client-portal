@@ -33,9 +33,9 @@ export function Select({ label, error, children, className = "", ...props }) {
       <div className="relative">
         <select
           id={id}
-          className={`w-full appearance-none rounded-xl border border-white/10 bg-surface px-4 py-3 text-sm text-portal-text transition-all focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-primary-glow ${
+          className={`w-full appearance-none rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-portal-text transition-all focus:bg-white/10 focus:outline-none focus:ring-4 focus:ring-primary-glow ${
             error ? "border-portal-error ring-portal-error/20" : "focus:border-primary/50"
-          }`}
+          } ${className}`}
           style={{ colorScheme: 'dark' }}
           {...props}
         >

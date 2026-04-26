@@ -131,6 +131,17 @@
   }
 }
 
+/* Form Elements */
+select option {
+  background-color: #151821;
+  color: #FFFFFF;
+}
+
+/* For Firefox/Chrome system styling */
+select {
+  color-scheme: dark;
+}
+
 /* Header Border */
 .header-border {
   border-bottom: 1px solid var(--border-subtle);
