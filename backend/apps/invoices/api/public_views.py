@@ -53,44 +53,32 @@ class PublicPaymentConfirmView(APIView):
 import urllib.request
 from django.http import StreamingHttpResponse
 
+from django.http import FileResponse
+from ..utils import get_invoice_pdf_buffer
+
 class PublicInvoicePDFDownloadView(APIView):
     """
     Publicly accessible PDF download via UUID.
-    Used for browser window.open() which doesn't support headers.
+    Generates and streams the PDF on-the-fly to ensure 100% reliability.
     """
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, uuid):
         try:
-            # Use filter().first() instead of get_object_or_404 to avoid crashes if 
-            # migration/seeding caused duplicate UUIDs
             invoice = Invoice.objects.filter(uuid=uuid).first()
             if not invoice:
                 return Response({"error": "Invoice not found"}, status=404)
             
-            if not invoice.pdf_file:
-                return Response({"error": "PDF not generated yet"}, status=404)
+            # Generate the PDF in memory
+            buffer = get_invoice_pdf_buffer(invoice)
+            if not buffer:
+                return Response({"error": "Failed to generate PDF"}, status=500)
 
-            # Generate a signed URL using the Cloudinary SDK
-            # This is more robust than manual proxying as it handles Cloudinary's auth natively
-            import cloudinary.utils
-            from django.http import HttpResponseRedirect
-            
-            # For django-cloudinary-storage, the .name is the public_id
-            public_id = invoice.pdf_file.name
-            
-            url, _ = cloudinary.utils.cloudinary_url(
-                public_id,
-                sign_url=True,
-                secure=True,
-                resource_type="image", # Cloudinary often treats PDFs as images
-                type="upload"
-            )
-            
-            return HttpResponseRedirect(url)
+            filename = f"invoice_{invoice.invoice_number}.pdf"
+            return FileResponse(buffer, as_attachment=False, filename=filename, content_type='application/pdf')
             
         except Exception as e:
             import logging
             logger = logging.getLogger(__name__)
-            logger.error(f"Public PDF Redirect failed: {str(e)}")
-            return Response({"error": f"Failed to generate secure link: {str(e)}"}, status=500)
+            logger.error(f"Public PDF Streaming failed: {str(e)}")
+            return Response({"error": "Internal server error"}, status=500)

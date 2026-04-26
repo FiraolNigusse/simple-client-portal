@@ -5,40 +5,41 @@ from xhtml2pdf import pisa
 from django.conf import settings
 from django.core.files.base import ContentFile
 
+def get_invoice_pdf_buffer(invoice):
+    """
+    Generates a professional PDF in memory and returns the BytesIO buffer.
+    Bypasses storage entirely for reliable on-the-fly streaming.
+    """
+    template = get_template("invoices/invoice_pdf.html")
+    payment_url = f"{settings.FRONTEND_ORIGIN}/pay/{invoice.uuid}"
+    
+    context = {
+        "invoice": invoice,
+        "client": invoice.client,
+        "freelancer": invoice.client.freelancer,
+        "payment_url": payment_url,
+        "static_url": settings.STATIC_URL,
+    }
+    
+    html = template.render(context)
+    result = BytesIO()
+    pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
+    
+    if not pdf.err:
+        result.seek(0)
+        return result
+    return None
+
 def generate_invoice_pdf(invoice):
     """
-    Generates a professional PDF for the given invoice and saves it to the model.
+    Legacy helper: Generates PDF and saves to model.
     """
     try:
-        template = get_template("invoices/invoice_pdf.html")
-        
-        # Public payment URL for QR code (though we'd need a QR lib, let's just show the link)
-        payment_url = f"{settings.FRONTEND_ORIGIN}/pay/{invoice.uuid}"
-        
-        context = {
-            "invoice": invoice,
-            "client": invoice.client,
-            "freelancer": invoice.client.freelancer,
-            "payment_url": payment_url,
-            "static_url": settings.STATIC_URL,
-        }
-        
-        html = template.render(context)
-        result = BytesIO()
-        
-        # Create PDF
-        pdf = pisa.pisaDocument(BytesIO(html.encode("UTF-8")), result)
-        
-        if not pdf.err:
+        buffer = get_invoice_pdf_buffer(invoice)
+        if buffer:
             filename = f"invoice_{invoice.invoice_number}.pdf"
-            invoice.pdf_file.save(filename, ContentFile(result.getvalue()), save=True)
+            invoice.pdf_file.save(filename, ContentFile(buffer.read()), save=True)
             return True
-        else:
-            print(f"PDF Error: {pdf.err}")
-        
     except Exception as e:
-        import traceback
         print(f"PDF Generation Exception: {str(e)}")
-        print(traceback.format_exc())
-    
     return False
