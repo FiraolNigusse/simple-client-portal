@@ -70,12 +70,21 @@ class InvoiceDetailView(generics.RetrieveUpdateAPIView):
         return response
 
     def post(self, request, *args, **kwargs):
-        # Allow POST to /invoices/{id}/ to trigger PDF generation
-        invoice = self.get_object()
-        success = generate_invoice_pdf(invoice)
-        if success:
-            return Response({"message": "PDF generated successfully", "pdf_url": invoice.pdf_file.url})
-        return Response({"error": "PDF generation failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        try:
+            # Allow POST to /invoices/{id}/ to trigger PDF generation
+            invoice = self.get_object()
+            success = generate_invoice_pdf(invoice)
+            if success:
+                # Ensure we have the latest data including the saved pdf_file
+                invoice.refresh_from_db()
+                return Response({"message": "PDF generated successfully", "pdf_url": invoice.pdf_file.url})
+            return Response({"error": "PDF generation failed - check server logs"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        except Exception as e:
+            import traceback
+            return Response({
+                "error": str(e),
+                "trace": traceback.format_exc()
+            }, status=500)
 
 
 class InvoiceMetricsView(APIView):
