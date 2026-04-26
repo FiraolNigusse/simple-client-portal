@@ -20,7 +20,7 @@ class PortalTokenAuthentication(BaseAuthentication):
         token = (
             request.query_params.get("token")
             or request.headers.get("X-Portal-Token")
-            or request.resolver_match.kwargs.get("token")
+            or (request.resolver_match.kwargs.get("token") if request.resolver_match else None)
         )
         if not token:
             return None

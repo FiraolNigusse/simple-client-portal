@@ -50,8 +50,11 @@ class PortalInfoView(PortalBaseView):
         projects = Project.objects.filter(client=client)
         invoices = Invoice.objects.filter(client=client).select_related("project")
         files = ProjectFile.objects.filter(project__client=client)
-        # Log that client viewed their portal
-        log_portal_event(request, client, "view", "portal_main", 0)
+        # Log that client viewed their portal (safely)
+        try:
+            log_portal_event(request, client, "view", "portal_main", 0)
+        except Exception:
+            pass
 
         return Response({
             "client": {
@@ -76,8 +79,11 @@ class PortalProjectFilesView(PortalBaseView):
         if project_id:
             qs = qs.filter(project_id=project_id)
         
-        # Log that client viewed their files
-        log_portal_event(request, client, "view", "file_list", project_id or 0)
+        # Log that client viewed their files (safely)
+        try:
+            log_portal_event(request, client, "view", "file_list", project_id or 0)
+        except Exception:
+            pass
         
         return Response(ProjectFileSerializer(qs, many=True, context={"request": request}).data)
 
@@ -122,8 +128,11 @@ class PortalInvoicesView(PortalBaseView):
         client = self.get_client()
         invoices = Invoice.objects.filter(client=client).select_related("project", "client")
         
-        # Log that client viewed their invoices
-        log_portal_event(request, client, "view", "invoice_list", 0)
+        # Log that client viewed their invoices (safely)
+        try:
+            log_portal_event(request, client, "view", "invoice_list", 0)
+        except Exception:
+            pass
         
         return Response(InvoiceSerializer(invoices, many=True).data)
 
