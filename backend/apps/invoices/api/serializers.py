@@ -21,9 +21,12 @@ class PaymentSerializer(serializers.ModelSerializer):
 
 class InvoiceSerializer(serializers.ModelSerializer):
     client_name = serializers.ReadOnlyField(source="client.name")
-    project_title = serializers.ReadOnlyField(source="project.title")
+    project_title = serializers.SerializerMethodField()
     status_label = serializers.CharField(source="get_status_display", read_only=True)
     amount = serializers.ReadOnlyField(source="total_amount")
+    
+    def get_project_title(self, obj):
+        return obj.project.title if obj.project else "General Billing"
     
     balance_due = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
     is_overdue = serializers.BooleanField(read_only=True)
