@@ -43,7 +43,19 @@ class PortalInfoView(PortalBaseView):
     """GET /portal/{token}/ — return consolidated client record."""
 
     def get(self, request, token):
+        # The token in URL is just for routing, the 'auth' object already has the client
         client = self.get_client()
+        
+        # Combined dataset as requested
+        projects = Project.objects.filter(client=client)
+        invoices = Invoice.objects.filter(client=client).select_related("project")
+        files = ProjectFile.objects.filter(project__client=client)
+        # Log that client viewed their portal (safely)
+        try:
+            log_portal_event(request, client, "view", "portal_main", 0)
+        except Exception:
+            pass
+
         return Response({
             "client": {
                 "id": client.id,
@@ -51,10 +63,9 @@ class PortalInfoView(PortalBaseView):
                 "email": client.email,
                 "company": client.company,
             },
-            "debug": "Portal accessed successfully",
-            "projects": [],
-            "invoices": [],
-            "files": [],
+            "projects": ProjectSerializer(projects, many=True).data,
+            "invoices": InvoiceSerializer(invoices, many=True).data,
+            "files": ProjectFileSerializer(files, many=True, context={"request": request}).data,
         })
 
 
