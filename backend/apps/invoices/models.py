@@ -134,8 +134,18 @@ class Invoice(models.Model):
         # Generate invoice number if not set
         if not self.invoice_number:
             prefix = "INV"
-            count = Invoice.objects.count() + 1
-            self.invoice_number = f"{prefix}-{timezone.now().year}-{count:04d}"
+            # Use max(id) or count to get a starting point, then ensure uniqueness
+            last_invoice = Invoice.objects.order_by("-id").first()
+            next_id = (last_invoice.id + 1) if last_invoice else 1
+            
+            # Simple loop to ensure we don't collide if something was deleted or in race conditions
+            max_retries = 100
+            for _ in range(max_retries):
+                num = f"{prefix}-{timezone.now().year}-{next_id:04d}"
+                if not Invoice.objects.filter(invoice_number=num).exists():
+                    self.invoice_number = num
+                    break
+                next_id += 1
             
         self.update_status()
         super().save(*args, **kwargs)

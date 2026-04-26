@@ -83,7 +83,7 @@ class InvoiceDetailView(generics.RetrieveUpdateAPIView):
             # Return our local proxy URL instead of direct Cloudinary URL
             from django.urls import reverse
             proxy_url = request.build_absolute_uri(
-                reverse("invoice-pdf-download", kwargs={"pk": invoice.id})
+                reverse("api:invoice-pdf-download", kwargs={"pk": invoice.id})
             )
             return Response({"message": "PDF generated successfully", "pdf_url": proxy_url})
         return Response({"error": "PDF generation failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
