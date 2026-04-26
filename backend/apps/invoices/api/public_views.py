@@ -71,23 +71,26 @@ class PublicInvoicePDFDownloadView(APIView):
             if not invoice.pdf_file:
                 return Response({"error": "PDF not generated yet"}, status=404)
 
-            url = invoice.pdf_file.url
+            # Generate a signed URL using the Cloudinary SDK
+            # This is more robust than manual proxying as it handles Cloudinary's auth natively
+            import cloudinary.utils
+            from django.http import HttpResponseRedirect
             
-            try:
-                # Add a User-Agent to avoid being blocked by some CDNs
-                req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-                response = urllib.request.urlopen(req)
-                
-                django_response = StreamingHttpResponse(
-                    (chunk for chunk in iter(lambda: response.read(8192), b"")),
-                    content_type="application/pdf"
-                )
-                
-                filename = f"invoice_{invoice.invoice_number}.pdf"
-                django_response["Content-Disposition"] = f'inline; filename="{filename}"'
-                return django_response
-                
-            except Exception as e:
-                return Response({"error": f"Failed to fetch PDF from storage: {str(e)}"}, status=502)
+            # For django-cloudinary-storage, the .name is the public_id
+            public_id = invoice.pdf_file.name
+            
+            url, _ = cloudinary.utils.cloudinary_url(
+                public_id,
+                sign_url=True,
+                secure=True,
+                resource_type="image", # Cloudinary often treats PDFs as images
+                type="upload"
+            )
+            
+            return HttpResponseRedirect(url)
+            
         except Exception as e:
-            return Response({"error": "Internal server error"}, status=500)
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Public PDF Redirect failed: {str(e)}")
+            return Response({"error": f"Failed to generate secure link: {str(e)}"}, status=500)
