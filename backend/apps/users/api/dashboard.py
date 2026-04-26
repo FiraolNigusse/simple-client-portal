@@ -18,38 +18,43 @@ class DashboardSummaryView(APIView):
 
     def get(self, request):
         user = request.user
+        print(f"DEBUG: Dashboard request for user {user.email}")
+        
+        # Fetch basic counts explicitly to avoid potential aggregation issues with nested relations
+        clients_qs = Client.objects.filter(freelancer=user)
+        total_clients = clients_qs.count()
+        print(f"DEBUG: Found {total_clients} clients for user {user.email}")
+        active_projects = Project.objects.filter(client__freelancer=user, status=Project.STATUS_ACTIVE).count()
+        pending_invoices = Invoice.objects.filter(
+            client__freelancer=user, 
+            status__in=[Invoice.STATUS_SENT, Invoice.STATUS_PARTIAL, Invoice.STATUS_OVERDUE]
+        ).count()
+        completed_tasks = Task.objects.filter(
+            project__client__freelancer=user, 
+            status=Task.STATUS_DONE
+        ).count()
 
-        # Optimize by getting all counts in one query using aggregation on the clients relation
-        stats = user.clients.aggregate(
-            total_clients=Count('id', distinct=True),
-            active_projects=Count('projects', filter=Q(projects__status=Project.STATUS_ACTIVE), distinct=True),
-            pending_invoices=Count('invoices', filter=Q(invoices__status__in=[Invoice.STATUS_SENT, Invoice.STATUS_PARTIAL, Invoice.STATUS_OVERDUE]), distinct=True),
-            completed_tasks=Count('projects__tasks', filter=Q(projects__tasks__status=Task.STATUS_DONE), distinct=True)
-        )
+        # Recent activity
+        projects_qs = Project.objects.filter(client__freelancer=user).order_by("-created_at")
+        invoices_qs = Invoice.objects.filter(client__freelancer=user).order_by("-created_at")
 
-        projects = Project.objects.filter(client__freelancer=user)
-        invoices = Invoice.objects.filter(client__freelancer=user)
-
-        # Recent activity — last 5 projects and invoices
         recent_projects = list(
-            projects.order_by("-created_at")[:5].values(
+            projects_qs[:5].values(
                 "id", "title", "status", "created_at"
             )
         )
         recent_invoices = list(
-            invoices.order_by("-created_at")[:5]
-            .values(
-                "id", "amount", "status", "created_at",
-                "client__name",
+            invoices_qs[:5].values(
+                "id", "amount", "status", "created_at", "client__name"
             )
         )
 
         return Response(
             {
-                "total_clients": stats["total_clients"],
-                "active_projects": stats["active_projects"],
-                "pending_invoices": stats["pending_invoices"],
-                "completed_tasks": stats["completed_tasks"],
+                "total_clients": total_clients,
+                "active_projects": active_projects,
+                "pending_invoices": pending_invoices,
+                "completed_tasks": completed_tasks,
                 "recent_projects": recent_projects,
                 "recent_invoices": recent_invoices,
             }

@@ -41,15 +41,20 @@ export function DashboardPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    Promise.all([
-      getDashboardSummary(),
-      api.getInvoiceMetrics()
-    ])
-      .then(([summaryRes, metricsRes]) => {
-        setData(summaryRes.data);
-        setMetrics(metricsRes.data);
+    // Independent fetching to ensure partial data still renders
+    getDashboardSummary()
+      .then(res => {
+        console.log("Dashboard Summary:", res.data);
+        setData(res.data);
       })
-      .catch(err => console.error("Dashboard error:", err))
+      .catch(err => console.error("Summary error:", err.response?.data || err.message));
+
+    api.getInvoiceMetrics()
+      .then(res => {
+        console.log("Invoice Metrics:", res.data);
+        setMetrics(res.data);
+      })
+      .catch(err => console.error("Metrics error:", err.response?.data || err.message))
       .finally(() => setLoading(false));
   }, []);
 

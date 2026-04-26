@@ -89,8 +89,11 @@ class InvoiceMetricsView(APIView):
         now = timezone.now()
         start_of_month = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         
+        print(f"DEBUG: Invoice Metrics request for user {user.email}")
+        
         # Base queryset for this user's invoices
         invoices = Invoice.objects.filter(client__freelancer=user)
+        print(f"DEBUG: Found {invoices.count()} total invoices for user {user.email}")
         
         # 1. Total Outstanding
         total_outstanding = invoices.exclude(
@@ -122,25 +125,31 @@ class InvoiceMetricsView(APIView):
             total_invoiced=Sum("total_amount"),
             total_paid=Sum("amount_paid")
         )
-        total_invoiced = totals["total_invoiced"] or 1
-        total_paid_all = totals["total_paid"] or 0
-        collection_rate = (total_paid_all / total_invoiced) * 100
+        total_invoiced = float(totals["total_invoiced"] or 0)
+        total_paid_all = float(totals["total_paid"] or 0)
+        collection_rate = (total_paid_all / total_invoiced * 100) if total_invoiced > 0 else 0
         
         # 6. Average Payment Time (Days)
-        avg_payment_time = Payment.objects.filter(
-            invoice__client__freelancer=user
-        ).annotate(
-            days_to_pay=F("payment_date") - F("invoice__issue_date")
-        ).aggregate(res=Avg("days_to_pay"))["res"]
-        
-        avg_days = avg_payment_time.days if avg_payment_time else 0
+        payments_qs = Payment.objects.filter(invoice__client__freelancer=user)
+        avg_days = 0
+        if payments_qs.exists():
+            avg_payment_time = payments_qs.annotate(
+                days_to_pay=F("payment_date") - F("invoice__issue_date")
+            ).aggregate(res=Avg("days_to_pay"))["res"]
+            
+            if avg_payment_time:
+                # Handle both timedelta and potentially raw seconds/days depending on DB backend
+                if hasattr(avg_payment_time, "days"):
+                    avg_days = avg_payment_time.days
+                elif isinstance(avg_payment_time, (int, float)):
+                    avg_days = int(avg_payment_time)
 
         return Response({
             "total_outstanding": float(total_outstanding),
             "overdue_balance": float(overdue_balance),
             "paid_this_month": float(paid_this_month),
             "invoices_sent_this_month": invoices_sent_this_month,
-            "collection_rate": round(float(collection_rate), 2),
+            "collection_rate": round(collection_rate, 2),
             "average_payment_time_days": avg_days,
             "currency": "USD",
         })
