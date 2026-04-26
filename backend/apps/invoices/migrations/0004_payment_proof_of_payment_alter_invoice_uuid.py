@@ -4,6 +4,12 @@ import uuid
 from django.db import migrations, models
 
 
+def gen_unique_uuids(apps, schema_editor):
+    Invoice = apps.get_model('invoices', 'Invoice')
+    for row in Invoice.objects.all():
+        row.uuid = uuid.uuid4()
+        row.save(update_fields=['uuid'])
+
 class Migration(migrations.Migration):
 
     dependencies = [
@@ -16,9 +22,11 @@ class Migration(migrations.Migration):
             name='proof_of_payment',
             field=models.FileField(blank=True, null=True, upload_to='payments/proofs/'),
         ),
+        # Fix duplicates before making it unique
+        migrations.RunPython(gen_unique_uuids, reverse_code=migrations.RunPython.noop),
         migrations.AlterField(
             model_name='invoice',
             name='uuid',
-            field=models.UUIDField(default=uuid.uuid4, editable=False, null=True, unique=True),
+            field=models.UUIDField(default=uuid.uuid4, editable=False, unique=True),
         ),
     ]
